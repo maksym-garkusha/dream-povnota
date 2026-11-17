@@ -1,0 +1,491 @@
+{
+ "internal": {
+  "id": "iu2835ti-1475-4wxy-ace8-vy2qnrvo51do",
+  "status": "active:approved",
+  "code": "251025-BB56F98A"
+ },
+ "cdu_response": {
+  "code": "DREAM-UA-251025-BB56F98A",
+  "date": "2025-10-25T14:58:36.609393Z",
+  "type": "rehabilitation",
+  "title": [
+   {
+    "lang": "uk",
+    "translation": "Реконструкція системи пожежної сигналізації, системи оповіщення про пожежу та управління евакуацією людей у Запорізькому навчально-виховному комплексі ІІ-ІІІ ступенів №82 з виробничим навчанням Запорізької міської ради Запорізької області, розташованої за адресою: м. Запоріжжя, вул. Істоміна, 16"
+   },
+   {
+    "lang": "en",
+    "translation": ""
+   }
+  ],
+  "budget": {
+   "budgetBreakdown": [
+    {
+     "id": "hdfxp58b-njbx-4s19-998g-v549jjxsnmjs",
+     "period": {
+      "endDate": "2025-10-25T15:13:01.959832Z",
+      "startDate": "2025-10-25T15:12:36.222373Z"
+     },
+     "classifications": {
+      "budgetType": "deficient"
+     }
+    },
+    {
+     "id": "276l891x-etl9-4fvt-895n-1ka57k20p22b",
+     "period": {
+      "startDate": "2025-10-25T15:13:59.826757Z"
+     },
+     "classifications": {
+      "budgetType": "deficient"
+     }
+    }
+   ]
+  },
+  "period": {
+   "durationInMonth": 2
+  },
+  "status": "active",
+  "metrics": [
+   {
+    "id": "stateRegionalDevelopmentStrategy",
+    "observations": [
+     {
+      "id": "b731f7b4-69d7-473c-b7a4-fbb9ad684266",
+      "notes": "1",
+      "dimensions": {
+       "relevance": "4"
+      }
+     }
+    ]
+   }
+  ],
+  "parties": [
+   {
+    "id": "UA-EDR-37573094",
+    "roles": [
+     "projectAuthor",
+     "implementer",
+     "initiator",
+     "customer",
+     "payer"
+    ],
+    "identifier": {
+     "id": "37573094",
+     "scheme": "UA-EDR",
+     "legalName": "ДЕПАРТАМЕНТ ОСВІТИ І НАУКИ ЗАПОРІЗЬКОЇ МІСЬКОЇ РАДИ"
+    }
+   }
+  ],
+  "purpose": "restoration",
+  "updated": "2025-10-25T15:15:40.076925Z",
+  "criteria": [
+   {
+    "id": "ORPF0006001000000000000000",
+    "title": "Яка причина виникнення проблеми?",
+    "requirementGroups": [
+     {
+      "id": "",
+      "requirements": [
+       {
+        "id": "ORPF0006001000000000000000-1",
+        "title": "Природне збільшення попиту на товари, роботи, послуги",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-2",
+        "title": "Руйнування обʼєкту внаслідок бойових дій (обстрілів)",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-3",
+        "title": "Руйнування обʼєкту з інших причин",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-4",
+        "title": "Зниження продуктивності існуючих активів внаслідок застарівання",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-5",
+        "title": "Зниження продуктивності існуючого обʼєкту внаслідок інших причин",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-7",
+        "title": "Зміна попиту внаслідок бойових дій",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-6",
+        "title": "Інше",
+        "dataType": "boolean",
+        "expectedValue": true,
+        "isCommentRequired": true
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "documents": [
+   {
+    "id": "7b242uo2-4k58-4978-bkpe-92fm17g97jyj",
+    "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/7b242uo2-4k58-4978-bkpe-92fm17g97jyj/download",
+    "hash": "SHA384:4883e9c9eb81e6bb31ac127c73cb98a0e7535556929cefcfa91be3dc9d1fb11dc5594d5382699ede531238003f7ca6a3",
+    "title": "3.jpg",
+    "format": "image/jpeg",
+    "description": "",
+    "dateModified": "2025-10-25T14:58:36.266710Z",
+    "documentType": "illustrationCover",
+    "accessDetails": "open",
+    "datePublished": "2025-10-25T14:58:31.500990Z"
+   },
+   {
+    "id": "fjwf77y9-bc07-4b1k-80nq-bvw47b313p71",
+    "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/fjwf77y9-bc07-4b1k-80nq-bvw47b313p71/download",
+    "hash": "SHA384:89d4787394877222cb663f9c42ef1a79579c240f812600251bf2fbe03d7dd5e81716c9b0cc40e0433b5f6ab2ee10f0d1",
+    "title": "Експ. звіт № 82 істоміна.pdf",
+    "format": "application/pdf",
+    "description": "",
+    "dateModified": "2025-10-25T15:01:09.210938Z",
+    "documentType": "document",
+    "accessDetails": "open",
+    "datePublished": "2025-10-25T15:00:55.612477Z"
+   }
+  ],
+  "approaches": [
+   {
+    "id": "single",
+    "items": [
+     {
+      "id": "f348386e-e060-4b7d-ad43-c4de51f27820",
+      "status": "active",
+      "locations": [
+       {
+        "gazetteer": {
+         "scheme": "UA-CATOTTG",
+         "identifiers": [
+          "UA23060070010069526"
+         ]
+        },
+        "description": "м. Запоріжжя, вул. Істоміна, 16"
+       }
+      ],
+      "description": [
+       {
+        "lang": "uk",
+        "translation": "Реконструкція системи пожежної сигналізації, системи оповіщення про пожежу та управління евакуацією людей у Запорізькому навчально-виховному комплексі ІІ-ІІІ ступенів №82 з виробничим навчанням Запорізької міської ради Запорізької області, розташованої за адресою: м. Запоріжжя, вул. Істоміна, 16"
+       },
+       {
+        "lang": "en",
+        "translation": ""
+       }
+      ],
+      "relatedProcesses": [
+       {
+        "scheme": "UA-DREAM",
+        "identifier": "2063mo62-tr1g-43z8-8nxk-l9gnh5f7r8ot",
+        "relationship": "object"
+       }
+      ],
+      "additionalClassifications": [
+       {
+        "id": "45454000-4",
+        "scheme": "UA-CPV"
+       },
+       {
+        "id": "1263,3",
+        "scheme": "UA-DKBS"
+       },
+       {
+        "id": "3142",
+        "scheme": "UA-ECBE"
+       }
+      ]
+     }
+    ],
+    "title": "Реконструкція системи пожежної сигналізації, системи оповіщення про пожежу та управління евакуацією людей у Запорізькому навчально-виховному комплексі ІІ-ІІІ ступенів №82 з виробничим навчанням Запорізької міської ради Запорізької області, розташованої за адресою: м. Запоріжжя, вул. Істоміна, 16",
+    "budget": {
+     "amount": {
+      "exchangeRates": [
+       {
+        "date": "2025-10-25",
+        "rate": 0.02386805737880994,
+        "source": "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?date=20251025&json",
+        "currency": "USD"
+       }
+      ]
+     },
+     "finance": [
+      {
+       "id": "05c37816-83d7-426c-aa3a-1e10c677c81a",
+       "value": {
+        "amount": 46280,
+        "currency": "UAH"
+       },
+       "period": {
+        "endDate": "2022-12-30",
+        "startDate": "2022-12-16"
+       },
+       "status": "committed",
+       "measures": {
+        "fiscalYear": 2022
+       },
+       "legalBasis": "рішення сесії ЗМР",
+       "financeType": "stateFunds",
+       "justification": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/61wo40a6-6l2h-47d7-8846-27pu4ao8o4xk/download",
+       "classification": {
+        "localBudgetCode": "0856200000",
+        "localBudgetProgramKPK": "1021",
+        "localBudgetProgramKFKId": "0921",
+        "localBudgetProgramKFKName": "Надання загальної середньої освіти закладами загальної середньої освіти за рахунок коштів місцевого бюджету"
+       },
+       "financingParty": {
+        "id": "UA23060070010069526"
+       },
+       "financeCategory": "localBudget"
+      }
+     ],
+     "budgetBreakdown": [
+      {
+       "id": "4a33d443-f36d-4159-a333-f3619ccfbfd2",
+       "amount": {
+        "amount": 46280,
+        "currency": "UAH",
+        "valueAddedTaxIncluded": false
+       },
+       "period": {
+        "endDate": "2022-12-31",
+        "startDate": "2022-12-16"
+       },
+       "classifications": {
+        "status": "active",
+        "costItem": "design",
+        "costType": "capex",
+        "budgetType": "original",
+        "relatedItem": "f348386e-e060-4b7d-ad43-c4de51f27820"
+       }
+      },
+      {
+       "id": "599626a2-a1ea-44d0-98bd-2fdf2260f0e7",
+       "amount": {
+        "amount": 775738,
+        "currency": "UAH",
+        "valueAddedTaxIncluded": false
+       },
+       "period": {
+        "endDate": "2026-12-31",
+        "startDate": "2026-01-01"
+       },
+       "classifications": {
+        "status": "active",
+        "costItem": "construction",
+        "costType": "capex",
+        "budgetType": "original",
+        "relatedItem": "f348386e-e060-4b7d-ad43-c4de51f27820"
+       }
+      },
+      {
+       "id": "6db96617-968e-4833-af56-7aa0637e08ba",
+       "amount": {
+        "amount": 5241,
+        "currency": "UAH",
+        "valueAddedTaxIncluded": false
+       },
+       "period": {
+        "endDate": "2026-12-31",
+        "startDate": "2026-01-01"
+       },
+       "classifications": {
+        "status": "active",
+        "costItem": "techAudit",
+        "costType": "opex",
+        "budgetType": "original",
+        "relatedItem": "f348386e-e060-4b7d-ad43-c4de51f27820"
+       }
+      },
+      {
+       "id": "866bf961-247c-455d-9e8c-4952f7ee7d3d",
+       "amount": {
+        "amount": 12346,
+        "currency": "UAH",
+        "valueAddedTaxIncluded": false
+       },
+       "period": {
+        "endDate": "2026-12-31",
+        "startDate": "2026-01-01"
+       },
+       "classifications": {
+        "status": "active",
+        "costItem": "otherCapex",
+        "costType": "capex",
+        "budgetType": "original",
+        "relatedItem": "f348386e-e060-4b7d-ad43-c4de51f27820"
+       }
+      },
+      {
+       "id": "ab0d8441-9517-4557-a8e8-49b7d2fde38f",
+       "amount": {
+        "amount": 3747,
+        "currency": "UAH",
+        "valueAddedTaxIncluded": false
+       },
+       "period": {
+        "endDate": "2026-12-31",
+        "startDate": "2026-01-01"
+       },
+       "classifications": {
+        "status": "active",
+        "costItem": "authorAudit",
+        "costType": "opex",
+        "budgetType": "original",
+        "relatedItem": "f348386e-e060-4b7d-ad43-c4de51f27820"
+       }
+      },
+      {
+       "id": "b9038472-8feb-4095-a45d-2446f684b748",
+       "amount": {
+        "amount": 6540,
+        "currency": "UAH",
+        "valueAddedTaxIncluded": false
+       },
+       "period": {
+        "endDate": "2026-12-31",
+        "startDate": "2026-01-01"
+       },
+       "classifications": {
+        "status": "active",
+        "costItem": "consulting",
+        "costType": "opex",
+        "budgetType": "original",
+        "relatedItem": "f348386e-e060-4b7d-ad43-c4de51f27820"
+       }
+      }
+     ]
+    },
+    "metrics": [],
+    "targets": [],
+    "planning": {
+     "financialProgress": {
+      "breakdown": [
+       {
+        "id": "bee0ac4a-4c25-4827-a6bb-c2e40fadc155",
+        "measures": {
+         "costItem": "design",
+         "costType": "capex",
+         "relatesTo": "objects",
+         "relatedItem": "f348386e-e060-4b7d-ad43-c4de51f27820"
+        },
+        "classifications": {
+         "budgetFinanceId": "05c37816-83d7-426c-aa3a-1e10c677c81a"
+        }
+       }
+      ]
+     }
+    },
+    "documents": [
+     {
+      "id": "61wo40a6-6l2h-47d7-8846-27pu4ao8o4xk",
+      "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/61wo40a6-6l2h-47d7-8846-27pu4ao8o4xk/download",
+      "hash": "SHA384:591563e5cdb203972777d1aa66c511423e455eb0014082e300d63860779efb34ceedc697a5441dcd8572e3fc346b90af",
+      "title": "ЗНВК82.pdf",
+      "format": "application/pdf",
+      "relatesTo": "finance",
+      "relatedItem": "cf991101091dedaa90b2d2915130ba4d2b4507a095f00c94a7a058d673d2bf6d",
+      "dateModified": "2025-10-25T15:14:38.170264Z",
+      "documentType": "document",
+      "accessDetails": "open",
+      "datePublished": "2025-10-25T15:14:38.153494Z"
+     }
+    ],
+    "description": "<p>Реконструкція системи АПС в закладі освіти</p>",
+    "implementation": {
+     "milestones": [
+      {
+       "id": "17b2s566-vyb4-4u73-bq35-6a65y5240m06",
+       "value": {
+        "amount": 46280,
+        "currency": "UAH"
+       },
+       "dateMet": "2025-10-25T15:15:28.636357Z",
+       "description": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/61wo40a6-6l2h-47d7-8846-27pu4ao8o4xk/download",
+       "budgetFinanceId": "05c37816-83d7-426c-aa3a-1e10c677c81a"
+      }
+     ]
+    }
+   }
+  ],
+  "description": [
+   {
+    "lang": "uk",
+    "translation": "<p>Реконструкція системи пожежної сигналізації, системи оповіщення про пожежу та управління евакуацією людей у Запорізькому навчально-виховному комплексі ІІ-ІІІ ступенів №82 з виробничим навчанням Запорізької міської ради Запорізької області, розташованої за адресою: м. Запоріжжя, вул. Істоміна, 16</p>"
+   },
+   {
+    "lang": "en",
+    "translation": ""
+   }
+  ],
+  "statusDetails": "approved",
+  "purposeDetails": [
+   {
+    "lang": "uk",
+    "translation": "Збереження життя і здоровя вихованців та працівників шляхом встановлення протипожежної сигналізації "
+   },
+   {
+    "lang": "en",
+    "translation": ""
+   }
+  ],
+  "relatedProcesses": [
+   {
+    "id": "59q2zs26-8906-4g4v-895o-l4246w34592p",
+    "scheme": "UA-DREAM",
+    "identifier": "2063mo62-tr1g-43z8-8nxk-l9gnh5f7r8ot",
+    "relationship": "object"
+   }
+  ],
+  "requirementResponses": [
+   {
+    "value": true,
+    "description": "Застаріле обладнання АПС",
+    "requirement": {
+     "id": "ORPF0006001000000000000000-5"
+    }
+   },
+   {
+    "value": true,
+    "description": "Збереження життя і здоровя вихованців та працівників шляхом встановлення протипожежної сигналізації",
+    "requirement": {
+     "id": "ORPF0007001000000000000000-6"
+    }
+   }
+  ],
+  "additionalClassifications": [
+   {
+    "id": "ES",
+    "scheme": "WB-ECO"
+   },
+   {
+    "id": "high",
+    "scheme": "ISO-21542-2021"
+   },
+   {
+    "id": "C",
+    "scheme": "UA-SBR-V1211-2021"
+   },
+   {
+    "id": "stateRegionalDevelopmentStrategy",
+    "uri": "https://zakon.rada.gov.ua/laws/show/z0252-15#Text",
+    "scheme": "UA-GIS",
+    "description": "https://zakon.rada.gov.ua/laws/show/z0252-15#Text"
+   }
+  ]
+ }
+}

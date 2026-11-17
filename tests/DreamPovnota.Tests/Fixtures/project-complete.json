@@ -1,0 +1,724 @@
+{
+ "internal": {
+  "id": "ogu09ydo-d88p-400k-a4t5-q2b6h02ejh8l",
+  "status": "complete",
+  "code": "050923-0EE8E7A3"
+ },
+ "cdu_response": {
+  "code": "DREAM-UA-050923-0EE8E7A3",
+  "date": "2023-09-05T09:32:52.441064Z",
+  "type": "rehabilitation",
+  "title": [
+   {
+    "lang": "uk",
+    "translation": "Реконструкція штучної споруди через струмок на км 197+830 автомобільної дороги загального користування державного значення М-14 Одеса – Мелітополь – Новоазовськ (на м. Таганрог)"
+   },
+   {
+    "lang": "en",
+    "translation": ""
+   }
+  ],
+  "period": {
+   "durationInMonth": 24
+  },
+  "status": "complete",
+  "metrics": [
+   {
+    "id": "initiationMetricsFunctional",
+    "observations": [
+     {
+      "id": "f7c7aa4c-4237-4a88-9e55-205465e53024",
+      "notes": "Кількість людей, що користуватимуться послугою",
+      "dimensions": {
+       "basicValue": 300000,
+       "targetValue": 400000,
+       "characteristic": "numberOfConsumers"
+      }
+     }
+    ]
+   }
+  ],
+  "parties": [
+   {
+    "id": "UA-EDR-25899361",
+    "roles": [
+     "balancer",
+     "projectAuthor",
+     "implementer",
+     "initiator"
+    ],
+    "identifier": {
+     "id": "25899361",
+     "scheme": "UA-EDR",
+     "legalName": "Служба відновлення та розвитку інфраструктури у Херсонській області"
+    }
+   }
+  ],
+  "purpose": "restoration",
+  "updated": "2025-01-23T19:11:12.897424Z",
+  "criteria": [
+   {
+    "id": "PRCP0006001000000000000000",
+    "title": "Чи відповідає кінцевий результат реалізації проєкту його меті?",
+    "requirementGroups": [
+     {
+      "id": "",
+      "requirements": [
+       {
+        "id": "PRCP0006001000000000000000-1",
+        "title": "Так",
+        "dataType": "boolean",
+        "expectedValue": true
+       }
+      ]
+     },
+     {
+      "id": "",
+      "requirements": [
+       {
+        "id": "PRCP0006001000000000000000-2",
+        "title": "Ні",
+        "dataType": "boolean",
+        "expectedValue": true
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "documents": [
+   {
+    "id": "99e594k4-8v90-4twy-bj16-3352eu11v058",
+    "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/99e594k4-8v90-4twy-bj16-3352eu11v058/download",
+    "hash": "SHA384:73b61e33e7d7ad3cb0fcdd5f109e57020f00d65aa8fd56c20bc9c041d98d56e7055f52d2dfd91e0cecb3ba2ad82cd9c6",
+    "title": "01 М-14  км 197_830.jpg",
+    "format": "image/jpeg",
+    "description": "",
+    "dateModified": "2024-09-17T12:05:59.898267Z",
+    "documentType": "illustrationComplete",
+    "accessDetails": "open",
+    "datePublished": "2024-09-17T11:26:52.188416Z"
+   },
+   {
+    "id": "q6s0070d-297o-44rz-bmb2-af5u0x9u81bs",
+    "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/q6s0070d-297o-44rz-bmb2-af5u0x9u81bs/download",
+    "hash": "SHA384:a6644731f1185023b2f478aa86274a2aadf3e266ed08833dc1387d989ad5b6dc16f360d7cee1eb5573c9e0b774507af7",
+    "title": "sign.p7s",
+    "format": "application/pkcs7-signature",
+    "relatesTo": "parties",
+    "relatedItem": "UA-EDR-25899361",
+    "dateModified": "2024-09-17T12:05:57.893812Z",
+    "documentType": "signature",
+    "accessDetails": "open",
+    "datePublished": "2024-09-17T12:05:57.813471Z"
+   }
+  ],
+  "approaches": [
+   {
+    "id": "single",
+    "items": [
+     {
+      "id": "4573b745-7875-4c92-89c3-2dafbd8709e3",
+      "status": "cancelled",
+      "locations": [
+       {
+        "gazetteer": {
+         "scheme": "UA-CATOTTG",
+         "identifiers": [
+          "UA65100170060084047"
+         ]
+        },
+        "description": ""
+       }
+      ],
+      "description": [
+       {
+        "lang": "uk",
+        "translation": "Реконструкція штучної споруди через струмок на км 197+830 автомобільної дороги загального користування державного значення М-14 Одеса – Мелітополь – Новоазовськ (на м. Таганрог)"
+       },
+       {
+        "lang": "en",
+        "translation": ""
+       }
+      ],
+      "relatedProcesses": [
+       {
+        "scheme": "UA-DREAM",
+        "identifier": "f0etbqdo-s0w0-46zj-9499-kz3oby01jm68",
+        "relationship": "object"
+       }
+      ],
+      "additionalClassifications": [
+       {
+        "id": "45221119-9",
+        "scheme": "UA-CPV"
+       },
+       {
+        "id": "2141,1",
+        "scheme": "UA-DKBS"
+       },
+       {
+        "id": "3220",
+        "scheme": "UA-ECBE"
+       }
+      ]
+     },
+     {
+      "id": "97398d9c-54c0-40d7-b208-0d713e231d64",
+      "status": "complete",
+      "locations": [
+       {
+        "gazetteer": {
+         "scheme": "UA-CATOTTG",
+         "identifiers": [
+          "UA65100170060084047"
+         ]
+        },
+        "description": ""
+       }
+      ],
+      "description": [
+       {
+        "lang": "uk",
+        "translation": "Реконструкція штучної споруди через струмок на км 197+830 автомобільної дороги загального користування державного значення М-14 Одеса – Мелітополь – Новоазовськ (на м. Таганрог)"
+       },
+       {
+        "lang": "en",
+        "translation": ""
+       }
+      ],
+      "relatedProcesses": [
+       {
+        "scheme": "UA-DREAM",
+        "identifier": "f0etbqdo-s0w0-46zj-9499-kz3oby01jm68",
+        "relationship": "object"
+       }
+      ],
+      "additionalClassifications": [
+       {
+        "id": "45221119-9",
+        "scheme": "UA-CPV"
+       },
+       {
+        "id": "2141,1",
+        "scheme": "UA-DKBS"
+       },
+       {
+        "id": "3220",
+        "scheme": "UA-ECBE"
+       }
+      ]
+     }
+    ],
+    "title": "Реконструкція штучної споруди через струмок на км 197 + 830 автомобільної дороги загального користування державного значення М-14 Одеса — Мелітополь — Новоазовськ (на м. Таганрог)",
+    "budget": {
+     "amount": {
+      "exchangeRates": [
+       {
+        "date": "2024-09-13",
+        "rate": 0.024228151658538123,
+        "source": "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?date=20240913&json",
+        "currency": "USD"
+       }
+      ]
+     },
+     "finance": [
+      {
+       "id": "7cb349c4-1160-4541-9ca6-0267192e2648",
+       "value": {
+        "amount": 140300325,
+        "currency": "UAH"
+       },
+       "period": {
+        "endDate": "2023-11-09",
+        "startDate": "2023-06-13"
+       },
+       "status": "indicative",
+       "measures": {
+        "fiscalYear": 2023
+       },
+       "legalBasis": "https://zakon.rada.gov.ua/laws/show/619-2023-%D0%BF#Text",
+       "financeType": "stateFunds",
+       "classification": {
+        "budgetProgramId": "3107300",
+        "budgetProgramKVK": "310",
+        "budgetProgramName": "Проектування, будівництво, реконструкція, капітальний ремонт, модернізація, реставрація, придбання та облаштування незалежно від форми власності об’єктів інфраструктури, рухомого та нерухомого майна, житлової нерухомості, у тому числі пошкоджених внаслідок збройної агресії, з метою відновлення цілісності і стійкості окремих галузей життєдіяльності суспільства, а також фінансове забезпечення заходів із забезпечення безпеки дорожнього руху"
+       },
+       "financeCategory": "centralBudget"
+      }
+     ],
+     "budgetBreakdown": [
+      {
+       "id": "27dea554-aa10-4f3e-98b7-dd2666933daa",
+       "amount": {
+        "amount": 1246530,
+        "currency": "UAH",
+        "valueAddedTaxIncluded": false
+       },
+       "period": {
+        "endDate": "2023-12-31",
+        "startDate": "2023-08-11"
+       },
+       "classifications": {
+        "status": "active",
+        "costItem": "authorAudit",
+        "costType": "opex",
+        "budgetType": "original"
+       }
+      },
+      {
+       "id": "89509386-bd87-46b8-a0bf-62db9a6e7c22",
+       "amount": {
+        "amount": 2847221.53,
+        "currency": "UAH",
+        "valueAddedTaxIncluded": false
+       },
+       "period": {
+        "endDate": "2023-11-09",
+        "startDate": "2022-02-17"
+       },
+       "classifications": {
+        "status": "active",
+        "costItem": "research",
+        "costType": "opex",
+        "budgetType": "original",
+        "relatedItem": "97398d9c-54c0-40d7-b208-0d713e231d64"
+       }
+      },
+      {
+       "id": "a7def48f-aded-43d3-8a24-6ae3cba83c05",
+       "amount": {
+        "amount": 23029467.55,
+        "currency": "UAH",
+        "valueAddedTaxIncluded": false
+       },
+       "period": {
+        "endDate": "2023-12-31",
+        "startDate": "2023-08-08"
+       },
+       "classifications": {
+        "status": "active",
+        "costItem": "taxes",
+        "costType": "opex",
+        "budgetType": "original"
+       }
+      },
+      {
+       "id": "aab8397e-4b88-40bc-9549-3d1a2b7fb905",
+       "amount": {
+        "amount": 111029663.71,
+        "currency": "UAH",
+        "valueAddedTaxIncluded": false
+       },
+       "period": {
+        "endDate": "2023-11-09",
+        "startDate": "2023-08-08"
+       },
+       "classifications": {
+        "status": "active",
+        "costItem": "construction",
+        "costType": "capex",
+        "budgetType": "original",
+        "relatedItem": "97398d9c-54c0-40d7-b208-0d713e231d64"
+       }
+      },
+      {
+       "id": "cd81d984-d0b6-4b05-9a68-c6fa9f007d4b",
+       "amount": {
+        "amount": 2147442.21,
+        "currency": "UAH",
+        "valueAddedTaxIncluded": false
+       },
+       "period": {
+        "endDate": "2023-12-31",
+        "startDate": "2022-02-17"
+       },
+       "classifications": {
+        "status": "active",
+        "costItem": "otherOpex",
+        "costType": "opex",
+        "budgetType": "original"
+       }
+      }
+     ]
+    },
+    "metrics": [
+     {
+      "id": "initiationItemMetricsSocialAndEconomic",
+      "observations": [
+       {
+        "id": "044deedd-fc39-4691-ad32-37599bfc52fd",
+        "unit": {
+         "id": "MTR"
+        },
+        "notes": "Ширина проїзної частини",
+        "measure": "7,5",
+        "dimensions": {
+         "relatedItem": "97398d9c-54c0-40d7-b208-0d713e231d64"
+        }
+       },
+       {
+        "id": "3ed25348-1a44-4e0e-b7fe-0b133d6bfb3f",
+        "unit": {
+         "id": "MTR"
+        },
+        "notes": "Ширина земляного полотна",
+        "measure": "28",
+        "dimensions": {
+         "relatedItem": "97398d9c-54c0-40d7-b208-0d713e231d64"
+        }
+       }
+      ]
+     }
+    ],
+    "targets": [
+     {
+      "id": "initiationItemPhases",
+      "observations": [
+       {
+        "id": "41c7c209-8d7a-46b1-bf59-bd56335a3583",
+        "period": {
+         "durationInDays": 30
+        },
+        "dimensions": {
+         "phaseCode": "approval",
+         "relatedItem": "97398d9c-54c0-40d7-b208-0d713e231d64"
+        }
+       },
+       {
+        "id": "b08e0e6a-398e-47c2-9dab-53303922e286",
+        "period": {
+         "durationInDays": 30
+        },
+        "dimensions": {
+         "phaseCode": "concept",
+         "relatedItem": "97398d9c-54c0-40d7-b208-0d713e231d64"
+        }
+       }
+      ]
+     }
+    ],
+    "documents": [
+     {
+      "id": "8i7153ep-6638-4trr-8c75-7iy01lnch31n",
+      "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/8i7153ep-6638-4trr-8c75-7iy01lnch31n/download",
+      "hash": "SHA384:6a4c34e4842d71623cb9ac4ca5800e5eab5dccf79a66704ee10c1bdbf990915619bb262139138b72e79da2a68642c0d8",
+      "title": "Міст_М-14 км 197+830_Клапая_фото_1.jpg",
+      "format": "image/jpeg",
+      "relatesTo": "item",
+      "description": "",
+      "relatedItem": "97398d9c-54c0-40d7-b208-0d713e231d64",
+      "dateModified": "2024-09-12T11:06:41.559276Z",
+      "documentType": "illustration",
+      "accessDetails": "open",
+      "datePublished": "2024-09-12T11:06:16.684916Z"
+     },
+     {
+      "id": "jxu7w17l-hud9-4d84-82mx-gz1b4d5bj804",
+      "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/jxu7w17l-hud9-4d84-82mx-gz1b4d5bj804/download",
+      "hash": "SHA384:b875d4b3c454ec6fd409831e2fab5a7500a29ad6f2ab788cb49a268dce8736ef4bbceb64b1bc618daa044f69c5efc716",
+      "title": "Міст_М-14 км 197+830_Клапая_фото_2.jpg",
+      "format": "image/jpeg",
+      "relatesTo": "item",
+      "description": "",
+      "relatedItem": "97398d9c-54c0-40d7-b208-0d713e231d64",
+      "dateModified": "2024-09-12T11:06:57.706154Z",
+      "documentType": "illustration",
+      "accessDetails": "open",
+      "datePublished": "2024-09-12T11:06:51.382018Z"
+     }
+    ],
+    "description": "<p>В ході бойових дій шляхопровід був повністю зруйнований, робочим проектом передбачається відновлення (реконструкція) штучної споруди та підходів до неї</p>"
+   }
+  ],
+  "completion": {
+   "date": "2024-09-17T12:05:59.892615Z",
+   "endDate": "2023-11-09",
+   "finalValue": {
+    "amount": 140300325,
+    "currency": "UAH",
+    "valueAddedTaxIncluded": true
+   },
+   "endDateDetails": "Сертифікат відповідність закінченого будівництвом об’єкта № ІУ123231101787",
+   "finalValueDetails": "Сплачено в повному обсязі"
+  },
+  "description": [
+   {
+    "lang": "uk",
+    "translation": "<p>відновлення (реконструкція штучної споруди)</p>"
+   },
+   {
+    "lang": "en",
+    "translation": ""
+   }
+  ],
+  "purposeDetails": [
+   {
+    "lang": "uk",
+    "translation": "Міст зруйновано  - підірвано окупаційними військами рф під час відступу з правобережної частини Херсонської області"
+   },
+   {
+    "lang": "en",
+    "translation": ""
+   }
+  ],
+  "relatedProcesses": [
+   {
+    "id": "71ufz50j-861r-46h3-9717-k9t5s1581498",
+    "scheme": "UA-DREAM",
+    "identifier": "f0etbqdo-s0w0-46zj-9499-kz3oby01jm68",
+    "relationship": "object"
+   }
+  ],
+  "contractingProcesses": [
+   {
+    "id": "37v4qc9r-e4h4-4c15-afh0-u46x3xiaab86",
+    "summary": {
+     "date": "2024-09-12T11:49:43.743647Z",
+     "title": [
+      {
+       "lang": "uk",
+       "translation": "Реконструкція штучної споруди через струмок на км 197+830 автомобільної дороги загального користування державного значення М-14 Одеса – Мелітополь – Новоазовськ (на м. Таганрог)"
+      },
+      {
+       "lang": "en",
+       "translation": ""
+      }
+     ],
+     "budget": {
+      "finance": [
+       {
+        "id": "197ac993-b953-47f0-8606-61890d97c52b",
+        "classification": {
+         "budgetFinanceId": "7cb349c4-1160-4541-9ca6-0267192e2648"
+        }
+       }
+      ]
+     },
+     "status": "complete",
+     "contracts": [
+      {
+       "id": "659ea4fb7b794f299f8598f6fedabf10",
+       "relatesTo": "3769y394-acr1-4nyg-9d3x-2d541tyn6n6t",
+       "implementation": {
+        "endDate": "2023-11-09",
+        "metrics": [
+         {
+          "id": "contractPlan",
+          "observations": [
+           {
+            "id": "7qslcl6f-ih03-4icc-b685-cuj4dmmi0443",
+            "unit": {
+             "id": "%",
+             "name": "%"
+            },
+            "period": {
+             "endDate": "2023-08",
+             "startDate": "2023-08"
+            },
+            "measure": 100,
+            "dimensions": {
+             "date": "2024-09-12T12:49:16.788526Z",
+             "worksItem": "preparatioryWorks",
+             "worksCategory": "buildingsConstruction"
+            }
+           },
+           {
+            "id": "lqth43o5-dh00-434a-80bl-3a058cj3rp11",
+            "unit": {
+             "id": "%",
+             "name": "%"
+            },
+            "period": {
+             "endDate": "2023-08",
+             "startDate": "2023-08"
+            },
+            "measure": 30,
+            "dimensions": {
+             "date": "2024-09-12T12:49:16.790704Z",
+             "worksItem": "supportings",
+             "worksCategory": "buildingsConstruction"
+            }
+           }
+          ]
+         }
+        ],
+        "finalValue": 157000000,
+        "milestones": [
+         {
+          "period": {
+           "endDate": "2023-08",
+           "startDate": "2023-08"
+          },
+          "documents": [
+           {
+            "id": "52641x9a-b1r9-4714-b54o-lb5bwq7wze6o",
+            "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/52641x9a-b1r9-4714-b54o-lb5bwq7wze6o/download",
+            "hash": "SHA384:10f9779284f9fdb1cd7205f5eb9fe44ff8375347324ebc964eda5f07caeb2499bde7320b50d404d2c4d42beaa36c6e09",
+            "title": "IMG-22c4e00bf02fea6936611098053eaf49-V.jpg",
+            "format": "image/jpeg",
+            "description": "",
+            "dateModified": "2024-09-12T12:50:58.848752Z",
+            "documentType": "illustrationInProgress",
+            "accessDetails": "open",
+            "datePublished": "2024-09-12T12:50:47.391306Z"
+           }
+          ]
+         },
+         {
+          "period": {
+           "endDate": "2023-09",
+           "startDate": "2023-09"
+          },
+          "documents": [
+           {
+            "id": "hl0dj5d6-i6b2-4p9e-byn0-7987qtbni3o4",
+            "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/hl0dj5d6-i6b2-4p9e-byn0-7987qtbni3o4/download",
+            "hash": "SHA384:9a1d3ed302be5aa2ec3f492243bf5659f07a3ddac51a9a0ed1e16d917afa9b461fdf197eb5bb148ddeab4e4d4233b10e",
+            "title": "IMG-c353719b1510964e166736aea5bc1d6b-V.jpg",
+            "format": "image/jpeg",
+            "description": "",
+            "dateModified": "2024-09-12T12:52:26.297448Z",
+            "documentType": "illustrationInProgress",
+            "accessDetails": "open",
+            "datePublished": "2024-09-12T12:52:17.787232Z"
+           }
+          ]
+         },
+         {
+          "period": {
+           "endDate": "2023-10",
+           "startDate": "2023-10"
+          },
+          "documents": [
+           {
+            "id": "p4xfp1g5-mk55-4gp7-b795-stn017s6rzv5",
+            "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/p4xfp1g5-mk55-4gp7-b795-stn017s6rzv5/download",
+            "hash": "SHA384:cd5a12eeb75c0d71d9443e50cec5b40d0a7aa3ea23c8394bfa1942c78628ec0781d0dcbec752b55865ca54c2ac09309e",
+            "title": "01 ЕДБК.jpg",
+            "format": "image/jpeg",
+            "description": "",
+            "dateModified": "2024-09-12T12:57:07.900418Z",
+            "documentType": "illustrationInProgress",
+            "accessDetails": "open",
+            "datePublished": "2024-09-12T12:57:02.199164Z"
+           }
+          ]
+         },
+         {
+          "period": {
+           "endDate": "2023-11",
+           "startDate": "2023-11"
+          },
+          "documents": [
+           {
+            "id": "01uxa4dq-f21y-4x4n-a354-v82iv4pm1c57",
+            "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/01uxa4dq-f21y-4x4n-a354-v82iv4pm1c57/download",
+            "hash": "SHA384:73b61e33e7d7ad3cb0fcdd5f109e57020f00d65aa8fd56c20bc9c041d98d56e7055f52d2dfd91e0cecb3ba2ad82cd9c6",
+            "title": "01 М-14  км 197_830.jpg",
+            "format": "image/jpeg",
+            "description": "",
+            "dateModified": "2024-09-12T12:58:01.593203Z",
+            "documentType": "illustrationInProgress",
+            "accessDetails": "open",
+            "datePublished": "2024-09-12T12:57:56.270268Z"
+           }
+          ]
+         }
+        ],
+        "endDateDetails": "Сертифікат №  ІУ123231101787",
+        "finalValueDetails": "Роботи виконані в повному обсязі"
+       },
+       "procurementCategory": "works",
+       "additionalProcurementCategories": [
+        "linear"
+       ]
+      }
+     ],
+     "description": [
+      {
+       "lang": "uk",
+       "translation": "Міст зруйновано  - підірвано окупаційними військами рф під час відступу з правобережної частини Херсонської області"
+      },
+      {
+       "lang": "en",
+       "translation": ""
+      }
+     ],
+     "dateModified": "2024-09-17T11:20:27.763566Z"
+    },
+    "relatedProcesses": [
+     {
+      "id": "dcb6ed9c-2b57-4b02-9abd-ecc60a30aa2b",
+      "details": {
+       "date": "2024-09-12T12:33:39.819621Z",
+       "status": "active",
+       "dateModified": "2024-09-12T12:33:39.819624Z",
+       "budgetBreakdown": [
+        {
+         "id": "3221c8f7-27c8-45e0-bbd4-e0e598a2f5c9",
+         "classifications": {
+          "costItem": "construction",
+          "costType": "capex"
+         }
+        }
+       ]
+      },
+      "identifier": "97398d9c-54c0-40d7-b208-0d713e231d64",
+      "relationship": "scope"
+     },
+     {
+      "id": "3769y394-acr1-4nyg-9d3x-2d541tyn6n6t",
+      "scheme": "UA-PROZORRO",
+      "details": {
+       "date": "2024-09-12T12:41:53.485260Z",
+       "status": "complete",
+       "tender": "f8cabffbbff64ba8bb1b438818212fc2",
+       "contract": "659ea4fb7b794f299f8598f6fedabf10",
+       "platform": "national",
+       "dateModified": "2024-09-17T11:20:27.760042Z"
+      },
+      "identifier": "UA-P-2022-12-28-004913-b",
+      "relationship": "procurement"
+     }
+    ]
+   }
+  ],
+  "requirementResponses": [
+   {
+    "value": true,
+    "description": "",
+    "requirement": {
+     "id": "PRCP0006001000000000000000-1"
+    }
+   },
+   {
+    "value": true,
+    "description": "",
+    "requirement": {
+     "id": "PRCP000700100000000000000-1"
+    }
+   }
+  ],
+  "additionalClassifications": [
+   {
+    "id": "TI",
+    "scheme": "WB-ECO"
+   },
+   {
+    "id": "low",
+    "scheme": "ISO-21542-2021"
+   },
+   {
+    "id": "D",
+    "scheme": "UA-SBR-V1211-2021"
+   },
+   {
+    "id": "govPriorityPlan",
+    "uri": "https://zakon.rada.gov.ua/laws/show/619-2023-%D0%BF/ed20230613#Text",
+    "scheme": "UA-GIS",
+    "description": "Постанова КМУ № 619 від 13.06.2023 р. \"Про затвердження Порядку використання коштів, передбачених у державному бюджеті для розвитку та відновлення інфраструктури\""
+   }
+  ]
+ }
+}

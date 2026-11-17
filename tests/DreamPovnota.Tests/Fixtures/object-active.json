@@ -1,0 +1,120 @@
+{
+ "internal": {
+  "id": "urp872q7-4zyv-4n1o-afpe-cu4b4r244ciq",
+  "status": "active",
+  "code": "180424-98642419"
+ },
+ "cdu_response": {
+  "date": "2024-04-19T08:18:48.488969Z",
+  "title": [
+   {
+    "lang": "uk",
+    "translation": "Їдальня (харчоблок) в Авдіївському ліцеї в с. Авдіївка"
+   },
+   {
+    "lang": "en",
+    "translation": "School cafeteria (food block) at Avdiivka’s Lyceum in Avdiivka village."
+   }
+  ],
+  "status": "active",
+  "parties": [
+   {
+    "id": "UA-EDR-04412567",
+    "roles": [
+     "initiator",
+     "balancer"
+    ],
+    "details": {
+     "classifications": [
+      {
+       "id": "localBody",
+       "scheme": "TED-TYPE"
+      }
+     ]
+    },
+    "identifier": {
+     "id": "04412567",
+     "scheme": "UA-EDR",
+     "legalName": "ПОНОРНИЦЬКА СЕЛИЩНА РАДА"
+    }
+   }
+  ],
+  "updated": "2026-04-15T09:48:33.243202Z",
+  "documents": [
+   {
+    "id": "mvbp7g0i-881t-42we-94ti-u560x78y3s0g",
+    "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/mvbp7g0i-881t-42we-94ti-u560x78y3s0g/download",
+    "hash": "SHA384:8ed9fed71bdc77e9ff82599118cbfa24845ee023e30d812442b33b284aa51e75ae1134dfdca65f8086e0e795dfea7ad4",
+    "title": "ryzacvc94m8y4stlx31yrg_620624ce0bf2c.png",
+    "format": "image/png",
+    "description": "",
+    "dateModified": "2024-05-30T07:02:26.390853Z",
+    "documentType": "illustration",
+    "accessDetails": "open",
+    "datePublished": "2024-04-19T07:01:35.899497Z"
+   },
+   {
+    "id": "9n4c1n5z-253q-486s-858y-c0n15ocwt7b0",
+    "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/9n4c1n5z-253q-486s-858y-c0n15ocwt7b0/download",
+    "hash": "SHA384:9b586b6dff099c6360c0e32d94749ed1ed2703f80e0f0b13dc1e244ada79702a7d28470bb1c63904b8c77d6cfc2bd42d",
+    "title": "0qvnipmpnppgdi1srfe1kq_620624d1079fd.png",
+    "format": "image/png",
+    "description": "",
+    "dateModified": "2024-05-30T07:02:26.392563Z",
+    "documentType": "illustration",
+    "accessDetails": "open",
+    "datePublished": "2024-04-19T07:01:35.912465Z"
+   }
+  ],
+  "locations": [
+   {
+    "gazetteer": {
+     "scheme": "UA-CATOTTG",
+     "identifiers": [
+      "UA74060050020095773"
+     ]
+    },
+    "description": "вул. Сіверська, 32 "
+   }
+  ],
+  "internalId": "",
+  "description": [
+   {
+    "lang": "uk",
+    "translation": "Шкільний харчоблок, облаштований модернізованим обладнанням, згідно державних стандартів, забезпечує дотримання норм HACCP та якісною і безпечною їжею в асортименті для 200+ учнів ліцею. Комплексний підхід до оновлення інфраструктури харчоблоку підвищує технологічність виробничих процесів, за рахунок переходу на нові стандарти організації харчування."
+   },
+   {
+    "lang": "en",
+    "translation": "The school cafeteria, equipped with modernized facilities, complies with state standards, ensuring adherence to HACCP regulations and providing quality and safe food assortment for over 200 students of the lyceum. A comprehensive approach to updating the cafeteria infrastructure will enhance the technological efficiency of production processes by transitioning to new food service organization standards."
+   }
+  ],
+  "classification": {
+   "id": "09.2.1",
+   "scheme": "COFOG"
+  },
+  "relatedProcesses": [
+   {
+    "id": "2u765qgf-26un-4wpe-a47w-8vms19vdrb5r",
+    "scheme": "UA-DREAM",
+    "identifier": "wh7k3w0k-4gt1-4hu9-aq43-ancj02o6c57z",
+    "relationship": "idea"
+   }
+  ],
+  "additionalClassifications": [
+   {
+    "id": "school-21242",
+    "scheme": "UA-MOS"
+   },
+   {
+    "id": "ES",
+    "uri": "https://thedocs.worldbank.org/en/doc/538321490128452070-0290022017/original/NewSectorTaxonomyanddefinitions.pdf",
+    "scheme": "WB-ECO"
+   },
+   {
+    "id": "1263,3",
+    "uri": "https://unstats.un.org/unsd/classifications/Econ/search",
+    "scheme": "UA-DKBS"
+   }
+  ]
+ }
+}

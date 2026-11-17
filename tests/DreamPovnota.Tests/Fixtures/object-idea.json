@@ -1,0 +1,116 @@
+{
+ "internal": {
+  "id": "49gvu44j-l8m8-4173-b3bl-d47635l1846r",
+  "status": "active",
+  "code": "020524-2A6E5248"
+ },
+ "cdu_response": {
+  "date": "2024-05-02T13:09:16.459231Z",
+  "title": [
+   {
+    "lang": "uk",
+    "translation": "Очисні споруди в смт Ямпіль Шосткинського району Сумської області"
+   },
+   {
+    "lang": "en",
+    "translation": ""
+   }
+  ],
+  "status": "active",
+  "parties": [
+   {
+    "id": "UA-EDR-04390222",
+    "roles": [
+     "initiator",
+     "balancer"
+    ],
+    "details": {
+     "classifications": [
+      {
+       "id": "localBody",
+       "scheme": "TED-TYPE"
+      }
+     ]
+    },
+    "identifier": {
+     "id": "04390222",
+     "scheme": "UA-EDR",
+     "legalName": "ЯМПІЛЬСЬКА СЕЛИЩНА РАДА"
+    }
+   }
+  ],
+  "updated": "2025-12-08T08:23:45.021702Z",
+  "documents": [
+   {
+    "id": "f602s0n7-i0dr-4oae-9xn4-vn9k7qshu91p",
+    "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/f602s0n7-i0dr-4oae-9xn4-vn9k7qshu91p/download",
+    "hash": "SHA384:73cd6bce81c23a8471b830f966cae647aaf6ac5dbfcfa7fae4f35dd0e966f3a96d864b755c46e8fc8ad6b369c5d65bf0",
+    "title": "IMG_20180523_160959.jpg",
+    "format": "image/jpeg",
+    "description": "Біофільтри очисних споруд",
+    "dateModified": "2025-12-08T08:23:35.840217Z",
+    "documentType": "illustrationCover",
+    "accessDetails": "open",
+    "datePublished": "2024-05-02T13:00:59.568357Z"
+   },
+   {
+    "id": "30o615tp-08p4-4tx9-by7r-oy83t98d03o7",
+    "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/30o615tp-08p4-4tx9-by7r-oy83t98d03o7/download",
+    "hash": "SHA384:3d7a8b9bdf1fb99e9c6587060a2ee811caa41c5bd8726d7cd7b476e84061ca0e15a7cfd80809bacfb5710c5521046e09",
+    "title": "IMG_20180524_094054.jpg",
+    "format": "image/jpeg",
+    "description": "",
+    "dateModified": "2025-12-08T08:23:35.841943Z",
+    "documentType": "illustration",
+    "accessDetails": "open",
+    "datePublished": "2024-05-02T13:02:13.898653Z"
+   }
+  ],
+  "locations": [
+   {
+    "gazetteer": {
+     "scheme": "UA-CATOTTG",
+     "identifiers": [
+      "UA59100190010090128"
+     ]
+    },
+    "description": "північно-західна околиця смт Ямпіль"
+   }
+  ],
+  "internalId": "",
+  "description": [
+   {
+    "lang": "uk",
+    "translation": "На даний час на території смт Ямпіль (к-ть населення 4,5 тис. чол.) централізоване водовідведення здійснюється за рахунок очисних споруд, які розташовані на північно-західній околиці смт Ямпіль, на лівому березі річка Івотка, притоки р. Десни. \r\nУ зв’язку з тим, що окремі складові об’єкта знаходяться в аварійному стані, об’єкт відноситься до третьої категорії технічного стану – як не придатний до нормальної експлуатації.\r\nВраховуючи те, що технічний стан об’єкта погіршився до рівня, який не відповідає вимогам експлуатаційної придатності, відповідно деякі складові об’єкта знаходяться в аварійному стані, а деякі складові відпрацювали свій експлуатаційний ресурс, є гостра необхідність провести реконструкцію даних очисних споруд."
+   },
+   {
+    "lang": "en",
+    "translation": ""
+   }
+  ],
+  "classification": {
+   "id": "05.2.0",
+   "scheme": "COFOG"
+  },
+  "relatedProcesses": [
+   {
+    "id": "lcy89chm-6mhd-45xv-b512-fjiv16xl50k6",
+    "scheme": "UA-DREAM",
+    "identifier": "z73xd4b0-eb3o-4qeq-b59g-99xku94gwqea",
+    "relationship": "idea"
+   }
+  ],
+  "additionalClassifications": [
+   {
+    "id": "2223,3",
+    "uri": "https://unstats.un.org/unsd/classifications/Econ/search",
+    "scheme": "UA-DKBS"
+   },
+   {
+    "id": "WZ",
+    "uri": "https://thedocs.worldbank.org/en/doc/538321490128452070-0290022017/original/NewSectorTaxonomyanddefinitions.pdf",
+    "scheme": "WB-ECO"
+   }
+  ]
+ }
+}

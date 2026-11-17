@@ -1,0 +1,332 @@
+{
+ "internal": {
+  "id": "589a49fs-8r1t-4fou-859o-5f14na226ihy",
+  "status": "pending:appraised",
+  "code": "110923-7D58AEA1"
+ },
+ "cdu_response": {
+  "code": "DREAM-UA-110923-7D58AEA1",
+  "date": "2023-09-11T16:14:22.015851Z",
+  "type": "rehabilitation",
+  "title": [
+   {
+    "lang": "uk",
+    "translation": "Капітальний ремонт Новобасанського СЛА"
+   },
+   {
+    "lang": "en",
+    "translation": ""
+   }
+  ],
+  "status": "pending",
+  "parties": [
+   {
+    "id": "UA-EDR-04414721",
+    "roles": [
+     "balancer",
+     "projectAuthor",
+     "implementer",
+     "initiator"
+    ],
+    "identifier": {
+     "id": "04414721",
+     "scheme": "UA-EDR",
+     "legalName": "Новобасанська сільська рада"
+    }
+   }
+  ],
+  "purpose": "restoration",
+  "updated": "2025-01-23T19:12:35.676810Z",
+  "criteria": [
+   {
+    "id": "ORPP0108001000000000000000",
+    "title": "Чи знаходиться територіальна громада на відстані 30 кілометрів і менше від території проведення активних бойових дій, тимчасово окупованих територій?",
+    "requirementGroups": [
+     {
+      "id": "",
+      "requirements": [
+       {
+        "id": "ORPP0108001000000000000000-1",
+        "title": "Так",
+        "dataType": "boolean",
+        "expectedValue": true
+       }
+      ]
+     },
+     {
+      "id": "",
+      "requirements": [
+       {
+        "id": "ORPP0108001000000000000000-2",
+        "title": "Ні",
+        "dataType": "boolean",
+        "expectedValue": true
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "documents": [
+   {
+    "id": "h1o184t9-2rjs-40ho-b7ew-6o63a80kqe7w",
+    "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/h1o184t9-2rjs-40ho-b7ew-6o63a80kqe7w/download",
+    "hash": "SHA384:5e6c785d97ed341a8beb6a05074d98346dad43f5dae982d3455005dc8a4ac3c72dfc064048ee0b4e180164be3d09e9dd",
+    "title": "зображення_viber_2023-06-05_15-32-51-296.jpg",
+    "format": "image/jpeg",
+    "description": "",
+    "dateModified": "2024-11-19T13:30:11.500020Z",
+    "documentType": "illustration",
+    "accessDetails": "open",
+    "datePublished": "2024-11-19T13:29:49.317295Z"
+   },
+   {
+    "id": "c81kyofa-vwc9-4a44-b0r9-8r4akdf314ey",
+    "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/c81kyofa-vwc9-4a44-b0r9-8r4akdf314ey/download",
+    "hash": "SHA384:1c4f8c807b8ebdcbfb684aa81ded0112d38fb3e431531d5d69afbd900596c838f8ee7fac65461aa926c00f616732644d",
+    "title": "зображення_viber_2022-08-31_15-05-23-065.jpg",
+    "format": "image/jpeg",
+    "description": "",
+    "dateModified": "2024-11-19T13:30:11.501857Z",
+    "documentType": "illustration",
+    "accessDetails": "open",
+    "datePublished": "2024-11-19T13:29:49.325206Z"
+   }
+  ],
+  "approaches": [
+   {
+    "id": "single",
+    "items": [
+     {
+      "id": "d4a737db-b298-4873-996c-1c20df28117f",
+      "status": "active",
+      "locations": [
+       {
+        "gazetteer": {
+         "scheme": "UA-CATOTTG",
+         "identifiers": [
+          "UA74040270010056465"
+         ]
+        },
+        "description": "вулиця Шевченка, 34, с. Нова Басань, Ніжинський район, Чернігівська область"
+       }
+      ],
+      "description": [
+       {
+        "lang": "uk",
+        "translation": "«Капітальний ремонт з виділенням черговості (1 черга- внутрішні роботи, 2 черга – зовнішні роботи) Новобасанської сільської лікарської амбулаторії за адресою: Чернігівська область, Ніжинський район, село Нова Басань, вулиця Шевченка, 34» (коригування) "
+       },
+       {
+        "lang": "en",
+        "translation": ""
+       }
+      ],
+      "relatedProcesses": [
+       {
+        "scheme": "UA-DREAM",
+        "identifier": "815s9zc9-xa3r-4r5s-9sn7-m5si246g108h",
+        "relationship": "object"
+       }
+      ],
+      "additionalClassifications": [
+       {
+        "id": "45450000-6",
+        "scheme": "UA-CPV"
+       },
+       {
+        "id": "1264,4",
+        "scheme": "UA-DKBS"
+       },
+       {
+        "id": "3132",
+        "scheme": "UA-ECBE"
+       },
+       {
+        "id": "7410400000:01:028:0001",
+        "scheme": "UA-DZK"
+       }
+      ]
+     }
+    ],
+    "title": "«Капітальний ремонт з виділенням черговості (1 черга-внутрішні роботи, 2 черга-зовнішні роботи) Новобасанської сільської лікарської амбулаторії за адресою: Чернігівська область, Ніжинського району, село Нова Басань, вулиця Шевченка, 34» ",
+    "budget": {
+     "amount": {
+      "exchangeRates": [
+       {
+        "date": "2024-11-28",
+        "rate": 0.024037883704718637,
+        "source": "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?date=20241128&json",
+        "currency": "USD"
+       }
+      ]
+     },
+     "finance": [
+      {
+       "id": "7312ae54-76cc-4765-b52d-cd1f2ba8d5b2",
+       "value": {
+        "amount": 1700000,
+        "currency": "UAH"
+       },
+       "period": {
+        "endDate": "2024-12-31",
+        "startDate": "2024-01-01"
+       },
+       "status": "indicative",
+       "measures": {
+        "fiscalYear": 2024
+       },
+       "financeType": "stateFunds",
+       "classification": {
+        "localBudgetCode": "2552000000",
+        "localBudgetProgramKPK": "2080",
+        "localBudgetProgramKFKId": "0721",
+        "localBudgetProgramKFKName": "Амбулаторно-поліклінічна допомога населенню, крім первинної медичної допомоги"
+       },
+       "financingParty": {
+        "id": "UA74040270000069132"
+       },
+       "financeCategory": "localBudget"
+      },
+      {
+       "id": "e531884c-f3b2-476e-a061-404eb70b8c34",
+       "value": {
+        "amount": 8500000,
+        "currency": "UAH"
+       },
+       "period": {
+        "endDate": "2024-12-31",
+        "startDate": "2024-01-01"
+       },
+       "status": "indicative",
+       "measures": {
+        "fiscalYear": 2024
+       },
+       "financeType": "stateFunds",
+       "classification": {
+        "budgetProgramId": "3121620",
+        "budgetProgramKVK": "312",
+        "budgetProgramName": "Субвенція з державного бюджету місцевим бюджетам на реалізацію проектів в рамках Програми з відновлення України"
+       },
+       "financeCategory": "centralBudget"
+      }
+     ],
+     "budgetBreakdown": [
+      {
+       "id": "9898d3b8-24c3-4273-b93b-ed016ed53d78",
+       "amount": {
+        "amount": 12235130,
+        "currency": "UAH",
+        "valueAddedTaxIncluded": false
+       },
+       "period": {
+        "endDate": "2024-12-31",
+        "startDate": "2023-01-01"
+       },
+       "classifications": {
+        "status": "active",
+        "costItem": "construction",
+        "costType": "capex",
+        "budgetType": "original"
+       }
+      }
+     ]
+    },
+    "metrics": [],
+    "targets": [
+     {
+      "id": "initiationItemPhases",
+      "observations": [
+       {
+        "id": "60ca7ab8-f2c7-43d8-8a67-8ec0c16f5c27",
+        "period": {
+         "durationInDays": 177
+        },
+        "dimensions": {
+         "phaseCode": "execution",
+         "relatedItem": "d4a737db-b298-4873-996c-1c20df28117f"
+        }
+       }
+      ]
+     }
+    ],
+    "planning": {
+     "financialProgress": {
+      "breakdown": [
+       {
+        "id": "1o8zu1yp-1u8u-47pz-by01-79au68xn73d2",
+        "measures": {
+         "costType": "capex",
+         "relatesTo": "project"
+        },
+        "classifications": {
+         "budgetFinanceId": "7312ae54-76cc-4765-b52d-cd1f2ba8d5b2"
+        }
+       },
+       {
+        "id": "p0n0n9mw-x57e-42dr-9cl6-2pow89k92456",
+        "measures": {
+         "costItem": "construction",
+         "costType": "capex",
+         "relatesTo": "project"
+        },
+        "classifications": {
+         "budgetFinanceId": "e531884c-f3b2-476e-a061-404eb70b8c34"
+        }
+       }
+      ]
+     }
+    },
+    "documents": [
+     {
+      "id": "gb1yfjqx-6701-47a5-8486-dxw7so78tnrd",
+      "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/gb1yfjqx-6701-47a5-8486-dxw7so78tnrd/download",
+      "hash": "SHA384:97477b2edcd4eec427573717d945997d23a42e3c1dc4138e816254a60827ba15ba4caef392688bb95c11316fd448bedf",
+      "title": "зображення_viber_2022-08-15_14-36-57-513.jpg",
+      "format": "image/jpeg",
+      "relatesTo": "item",
+      "description": "",
+      "relatedItem": "d4a737db-b298-4873-996c-1c20df28117f",
+      "dateModified": "2024-11-19T13:18:41.305757Z",
+      "documentType": "illustrationDamaged",
+      "accessDetails": "open",
+      "datePublished": "2024-11-19T13:16:26.023781Z"
+     },
+     {
+      "id": "y9osmgx1-0nn6-49yi-9r05-rh38317h57q0",
+      "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/y9osmgx1-0nn6-49yi-9r05-rh38317h57q0/download",
+      "hash": "SHA384:1c4f8c807b8ebdcbfb684aa81ded0112d38fb3e431531d5d69afbd900596c838f8ee7fac65461aa926c00f616732644d",
+      "title": "зображення_viber_2022-08-31_15-05-23-065.jpg",
+      "format": "image/jpeg",
+      "relatesTo": "item",
+      "description": "",
+      "relatedItem": "d4a737db-b298-4873-996c-1c20df28117f",
+      "dateModified": "2024-11-19T13:18:39.304750Z",
+      "documentType": "illustrationDamaged",
+      "accessDetails": "open",
+      "datePublished": "2024-11-19T13:17:18.454600Z"
+     }
+    ],
+    "description": "NULL"
+   }
+  ],
+  "description": [
+   {
+    "lang": "uk",
+    "translation": "<p>NULL</p>"
+   },
+   {
+    "lang": "en",
+    "translation": ""
+   }
+  ],
+  "statusDetails": "appraised",
+  "relatedProcesses": [
+   {
+    "id": "g6by4my2-h09a-4w0c-9uwf-2sb6igslb605",
+    "scheme": "UA-DREAM",
+    "identifier": "815s9zc9-xa3r-4r5s-9sn7-m5si246g108h",
+    "relationship": "object"
+   }
+  ]
+ }
+}

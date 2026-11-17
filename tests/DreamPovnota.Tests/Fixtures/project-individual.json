@@ -1,0 +1,217 @@
+{
+ "internal": {
+  "id": "gu668zd9-y79u-4l30-91bo-7nbd04og18j8",
+  "status": "pending:defined",
+  "code": "220124-2D93DDF7"
+ },
+ "cdu_response": {
+  "code": "DREAM-UA-220124-2D93DDF7",
+  "date": "2024-01-22T12:36:16.419386Z",
+  "type": "rehabilitation",
+  "title": [
+   {
+    "lang": "uk",
+    "translation": "Реконструкція вуличного освітлення вул. Зелена, І.Франка, Т.Шевченка, Гайова, Зарічна, Лугова, М.Грушевського, Висотна, 16 Липня, Л.Українки, вул. Садова в с. Домаморич Тернопільського району Тернопільської області"
+   },
+   {
+    "lang": "en",
+    "translation": ""
+   }
+  ],
+  "period": {
+   "durationInMonth": 2
+  },
+  "status": "pending",
+  "metrics": [
+   {
+    "id": "initiationMetricsFunctional",
+    "observations": [
+     {
+      "id": "301ece62-28eb-4316-8c0b-16e1a8885668",
+      "dimensions": {
+       "basicValue": 517,
+       "targetValue": 517,
+       "characteristic": "numberOfConsumers"
+      }
+     }
+    ]
+   }
+  ],
+  "parties": [
+   {
+    "id": "UA-EDR-14029197",
+    "roles": [
+     "balancer",
+     "projectAuthor",
+     "implementer",
+     "initiator",
+     "customer"
+    ],
+    "identifier": {
+     "id": "14029197",
+     "scheme": "UA-EDR",
+     "legalName": "ПІДГОРОДНЯНСЬКА СІЛЬСЬКА РАДА"
+    }
+   },
+   {
+    "id": "UA-IPN-1234567899",
+    "roles": [
+     "technicalDesigner"
+    ],
+    "identifier": {
+     "id": "1234567899",
+     "scheme": "UA-IPN",
+     "legalName": "ФОП Вигаданий Іван Іванович"
+    }
+   },
+   {
+    "id": "UA-EDR-35850400",
+    "roles": [
+     "expert"
+    ],
+    "identifier": {
+     "id": "35850400",
+     "scheme": "UA-EDR",
+     "legalName": "ФІЛІЯ ДП  \"УКРДЕРЖБУДЕКСПЕРТИЗА \" У ТЕРНОПІЛЬСЬКІЙ ОБЛАСТІ"
+    }
+   }
+  ],
+  "purpose": "development",
+  "updated": "2025-01-16T17:27:34.443005Z",
+  "criteria": [
+   {
+    "id": "ORPF0006001000000000000000",
+    "title": "Яка причина виникнення проблеми?",
+    "requirementGroups": [
+     {
+      "id": "",
+      "requirements": [
+       {
+        "id": "ORPF0006001000000000000000-1",
+        "title": "Природне збільшення попиту на товари, роботи, послуги",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-2",
+        "title": "Руйнування обʼєкту у наслідок бойових дій (обстрілів)",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-3",
+        "title": "Руйнування обʼєкту з інших причин",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-4",
+        "title": "Зниження продуктивності існуючих активів у наслідок застарівання",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-5",
+        "title": "Зниження продуктивності існуючого обʼєкту внаслідок інших причин",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-7",
+        "title": "Зміна попиту внаслідок бойових дій",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-6",
+        "title": "Інше",
+        "dataType": "boolean",
+        "expectedValue": true,
+        "isCommentRequired": true
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "documents": [
+   {
+    "id": "87yrp8s1-ixt3-40lj-a3zp-m3768n4r7u35",
+    "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/87yrp8s1-ixt3-40lj-a3zp-m3768n4r7u35/download",
+    "hash": "SHA384:f9a193c2737dbe5ba9a848867a9c0bc7378894c773ff731a19e69f9705533553a1d4c01a6b58780abd4b146909c8d608",
+    "title": "image_67151617.JPG",
+    "format": "image/jpeg",
+    "description": "",
+    "dateModified": "2024-01-22T12:36:16.401260Z",
+    "documentType": "illustrationCover",
+    "accessDetails": "open",
+    "datePublished": "2024-01-22T12:35:58.516975Z"
+   },
+   {
+    "id": "epp42697-4482-43yd-8ptx-b8b1bzc100kt",
+    "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/epp42697-4482-43yd-8ptx-b8b1bzc100kt/download",
+    "hash": "SHA384:f9fff0d22bfd3cd3fb2bd4dec4463ead25cce1d9755d28dbc162147d283d20d2a826cb0ea4a2772b4a97fd9bba6db479",
+    "title": "Затвердження ПКД Домаморич.PDF",
+    "format": "application/pdf",
+    "description": "",
+    "dateModified": "2024-10-03T13:55:20.069372Z",
+    "documentType": "legalDocument",
+    "accessDetails": "open",
+    "datePublished": "2024-10-03T13:52:50.879601Z"
+   }
+  ],
+  "description": [
+   {
+    "lang": "uk",
+    "translation": "<p>заміна світильників на енергозберігаючі ,заміна кабель у звязку із зношеністю. Встановлення приладів економного споживання енергоносіїв.</p>\r\n<p>&nbsp;</p>"
+   },
+   {
+    "lang": "en",
+    "translation": ""
+   }
+  ],
+  "statusDetails": "defined",
+  "purposeDetails": [
+   {
+    "lang": "uk",
+    "translation": "енергозбереження та покращення надання якісних послуг мешканцям громади"
+   },
+   {
+    "lang": "en",
+    "translation": ""
+   }
+  ],
+  "relatedProcesses": [
+   {
+    "id": "sf1143p6-56c5-4s60-bur1-d752cmj76tb3",
+    "scheme": "UA-DREAM",
+    "identifier": "34a28y43-5cy9-40jk-876l-y0v47e9ib24h",
+    "relationship": "object"
+   }
+  ],
+  "requirementResponses": [
+   {
+    "value": true,
+    "description": "",
+    "requirement": {
+     "id": "ORPF0006001000000000000000-4"
+    }
+   },
+   {
+    "value": true,
+    "description": "",
+    "requirement": {
+     "id": "ORPF0007001000000000000000-3"
+    }
+   }
+  ],
+  "additionalClassifications": [
+   {
+    "id": "communityDevelopmentStrategy",
+    "uri": "https://rada.info/upload/users_files/14029197/bae41a49cb66b02e0b2c7baea756fc4a.pdf",
+    "scheme": "UA-GIS",
+    "description": "Інфраструктурний розвиток, доступні та ефективні послуги орієнтовані на людину (Енергоефективність та енергобезпекові рішення для громади та мешканців)"
+   }
+  ]
+ }
+}

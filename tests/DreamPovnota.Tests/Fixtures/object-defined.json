@@ -1,0 +1,146 @@
+{
+ "internal": {
+  "id": "o82957by-otxi-4z5a-8m45-648ka3es81l7",
+  "status": "active",
+  "code": "250424-E24DB449"
+ },
+ "cdu_response": {
+  "date": "2024-04-25T09:10:06.361978Z",
+  "title": [
+   {
+    "lang": "uk",
+    "translation": "Опорний заклад освіти Славгородський ліцей Славгородської селищної ради Синельниківського району Дніпропетровської області"
+   },
+   {
+    "lang": "en",
+    "translation": ""
+   }
+  ],
+  "status": "active",
+  "parties": [
+   {
+    "id": "UA-EDR-04339630",
+    "roles": [
+     "initiator"
+    ],
+    "details": {
+     "classifications": [
+      {
+       "id": "localBody",
+       "scheme": "TED-TYPE"
+      }
+     ]
+    },
+    "identifier": {
+     "id": "04339630",
+     "scheme": "UA-EDR",
+     "legalName": "СЛАВГОРОДСЬКА СЕЛИЩНА РАДА"
+    }
+   },
+   {
+    "id": "UA-EDR-41820028",
+    "roles": [
+     "balancer"
+    ],
+    "address": {
+     "country": "UA",
+     "postalCode": "52580",
+     "streetAddress": "Дніпропетровська обл., Синельниківський р-н, село Тургенєвка, ВУЛИЦЯ ГАГАРІНА, будинок 1"
+    },
+    "persons": [
+     {
+      "name": "Вигадане Ім'я По-батькові",
+      "businessFunctions": [
+       {
+        "type": "authority",
+        "jobTitle": "Керівник"
+       }
+      ]
+     }
+    ],
+    "identifier": {
+     "id": "41820028",
+     "scheme": "UA-EDR",
+     "legalName": "ОРГАН МІСЦЕВОГО САМОВРЯДУВАННЯ ВІДДІЛ ОСВІТИ ВИКОНАВЧОГО КОМІТЕТУ СЛАВГОРОДСЬКОЇ СЕЛИЩНОЇ РАДИ"
+    }
+   }
+  ],
+  "updated": "2024-12-05T17:22:46.984178Z",
+  "documents": [
+   {
+    "id": "11te3spm-dwr4-434i-b817-7a083qtlq2ke",
+    "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/11te3spm-dwr4-434i-b817-7a083qtlq2ke/download",
+    "hash": "SHA384:70ebefaaaaf97314d37fc03b23f4af278226d762fea24049343fdb70b4ff58128a18901f5f66cb65ec50b13b1bd6a686",
+    "title": "1714030195062.jpg",
+    "format": "image/jpeg",
+    "description": "",
+    "dateModified": "2024-04-25T09:40:03.096474Z",
+    "documentType": "illustrationCover",
+    "accessDetails": "open",
+    "datePublished": "2024-04-25T08:22:03.572610Z"
+   },
+   {
+    "id": "pg32ti35-54lx-4y5l-9tc2-6f71z35dwc6r",
+    "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/pg32ti35-54lx-4y5l-9tc2-6f71z35dwc6r/download",
+    "hash": "SHA384:234cb135e280f1c8351eda7c1744249a4bc010359ba3ad08fc8de752a54fe94ea7ddcac0b94f9154cb36b2b51c5d42fb",
+    "title": "20240209_095346.jpg",
+    "format": "image/jpeg",
+    "description": "",
+    "dateModified": "2024-04-25T09:40:03.098344Z",
+    "documentType": "illustration",
+    "accessDetails": "open",
+    "datePublished": "2024-04-25T08:22:15.649654Z"
+   }
+  ],
+  "locations": [
+   {
+    "gazetteer": {
+     "scheme": "UA-CATOTTG",
+     "identifiers": [
+      "UA12140330010029935"
+     ]
+    },
+    "description": "52580, Дніпропетровська область, Синельниківський район, смт. Славгород, вул. Заводська 65"
+   }
+  ],
+  "internalId": "",
+  "description": [
+   {
+    "lang": "uk",
+    "translation": "Капітальний ремонт та модернізація харчоблоку з заміною технологічного обладнання."
+   },
+   {
+    "lang": "en",
+    "translation": ""
+   }
+  ],
+  "classification": {
+   "id": "09",
+   "scheme": "COFOG"
+  },
+  "relatedProcesses": [
+   {
+    "id": "29qoat76-966l-4n71-9u10-m70ynzjiq26p",
+    "scheme": "UA-DREAM",
+    "identifier": "1f0t11ec-939r-423u-byna-13nd53sf8uuw",
+    "relationship": "idea"
+   }
+  ],
+  "additionalClassifications": [
+   {
+    "id": "school-3229",
+    "scheme": "UA-MOS"
+   },
+   {
+    "id": "ES",
+    "uri": "https://thedocs.worldbank.org/en/doc/538321490128452070-0290022017/original/NewSectorTaxonomyanddefinitions.pdf",
+    "scheme": "WB-ECO"
+   },
+   {
+    "id": "1263,3",
+    "uri": "https://unstats.un.org/unsd/classifications/Econ/search",
+    "scheme": "UA-DKBS"
+   }
+  ]
+ }
+}

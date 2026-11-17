@@ -1,0 +1,500 @@
+{
+ "internal": {
+  "id": "rto36483-8fh9-49j9-b9g6-0mq8l88z087i",
+  "status": "pending:appraised",
+  "code": "210324-3158DE94"
+ },
+ "cdu_response": {
+  "code": "DREAM-UA-210324-3158DE94",
+  "date": "2024-03-21T14:56:58.901552Z",
+  "type": "construction",
+  "title": [
+   {
+    "lang": "uk",
+    "translation": "БУДІВНИЦТВО СПОРТИВНО-РЕАБІЛІТАЦІЙНОГО ЦЕНТРУ ДЛЯ ВІЙСЬКОВОСЛУЖБОВЦІВ В СЕЛИЩІ АВАНГАРД ОДЕСЬКОГО РАЙОНУ ОДЕСЬКОЇ ОБЛАСТІ"
+   },
+   {
+    "lang": "en",
+    "translation": "CONSTRUCTION OF A SPORTS-REHABILITATION CENTER FOR SERVICEMEN IN THE VILLAGE OF AVANHARD, ODESA DISTRICT, ODESA REGION"
+   }
+  ],
+  "budget": {
+   "budgetBreakdown": [
+    {
+     "id": "06x4ipsj-50sv-4o23-931l-gwyrtmgsh7e8",
+     "period": {
+      "startDate": "2024-06-07T06:55:56.749156Z"
+     },
+     "classifications": {
+      "budgetType": "deficient"
+     }
+    }
+   ]
+  },
+  "period": {
+   "durationInMonth": 36
+  },
+  "status": "pending",
+  "metrics": [
+   {
+    "id": "initiationSpecificMetricsFunctional",
+    "observations": [
+     {
+      "id": "093d3675-3d56-27c6-3147-09f6be84e5af",
+      "unit": {
+       "id": "123"
+      },
+      "notes": "Загальна площа укриття",
+      "measure": 1465,
+      "dimensions": {
+       "scheme": "UA-RADA-5403-VI",
+       "characteristic": "totalSquare"
+      }
+     }
+    ]
+   }
+  ],
+  "parties": [
+   {
+    "id": "UA-EDR-23211248",
+    "roles": [
+     "balancer",
+     "projectAuthor",
+     "implementer",
+     "initiator",
+     "customer",
+     "payer"
+    ],
+    "details": {
+     "classifications": [
+      {
+       "id": "localBody",
+       "scheme": "TED-TYPE"
+      }
+     ]
+    },
+    "identifier": {
+     "id": "23211248",
+     "scheme": "UA-EDR",
+     "legalName": "АВАНГАРДІВСЬКА СЕЛИЩНА РАДА ОДЕСЬКОГО РАЙОНУ ОДЕСЬКОЇ ОБЛАСТІ"
+    }
+   }
+  ],
+  "purpose": "development",
+  "targets": [
+   {
+    "id": "initiationItemPhases",
+    "observations": [
+     {
+      "id": "09923378-eacc-49b4-ac0a-2b3246a07be3",
+      "period": {
+       "durationInDays": 30
+      },
+      "dimensions": {
+       "phaseCode": "technicalDesign"
+      }
+     },
+     {
+      "id": "2f85fd09-849a-4a7b-84c2-cd0524d928d9",
+      "period": {
+       "durationInDays": 30
+      },
+      "dimensions": {
+       "phaseCode": "financing"
+      }
+     }
+    ]
+   }
+  ],
+  "updated": "2025-01-23T19:24:12.600787Z",
+  "criteria": [
+   {
+    "id": "ORPF0006001000000000000000",
+    "title": "Яка причина виникнення проблеми?",
+    "requirementGroups": [
+     {
+      "id": "",
+      "requirements": [
+       {
+        "id": "ORPF0006001000000000000000-1",
+        "title": "Природне збільшення попиту на товари, роботи, послуги",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-2",
+        "title": "Руйнування обʼєкту внаслідок бойових дій (обстрілів)",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-3",
+        "title": "Руйнування обʼєкту з інших причин",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-4",
+        "title": "Зниження продуктивності існуючих активів внаслідок застарівання",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-5",
+        "title": "Зниження продуктивності існуючого обʼєкту внаслідок інших причин",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-7",
+        "title": "Зміна попиту внаслідок бойових дій",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-6",
+        "title": "Інше",
+        "dataType": "boolean",
+        "expectedValue": true,
+        "isCommentRequired": true
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "documents": [
+   {
+    "id": "11p2192l-16bx-49tu-9130-8lr5q52md7vw",
+    "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/11p2192l-16bx-49tu-9130-8lr5q52md7vw/download",
+    "hash": "SHA384:4122e56eb2aa6a2f4dd8958a1ef959534237e503ea237eadcb115ddb6f439361a8751e6a28fd4b150078e7974a0e714c",
+    "title": "ДЕРЕВО_ЖИТТЯ_ПРЕЗЕНТАЦІЯ_ФІНАЛ_-зображення-25.jpg",
+    "format": "image/jpeg",
+    "description": "",
+    "dateModified": "2024-06-03T09:06:00.423267Z",
+    "documentType": "illustration",
+    "accessDetails": "open",
+    "datePublished": "2024-05-30T15:27:36.203086Z"
+   },
+   {
+    "id": "hs5j19az-r149-472r-9vjh-c0zkz7e9riq2",
+    "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/hs5j19az-r149-472r-9vjh-c0zkz7e9riq2/download",
+    "hash": "SHA384:7212cfec98654e763bbb926f132809d7de835d2cd87a4ab5eadf84ae09c31ae1171bb363e7df064c3e0f589c5a712567",
+    "title": "ДЕРЕВО_ЖИТТЯ_ПРЕЗЕНТАЦІЯ_ФІНАЛ_-зображення-23.jpg",
+    "format": "image/jpeg",
+    "description": "",
+    "dateModified": "2024-06-03T09:06:00.425020Z",
+    "documentType": "illustration",
+    "accessDetails": "open",
+    "datePublished": "2024-05-30T15:27:36.237674Z"
+   }
+  ],
+  "approaches": [
+   {
+    "id": "single",
+    "items": [
+     {
+      "id": "d987b801-7d18-407e-b85c-6af2ee32a2a2",
+      "status": "active",
+      "locations": [
+       {
+        "gazetteer": {
+         "scheme": "UA-CATOTTG",
+         "identifiers": [
+          "UA51100010000023950"
+         ]
+        },
+        "description": ""
+       }
+      ],
+      "description": [
+       {
+        "lang": "uk",
+        "translation": "Будівництво спортивно-реабілітаційного центру для військовослужбовців за адресою: вулиця Спортивна, 18А, селище Авангард Одеського району Одеської області"
+       },
+       {
+        "lang": "en",
+        "translation": "Construction of a sports-rehabilitation center for servicemen at the address: 18A Sportyvna Street, Avanhard village, Odesa district, Odesa region"
+       }
+      ],
+      "relatedProcesses": [
+       {
+        "scheme": "UA-DREAM",
+        "identifier": "44aif766-09v1-4995-85o1-2bbyyh2w5w2j",
+        "relationship": "object"
+       }
+      ],
+      "additionalClassifications": [
+       {
+        "id": "45000000-7",
+        "scheme": "UA-CPV"
+       },
+       {
+        "id": "126",
+        "scheme": "UA-DKBS"
+       },
+       {
+        "id": "3122",
+        "scheme": "UA-ECBE"
+       },
+       {
+        "id": "5123755200:02:001:1320",
+        "scheme": "UA-DZK"
+       },
+       {
+        "id": "Розробляється",
+        "scheme": "UA-SESC"
+       }
+      ]
+     }
+    ],
+    "title": "Центр - це місце сталого розвитку громади, соціальної стійкості та інтеграції суспільств.\r\nРеабілітація базується на системному та науковому підході, який дозволяє зробити процес відновлення\r\nмаксимально комфортним для кожної окремої людини.\r\nЦе місце сили, де військовослужбовці можуть знайти підтримку та ресурси для відновлення та росту після викликів служби. Також дерево асоціюється з поняттям «сім’я», що сприяє реабілітації як моральній так і фізичній даної цільової аудиторії. Основними підрозділами центру є медико-діагностичне відділення, спортивний корпус, житловий блок фізична терапія різного типу та психологічна підтримка.",
+    "budget": {
+     "amount": {
+      "exchangeRates": [
+       {
+        "date": "2024-05-30",
+        "rate": 0.024701604616235873,
+        "source": "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?date=20240530&json",
+        "currency": "USD"
+       }
+      ]
+     },
+     "finance": [
+      {
+       "id": "4c6cffd5-e363-4c12-ac08-4a0de300238d",
+       "value": {
+        "amount": 0,
+        "currency": "UAH"
+       },
+       "period": {
+        "endDate": "2024-12-31",
+        "startDate": "2024-06-01"
+       },
+       "status": "indicative",
+       "measures": {
+        "fiscalYear": 2024
+       },
+       "financeType": "stateFunds",
+       "classification": {
+        "localBudgetCode": "1551800000",
+        "localBudgetProgramKPK": "3105",
+        "localBudgetProgramKFKId": "1010",
+        "localBudgetProgramKFKName": "Надання реабілітаційних послуг особам з інвалідністю та дітям з інвалідністю"
+       },
+       "financingParty": {
+        "id": "UA51100010000023950"
+       },
+       "financeCategory": "localBudget"
+      },
+      {
+       "id": "931fa822-a647-4139-af95-7a630a0e34e7",
+       "value": {
+        "amount": 20000000,
+        "currency": "UAH"
+       },
+       "period": {
+        "endDate": "2026-12-31",
+        "startDate": "2026-01-01"
+       },
+       "status": "indicative",
+       "measures": {
+        "fiscalYear": 2024
+       },
+       "financeType": "stateFunds",
+       "classification": {
+        "localBudgetCode": "1551800000",
+        "localBudgetProgramKPK": "3105",
+        "localBudgetProgramKFKId": "1010",
+        "localBudgetProgramKFKName": "Надання реабілітаційних послуг особам з інвалідністю та дітям з інвалідністю"
+       },
+       "financingParty": {
+        "id": "UA51100010000023950"
+       },
+       "financeCategory": "localBudget"
+      },
+      {
+       "id": "b711a095-1a22-4806-8854-e969582f8175",
+       "value": {
+        "amount": 21050000,
+        "currency": "UAH"
+       },
+       "period": {
+        "endDate": "2026-12-31",
+        "startDate": "2027-01-01"
+       },
+       "status": "indicative",
+       "measures": {
+        "fiscalYear": 2024
+       },
+       "financeType": "stateFunds",
+       "classification": {
+        "localBudgetCode": "1551800000",
+        "localBudgetProgramKPK": "3105",
+        "localBudgetProgramKFKId": "1010",
+        "localBudgetProgramKFKName": "Надання реабілітаційних послуг особам з інвалідністю та дітям з інвалідністю"
+       },
+       "financingParty": {
+        "id": "UA51100010000023950"
+       },
+       "financeCategory": "localBudget"
+      },
+      {
+       "id": "c9a63f14-38de-4dc0-b6c8-22e5b48d93f0",
+       "value": {
+        "amount": 20000000,
+        "currency": "UAH"
+       },
+       "period": {
+        "endDate": "2025-12-31",
+        "startDate": "2025-01-01"
+       },
+       "status": "indicative",
+       "measures": {
+        "fiscalYear": 2024
+       },
+       "financeType": "stateFunds",
+       "classification": {
+        "localBudgetCode": "1551800000",
+        "localBudgetProgramKPK": "3105",
+        "localBudgetProgramKFKId": "1010",
+        "localBudgetProgramKFKName": "Надання реабілітаційних послуг особам з інвалідністю та дітям з інвалідністю"
+       },
+       "financingParty": {
+        "id": "UA51100010000023950"
+       },
+       "financeCategory": "localBudget"
+      }
+     ],
+     "budgetBreakdown": [
+      {
+       "id": "90c374d7-62fb-4646-acb3-921830575c8c",
+       "amount": {
+        "amount": 309319999.98,
+        "currency": "UAH",
+        "valueAddedTaxIncluded": false
+       },
+       "period": {
+        "endDate": "2026-12-31",
+        "startDate": "2024-01-01"
+       },
+       "classifications": {
+        "status": "active",
+        "costItem": "construction",
+        "costType": "capex",
+        "budgetType": "original",
+        "relatedItem": "d987b801-7d18-407e-b85c-6af2ee32a2a2"
+       }
+      }
+     ]
+    },
+    "metrics": [],
+    "targets": [],
+    "documents": [
+     {
+      "id": "0xp90o38-3hjq-4mg4-81cs-hp2jk3rlbu06",
+      "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/0xp90o38-3hjq-4mg4-81cs-hp2jk3rlbu06/download",
+      "hash": "SHA384:1c76bb0374243d5cfec7784bffb7668081dbaf8647814ab948ad064db31f4d15bdc9d34f4b5294c57f59c10452e36c4c",
+      "title": "Земельна ділянка.jpg",
+      "format": "image/jpeg",
+      "relatesTo": "item",
+      "description": "",
+      "relatedItem": "d987b801-7d18-407e-b85c-6af2ee32a2a2",
+      "dateModified": "2024-06-03T09:22:21.609583Z",
+      "documentType": "illustration",
+      "accessDetails": "open",
+      "datePublished": "2024-06-03T09:22:16.920732Z"
+     },
+     {
+      "id": "38bivsjp-03w4-4woi-br02-qna3948lvz8o",
+      "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/38bivsjp-03w4-4woi-br02-qna3948lvz8o/download",
+      "hash": "SHA384:99033d49b97e9375cc3086b61097366aa87df0b1cdf61e2b5337095889c18ac8792767327ac6fb3d92b8c6b25f811401",
+      "title": "Земельна ділянка1.jpg",
+      "format": "image/jpeg",
+      "relatesTo": "item",
+      "description": "",
+      "relatedItem": "d987b801-7d18-407e-b85c-6af2ee32a2a2",
+      "dateModified": "2024-06-03T09:22:22.914598Z",
+      "documentType": "illustration",
+      "accessDetails": "open",
+      "datePublished": "2024-06-03T09:22:16.927188Z"
+     }
+    ],
+    "description": "<p style=\"text-align: justify;\">Спортивно-реабілітаційний комплекс включатиме три блоки:</p>\r\n<p><em><strong>Житловий блок</strong></em></p>\r\n<p>Вхідна група/рецепція<br>Адміністративна частина.<br>Заклад громадського харчування із залою на 80 місць.<br>Площа житлових кімнат прийнята з розрахунку мінімум 6 м&sup2; на особу.<br>Реабілітаційні/спортивні зали універсального призначення<br>на кожному поверсі.</p>\r\n<p><em><strong>Спортивно-рекреаційний блок</strong></em></p>\r\n<p>Басейн:<br>- спортивний;<br>- адаптивний;<br>- обладнаний підйомним пристроєм;<br>Універсальна тренажерна зала.</p>\r\n<p>Рекреаційні зони:<br>- відкриті тераси;<br>- зимовий сад;<br>- фітобочки;<br>- сауни різного типу.</p>\r\n<p><br><em><strong>Медико-діагностичний </strong></em><em><strong>блок</strong></em></p>\r\n<p>Адміністративна частина</p>\r\n<p>Кабінети:<br>- асистивних технологій<br>- вузькоспеціалізованих лікарів</p>\r\n<p>Наукова частина:<br>- дослідницький відділ;<br>- протезування;<br>- обмін досвідом.</p>\r\n<p>Мультидисциплінарна реабілітація:<br>- бальнеологія;<br>- остеопатія;<br>- кінезіотерапія;<br>- терапії широкого спектру.</p>\r\n<p>Функціональна насиченість кожного блоку дає можливість реалізації їх поетапно, в три черги.&nbsp;<br>У зв&rsquo;язку із безпековими викликами актуальним є облаштування взаємопов&rsquo;язаної&nbsp;системи укриттів із організацією окремого виходу поза жовтими лініями.</p>\r\n<p>&nbsp;</p>"
+   }
+  ],
+  "description": [
+   {
+    "lang": "uk",
+    "translation": "<p style=\"text-align: justify;\">У важкий час для України багато її захисників отримують поранення різного ступеня важкості протягом ведення бойових дій. Звичайно, їм надається перша медична кваліфікована й спеціалізована допомога у військових госпіталях і спеціалізованих медичних закладах. Але, важливе значення має реабілітація військовослужбовців для повного відновлення їх функцій та можливості повноцінно працювати й жити в суспільстві. Мається на увазі не лише психологічна реабілітація, а й фізична.</p>\r\n<p style=\"text-align: justify;\">Пройшовши лікування у лікарні, військовослужбовці стикаються з проблемою відновлення своєї функціональності. Адже наслідки поранень і тривала прикутість до ліжка з обмеженням рухливості призводять до атрофії та ослаблення м&rsquo;язів. Формуються контрактури, які не дають можливості повноцінно рухатись. Навіть після збереження кінцівки, ефективної репозиціії кісткових уламків чи фіксації переломів хребта необхідна реабілітація.</p>\r\n<p style=\"text-align: justify;\">Реабілітація військовослужбовців після поранень потребує тривалого часу, який може тривати від 1-2 до 5-6 місяців і більше. Важливим для реабілітації військових є правильний підхід. Це визначає швидкість реабілітаційних заходів, комфортне перенесення процедур та відповідний результат.&nbsp;</p>\r\n<p style=\"text-align: justify;\">Саме такий комплекс заходів плануємо забезпечити у спортивно -реабілітаційному центрі в Авангарді. Адреса об&rsquo;єкту: вулиця Спортивна, 18А, селище Авангард Одеського району Одеської області. Земельна ділянка, що розташована за зазначеною адресою перебуває у комунальній власності Авангардівської селищної ради.</p>\r\n<p style=\"text-align: justify;\">Ідея концепції спортивно-реабілітаційного центру для військовослужбовців полягає у формуванні універсального середовища для рекреації військовослужбовців та їх родин із урахуванням потреб особливостей цільової аудиторії та враховуючих особливостей перспективи розвитку громади.</p>\r\n<p style=\"text-align: justify;\">Концепція &laquo;Дерево життя&raquo; відображає символізм росту, стійкості та відродження, що асоціюється із силою та витривалістю військовослужбовців, розвитком адаптації їх до цивільного життя. Відображається, як в організації планувальних рішень, так і у фасадному вирішенні кожної окремої будівлі комплексу. В середині медичного центру планується висадити дерево, що втілює концепцію проєкту.&nbsp;</p>\r\n<p style=\"text-align: justify;\">Проєкт передбачає будівництво реабілітаційного центру (три будівлі: житловий корпус на 80 пацієнтів; спортивно-оздоровчий комплекс із повноцінним басейном та медично-діагностичні приміщення для лікарів та високоспеціалізованих протезистів).</p>"
+   },
+   {
+    "lang": "en",
+    "translation": "<p>In difficult times for Ukraine, many of its defenders sustain injuries of varying severity during combat operations. Of course, they receive first medical aid and specialized assistance in military hospitals and specialized medical institutions. However, the rehabilitation of servicemen is crucial for the full restoration of their functions and the ability to work and live in society. This includes not only psychological but also physical rehabilitation.</p>\r\n<p>After receiving hospital treatment, servicemen face the challenge of regaining their functionality. The consequences of injuries and prolonged immobility lead to muscle atrophy and weakening. Contractures develop, hindering full mobility. Even after limb preservation, effective repositioning of bone fragments, or spinal fracture fixation, rehabilitation is necessary.</p>\r\n<p>Rehabilitation of servicemen after injuries requires a long time, ranging from 1-2 to 5-6 months or more. A proper approach is essential for their rehabilitation. This determines the speed of rehabilitation measures, the comfort of procedures, and the appropriate results.</p>\r\n<p>Such a comprehensive approach is planned to be provided at the sports-rehabilitation center in Avanhard. The address of the facility is 18A Sportyvna Street, Avanhard village, Odesa district, Odesa region. The land plot at this address is in communal ownership of the Avanhard village council.</p>\r\n<p>The concept of the sports-rehabilitation center for servicemen aims to create a universal environment for the recreation of servicemen and their families, taking into account the needs and specific characteristics of the target audience and considering the community's development prospects.</p>\r\n<p>The \"Tree of Life\" concept symbolizes growth, resilience, and rebirth, associated with the strength and endurance of servicemen and their adaptation to civilian life. This is reflected in both the planning organization and the facade design of each building in the complex. Inside the medical center, a tree embodying the project's concept is planned to be planted.</p>\r\n<p>The project includes the construction of a rehabilitation center (three buildings: a residential building for 80 patients, a sports and wellness complex with a full-size swimming pool, and medical-diagnostic facilities for doctors and highly specialized prosthetists).&nbsp;</p>"
+   }
+  ],
+  "statusDetails": "appraised",
+  "purposeDetails": [
+   {
+    "lang": "uk",
+    "translation": "Будівництво спортивно-реабілітаційного центру для повноцінної реабілітації та інтеграції в суспільство військовослужбовців, що отримали поранення внаслідок бойових дій."
+   },
+   {
+    "lang": "en",
+    "translation": ""
+   }
+  ],
+  "relatedProcesses": [
+   {
+    "id": "a773dgk5-mpb6-41lk-970f-x20t7c8x153l",
+    "scheme": "UA-DREAM",
+    "identifier": "44aif766-09v1-4995-85o1-2bbyyh2w5w2j",
+    "relationship": "object"
+   }
+  ],
+  "requirementResponses": [
+   {
+    "value": true,
+    "description": "",
+    "requirement": {
+     "id": "ORPF0006001000000000000000-7"
+    }
+   },
+   {
+    "value": true,
+    "description": "",
+    "requirement": {
+     "id": "ORPF0007001000000000000000-4"
+    }
+   }
+  ],
+  "additionalClassifications": [
+   {
+    "id": "HQ",
+    "scheme": "WB-ECO"
+   },
+   {
+    "id": "high",
+    "scheme": "ISO-21542-2021"
+   },
+   {
+    "id": "simplestShelter",
+    "scheme": "UA-RADA-5403-VI"
+   },
+   {
+    "id": "A",
+    "scheme": "UA-SBR-V1211-2021"
+   },
+   {
+    "id": "02.2.0",
+    "scheme": "COFOG"
+   },
+   {
+    "id": "communityDevelopmentStrategy",
+    "uri": "http://surl.li/rulss",
+    "scheme": "UA-GIS",
+    "description": "Потреба у будівництві спортивно-реабілітаційного центру виникла у зв’язку з вторгненням російської федерації, значними пораненнями військовослужбовців Збройних Сил України та відсутністю відповідних закладів у достатній кількості на території Одеської області та України в цілому. У Стратегії розвитку Авангардівської громади на 2020-2027 роки на відповідній земельній ділянці планувалося будівництво спортивного комплексу для дітей, однак, на сьогодні першочерговим є реабілітація військових, тому до стратегії будуть внесені відповідні зміни."
+   }
+  ]
+ }
+}

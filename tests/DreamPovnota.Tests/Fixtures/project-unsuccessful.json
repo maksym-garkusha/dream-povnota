@@ -1,0 +1,158 @@
+{
+ "internal": {
+  "id": "q2liauu3-p9r4-4g09-ai4g-4hzf67v1l82l",
+  "status": "unsuccessful:lackOfFunds",
+  "code": "050923-1B048230"
+ },
+ "cdu_response": {
+  "code": "DREAM-UA-050923-1B048230",
+  "date": "2023-09-05T09:14:26.012376Z",
+  "type": "rehabilitation",
+  "title": [
+   {
+    "lang": "uk",
+    "translation": "Капітальний ремонт мосту через р. Опір"
+   },
+   {
+    "lang": "en",
+    "translation": ""
+   }
+  ],
+  "status": "unsuccessful",
+  "parties": [
+   {
+    "id": "UA-EDR-25253009",
+    "roles": [
+     "balancer",
+     "projectAuthor",
+     "implementer",
+     "initiator"
+    ],
+    "identifier": {
+     "id": "25253009",
+     "scheme": "UA-EDR",
+     "legalName": "Служба відновлення та розвитку інфраструктури у Львівській області"
+    }
+   }
+  ],
+  "purpose": "restoration",
+  "updated": "2025-01-16T16:39:44.074221Z",
+  "criteria": [
+   {
+    "id": "ORPP0108001000000000000000",
+    "title": "Чи знаходиться територіальна громада на відстані 30 кілометрів і менше від території проведення активних бойових дій, тимчасово окупованих територій?",
+    "requirementGroups": [
+     {
+      "id": "",
+      "requirements": [
+       {
+        "id": "ORPP0108001000000000000000-1",
+        "title": "Так",
+        "dataType": "boolean",
+        "expectedValue": true
+       }
+      ]
+     },
+     {
+      "id": "",
+      "requirements": [
+       {
+        "id": "ORPP0108001000000000000000-2",
+        "title": "Ні",
+        "dataType": "boolean",
+        "expectedValue": true
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "approaches": [
+   {
+    "id": "single",
+    "items": [
+     {
+      "id": "da7ff144-8b15-4c55-84cd-229adaa12499",
+      "status": "active",
+      "locations": [
+       {
+        "gazetteer": {
+         "scheme": "UA-CATOTTG",
+         "identifiers": [
+          "UA46000000000026241"
+         ]
+        },
+        "description": "NULL"
+       }
+      ],
+      "description": [
+       {
+        "lang": "uk",
+        "translation": "Капітальний ремонт мостового переходу через р. Опір на автомобільній дорозі державного значення Т-14-24 Сколе - Славське, км 4+062, Львівська область"
+       },
+       {
+        "lang": "en",
+        "translation": ""
+       }
+      ],
+      "additionalClassifications": [
+       {
+        "id": "3110",
+        "scheme": "UA-ECBE"
+       }
+      ]
+     }
+    ],
+    "title": "Капітальний ремонт мостового переходу через р. Опір на автомобільній дорозі державного значення Т-14-24 Сколе - Славське, км 4+062, Львівська область",
+    "metrics": [],
+    "targets": [
+     {
+      "id": "initiationItemPhases",
+      "observations": [
+       {
+        "id": "83284a01-f188-428f-a77b-40db1b26484b",
+        "period": {
+         "durationInDays": 21
+        },
+        "dimensions": {
+         "phaseCode": "examination",
+         "relatedItem": "da7ff144-8b15-4c55-84cd-229adaa12499"
+        }
+       },
+       {
+        "id": "bfc12134-eb34-499f-8acd-e9484e4fa233",
+        "period": {
+         "durationInDays": 5
+        },
+        "dimensions": {
+         "phaseCode": "commissioning",
+         "relatedItem": "da7ff144-8b15-4c55-84cd-229adaa12499"
+        }
+       }
+      ]
+     }
+    ],
+    "description": "NULL"
+   }
+  ],
+  "description": [
+   {
+    "lang": "uk",
+    "translation": "<p>Покращення транспортної інфраструктури у регіоні</p>"
+   },
+   {
+    "lang": "en",
+    "translation": ""
+   }
+  ],
+  "statusDetails": "lackOfFunds",
+  "relatedProcesses": [
+   {
+    "id": "2iw65781-4qs5-4psr-8bz4-3i4x7vktgw77",
+    "scheme": "UA-DREAM",
+    "identifier": "3g4icp88-8746-437u-9xef-49p0g1176p54",
+    "relationship": "object"
+   }
+  ]
+ }
+}

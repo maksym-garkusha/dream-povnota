@@ -1,0 +1,244 @@
+{
+ "internal": {
+  "id": "3dsdda55-u6jw-492o-8280-8zxa6043c965",
+  "status": "cancelled:mistaken",
+  "code": "230725-7295687B"
+ },
+ "cdu_response": {
+  "code": "DREAM-UA-230725-7295687B",
+  "date": "2025-07-23T06:26:29.067748Z",
+  "type": "rehabilitation",
+  "title": [
+   {
+    "lang": "uk",
+    "translation": "Придбання кузовів трамвайних вагонів часткової комплектації із частково низьким рівнем підлоги та електронних транзисторно-імпульсних систем управління тяговим електроприводом трамвайних вагонів, що підлягають встановленню при проведенні капітального ремонту з переобладнанням трамвайних вагонів"
+   },
+   {
+    "lang": "en",
+    "translation": ""
+   }
+  ],
+  "period": {
+   "durationInMonth": 48
+  },
+  "status": "cancelled",
+  "metrics": [
+   {
+    "id": "territorySpecificPlan",
+    "observations": [
+     {
+      "id": "57583e1e-403b-42fa-bc6d-b7bbdb274b7f",
+      "notes": "Пункт ",
+      "dimensions": {
+       "relevance": "3.1.1"
+      }
+     }
+    ]
+   }
+  ],
+  "parties": [
+   {
+    "id": "UA-EDR-03328497",
+    "roles": [
+     "projectAuthor",
+     "initiator"
+    ],
+    "identifier": {
+     "id": "03328497",
+     "scheme": "UA-EDR",
+     "legalName": "КОМУНАЛЬНЕ ПІДПРИЄМСТВО \"ОДЕСМІСЬКЕЛЕКТРОТРАНС\""
+    }
+   },
+   {
+    "id": "UA-EDR-23987115",
+    "roles": [
+     "implementer"
+    ],
+    "address": {
+     "country": "UA",
+     "postalCode": "65004",
+     "streetAddress": "Одеська обл., місто Одеса, ДУМСЬКА ПЛОЩА, будинок 1",
+     "addressDetails": {
+      "territory": {
+       "id": "UA51100270000073549",
+       "scheme": "UA-CATOTTG"
+      }
+     }
+    },
+    "details": {
+     "classifications": [
+      {
+       "id": "subLocalBody",
+       "scheme": "TED-TYPE"
+      }
+     ]
+    },
+    "persons": [
+     {
+      "name": "Вигадане Ім'я По-батькові",
+      "businessFunctions": [
+       {
+        "type": "authority",
+        "jobTitle": "Керівник"
+       }
+      ]
+     }
+    ],
+    "identifier": {
+     "id": "23987115",
+     "scheme": "UA-EDR",
+     "legalName": "ДЕПАРТАМЕНТ ТРАНСПОРТУ, ЗВ'ЯЗКУ ТА ОРГАНІЗАЦІЇ ДОРОЖНЬОГО РУХУ ОДЕСЬКОЇ МІСЬКОЇ РАДИ"
+    }
+   }
+  ],
+  "purpose": "restoration",
+  "updated": "2025-08-01T10:39:29.886952Z",
+  "criteria": [
+   {
+    "id": "ORPF0006001000000000000000",
+    "title": "Яка причина виникнення проблеми?",
+    "requirementGroups": [
+     {
+      "id": "",
+      "requirements": [
+       {
+        "id": "ORPF0006001000000000000000-1",
+        "title": "Природне збільшення попиту на товари, роботи, послуги",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-2",
+        "title": "Руйнування обʼєкту внаслідок бойових дій (обстрілів)",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-3",
+        "title": "Руйнування обʼєкту з інших причин",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-4",
+        "title": "Зниження продуктивності існуючих активів внаслідок застарівання",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-5",
+        "title": "Зниження продуктивності існуючого обʼєкту внаслідок інших причин",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-7",
+        "title": "Зміна попиту внаслідок бойових дій",
+        "dataType": "boolean",
+        "expectedValue": true
+       },
+       {
+        "id": "ORPF0006001000000000000000-6",
+        "title": "Інше",
+        "dataType": "boolean",
+        "expectedValue": true,
+        "isCommentRequired": true
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "documents": [
+   {
+    "id": "5l20m496-707t-4qf7-a65h-jvr72822md57",
+    "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/5l20m496-707t-4qf7-a65h-jvr72822md57/download",
+    "hash": "SHA384:0fa470b1ba6218165da8d79728afea3cf8112f5672dbb7d1de7ee08da81490ca3f907f94403c162bad07841f0c91d750",
+    "title": "picturepicture_15441957695628624242538_70674.jpg",
+    "format": "image/jpeg",
+    "description": "Кузов ",
+    "dateModified": "2025-07-23T06:43:45.906750Z",
+    "documentType": "illustration",
+    "accessDetails": "open",
+    "datePublished": "2025-07-23T06:43:18.257003Z"
+   },
+   {
+    "id": "25z6z517-6kfl-4960-amfn-2m0j49uf65d6",
+    "url": "https://public-api.dream.gov.ua/marketplace/public/dream/documents/25z6z517-6kfl-4960-amfn-2m0j49uf65d6/download",
+    "hash": "SHA384:e2191fecc8e328b0074aebd8ca5e9dcae0a716b10203393284f05bd5b2600b5e644efbd6c4e802efa8a9dccc9ab343b0",
+    "title": "picturepicture_15441957695628624242538_70674.jpg",
+    "format": "image/jpeg",
+    "description": "кузов трамвайний ",
+    "dateModified": "2025-07-29T08:12:35.292041Z",
+    "documentType": "illustrationCover",
+    "accessDetails": "open",
+    "datePublished": "2025-07-23T06:25:51.095909Z"
+   }
+  ],
+  "description": [
+   {
+    "lang": "uk",
+    "translation": "<p>Придбання кузовів трамвайних вагонів часткової комплектації із частково низьким рівнем підлоги та електронних транзисторно-імпульсних систем управління тяговим електроприводом трамвайних вагонів, що підлягають встановленню при проведенні капітального ремонту з переобладнанням трамвайних вагонів</p>"
+   },
+   {
+    "lang": "en",
+    "translation": ""
+   }
+  ],
+  "statusDetails": "mistaken",
+  "purposeDetails": [
+   {
+    "lang": "uk",
+    "translation": "Підвищення комфорту, безпеки та доступності трамвайних перевезень"
+   },
+   {
+    "lang": "en",
+    "translation": ""
+   }
+  ],
+  "relatedProcesses": [
+   {
+    "id": "09a7u1p1-nrl7-4h31-801k-si00u725cb5e",
+    "scheme": "UA-DREAM",
+    "identifier": "9444w41t-1t5x-4m70-b4cc-vbqt68fu2uf8",
+    "relationship": "object"
+   }
+  ],
+  "requirementResponses": [
+   {
+    "value": true,
+    "description": "",
+    "requirement": {
+     "id": "ORPF0006001000000000000000-1"
+    }
+   },
+   {
+    "value": true,
+    "description": "",
+    "requirement": {
+     "id": "ORPF0007001000000000000000-2"
+    }
+   }
+  ],
+  "additionalClassifications": [
+   {
+    "id": "TC",
+    "scheme": "WB-ECO"
+   },
+   {
+    "id": "medium",
+    "scheme": "ISO-21542-2021"
+   },
+   {
+    "id": "D",
+    "scheme": "UA-SBR-V1211-2021"
+   },
+   {
+    "id": "territorySpecificPlan",
+    "uri": "https://omr.gov.ua/ua/acts/council/211409/",
+    "scheme": "UA-GIS",
+    "description": "Цільова програма розвитку "
+   }
+  ]
+ }
+}
