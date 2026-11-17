@@ -133,9 +133,10 @@ public class SummaryTests
         var summary = Build(
             Full(Stage.Idea, "p1") with { Title = "Ремонт мосту" },
             Full(Stage.Idea, "p2") with { Title = "Будівництво укриття" },
-            Full(Stage.Idea, "p3") with { Title = "Їдальня ліцею" });
+            Full(Stage.Idea, "p3") with { Title = "Їдальня ліцею" },
+            Full(Stage.Idea, "p4") with { Title = "----- Аварійний ремонт" });
 
-        Assert.Equal(["p2", "p3", "p1"], summary.Open.Select(r => r.Card.Id));
+        Assert.Equal(["p4", "p2", "p3", "p1"], summary.Open.Select(r => r.Card.Id));
     }
 
     [Theory]

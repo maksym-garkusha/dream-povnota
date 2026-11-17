@@ -54,7 +54,7 @@ public sealed record Summary(
         var open = projects
             .Where(p => p.IsOpen)
             .Select(p => CheckList.Evaluate(ProjectFacts.Of(p, objectsById, asOf)))
-            .OrderBy(r => r.Card.Title, Ukrainian)
+            .OrderBy(r => SortKey(r.Card.Title), Ukrainian)
             .ThenBy(r => r.Card.Code, StringComparer.Ordinal)
             .ToList();
 
@@ -116,9 +116,20 @@ public sealed record Summary(
                 var party = g.MaxBy(r => r.Card.Updated)!.Card.Organisation;
                 return new OrganisationStats(party?.Edrpou, Slice.Of(g.Key, Stats.Organisations.TitleOf(party), g.ToList()));
             })
-            .OrderBy(o => o.Slice.Title, Ukrainian)
+            .OrderBy(o => SortKey(o.Slice.Title), Ukrainian)
             .ThenBy(o => o.Slice.Key, StringComparer.Ordinal)
             .ToList();
+
+    /// <summary>
+    /// Назва без лапок, дефісів і пробілів на початку: назви на зразок
+    /// "----- Капітальний ремонт" чи «" ГІМНАЗІЯ "» інакше стоять першими в переліку.
+    /// </summary>
+    public static string SortKey(string title)
+    {
+        int start = 0;
+        while (start < title.Length && !char.IsLetterOrDigit(title[start])) start++;
+        return title[start..];
+    }
 
     private static CodeStats CodesOf(IEnumerable<ProjectCard> cards)
     {
