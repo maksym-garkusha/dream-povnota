@@ -1,0 +1,58 @@
+name: site
+
+# Раз на тиждень забирає свіжі картки з API DREAM і перезбирає сторінку та звіт.
+on:
+  schedule:
+    - cron: '23 4 * * 1'
+  push:
+    branches: [main]
+    paths: ['src/**', 'site/**', '.github/workflows/site.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # перший запуск без кешу качає всі картки, тому запас часу великий
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+      # кожен запуск бере кеш попереднього і зберігає свій: тоді качаються тільки змінені картки
+      - uses: actions/cache@v6
+        with:
+          path: data
+          key: dream-cards-${{ github.run_number }}-${{ github.run_attempt }}
+          restore-keys: dream-cards-
+      - name: Sync cards with the API
+        working-directory: src/DreamPovnota
+        run: dotnet run -c Release -- sync --cache ../../data
+      - name: Export data for the page
+        working-directory: src/DreamPovnota
+        run: dotnet run -c Release --no-build -- export --cache ../../data ../../site
+      - name: Write the report
+        working-directory: src/DreamPovnota
+        run: dotnet run -c Release --no-build -- report --cache ../../data ../../site/report.md
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
