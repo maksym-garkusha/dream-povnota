@@ -78,6 +78,23 @@ public class RegionsTests
         Assert.Equal(Regions.NotSpecified, Regions.Of(card, Objects()));
     }
 
+    [Fact]
+    public void Region_key_is_two_digits_multi_or_none()
+    {
+        Assert.Equal("74", Regions.KeyOf(["UA74060050020095773"]));
+        Assert.Equal(Regions.SeveralKey, Regions.KeyOf(["UA74060050020095773", "UA71080490000022110"]));
+        Assert.Equal(Regions.NotSpecifiedKey, Regions.KeyOf([]));
+    }
+
+    [Theory]
+    [InlineData("74", "Чернігівська область")]
+    [InlineData(Regions.SeveralKey, Regions.Several)]
+    [InlineData(Regions.NotSpecifiedKey, Regions.NotSpecified)]
+    public void Region_title_comes_from_the_key(string key, string title)
+    {
+        Assert.Equal(title, Regions.Title(key));
+    }
+
     private static Dictionary<string, ObjectCard> Objects(params ObjectCard[] objects) =>
         objects.ToDictionary(o => o.Id);
 }

@@ -12,6 +12,10 @@ public static class Regions
     public const string Several = "Кілька областей";
     public const string NotSpecified = "Не вказано";
 
+    /// <summary>Ключі для зведень і адреси сторінки: дві цифри області, "multi" або "none".</summary>
+    public const string SeveralKey = "multi";
+    public const string NotSpecifiedKey = "none";
+
     private static readonly Dictionary<string, string> Names = new()
     {
         ["01"] = "Автономна Республіка Крим",
@@ -61,16 +65,26 @@ public static class Regions
         regionCode is not null && Names.TryGetValue(regionCode, out var name) ? name : null;
 
     /// <summary>Назва області, «Кілька областей» або «Не вказано». Неправильні коди пропускаємо.</summary>
-    public static string Of(IEnumerable<string> katottg)
+    public static string Of(IEnumerable<string> katottg) => Title(KeyOf(katottg));
+
+    /// <summary>Дві цифри області, <see cref="SeveralKey"/> або <see cref="NotSpecifiedKey"/>.</summary>
+    public static string KeyOf(IEnumerable<string> katottg)
     {
         var regions = katottg.Select(RegionCode).OfType<string>().Distinct().Take(2).ToList();
         return regions.Count switch
         {
-            0 => NotSpecified,
-            1 => Names[regions[0]],
-            _ => Several,
+            0 => NotSpecifiedKey,
+            1 => regions[0],
+            _ => SeveralKey,
         };
     }
+
+    /// <summary>Назва за ключем з <see cref="KeyOf"/>.</summary>
+    public static string Title(string key) => key switch
+    {
+        SeveralKey => Several,
+        _ => Name(key) ?? NotSpecified,
+    };
 
     public static string Of(ProjectCard card, IReadOnlyDictionary<string, ObjectCard> objects) =>
         Of(ProjectKatottg(card, objects));
