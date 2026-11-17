@@ -393,7 +393,7 @@ function renderFigures() {
   $('stages').innerHTML =
     `<div class="strip" aria-hidden="true">${D.stages.map((s, i) => `<i class="s${i}" style="flex:${s.n / total}"></i>`).join('')}</div>` +
     `<ul class="stage-legend">${D.stages.map((s, i) =>
-      `<li><span class="dot s${i}"></span><button type="button" class="link" data-stage="${s.k}">${esc(s.t)}</button> <span class="num">${num(s.n)}</span></li>`).join('')}</ul>`;
+      `<li><span class="dot s${i}"></span><button type="button" class="link" data-stage="${esc(s.k)}">${esc(s.t)}</button> <span class="num">${num(s.n)}</span></li>`).join('')}</ul>`;
 }
 
 function shareCell(tally) {
@@ -418,7 +418,7 @@ function renderChecks() {
       html += `<tr class="group"><th colspan="4">${esc(group)}${c.score ? '' : ' <span>не входить у наповненість</span>'}</th></tr>`;
     }
     const t = D.all.c[i];
-    html += `<tr><td><button type="button" class="link" data-miss="${c.c}">${esc(c.t)}</button>` +
+    html += `<tr><td><button type="button" class="link" data-miss="${esc(c.c)}">${esc(c.t)}</button>` +
       `<div class="why">${esc(stageRange(c))} ${esc(c.why)}</div></td>` +
       `<td class="num" data-label="доречне">${num(t[0])}</td><td class="num" data-label="заповнено">${num(t[1])}</td>${shareCell(t)}</tr>`;
   });
@@ -446,7 +446,7 @@ function renderRegions() {
     return regionSort.dir * (regionValue(a, regionSort.key) - regionValue(b, regionSort.key)) || a.t.localeCompare(b.t, 'uk');
   });
   $('regions-body').innerHTML = rows.map(r =>
-    `<tr><td><button type="button" class="link" data-region="${r.k}">${esc(shortRegion(r.t))}</button></td>` +
+    `<tr><td><button type="button" class="link" data-region="${esc(r.k)}">${esc(shortRegion(r.t))}</button></td>` +
     `<td class="num">${num(r.n)}</td><td class="num">${pct(r.avg)}</td>` +
     REGION_COLUMNS.map(c => { const t = r.c[checkIndex[c]]; return `<td class="num">${t[0] ? pct(t[1] / t[0]) : ''}</td>`; }).join('') +
     '</tr>').join('');

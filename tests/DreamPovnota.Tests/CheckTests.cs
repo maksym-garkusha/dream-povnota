@@ -161,7 +161,10 @@ public class CheckTests
     {
         var card = Full(Stage.Implementation) with
         {
-            FundingTotal = 0, FundingCommitted = 0, ContractingProcesses = 0, Updated = AsOf.AddYears(-2),
+            FundingTotal = 0,
+            FundingCommitted = 0,
+            ContractingProcesses = 0,
+            Updated = AsOf.AddYears(-2),
         };
 
         var result = Evaluate(card);
@@ -175,7 +178,10 @@ public class CheckTests
     {
         var card = Full(Stage.Implementation) with
         {
-            FundingSourceCount = 1, FundingTotal = 0, FundingCommitted = 0, ContractingProcesses = 0,
+            FundingSourceCount = 1,
+            FundingTotal = 0,
+            FundingCommitted = 0,
+            ContractingProcesses = 0,
         };
 
         Assert.True(Evaluate(card).SeeksFunding);

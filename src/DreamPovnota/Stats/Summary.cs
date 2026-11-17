@@ -112,7 +112,7 @@ public sealed record Summary(
         open.GroupBy(r => Stats.Organisations.KeyOf(r.Card.Organisation))
             .Select(g =>
             {
-                // назва з найсвіжішої картки: організації інколи перейменовуються
+                // назва з найсвіжішої картки: організації інколи перейменовуються; група не порожня
                 var party = g.MaxBy(r => r.Card.Updated)!.Card.Organisation;
                 return new OrganisationStats(party?.Edrpou, Slice.Of(g.Key, Stats.Organisations.TitleOf(party), g.ToList()));
             })
