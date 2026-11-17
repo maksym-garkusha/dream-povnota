@@ -7,12 +7,19 @@ namespace DreamPovnota.Tests;
 
 /// <summary>
 /// Підставний API DREAM. Відповіді задаються за шляхом із запитом
-/// ("ideas", "ideas?from=...", "ideas/{id}"); кілька відповідей на один шлях
-/// віддаються по черзі, остання повторюється. Невідомий шлях відповідає 404.
+/// ("ideas", "ideas?from=...", "ideas/{id}"). Звичайна відповідь замінює попередню
+/// для того самого шляху; відповіді з once віддаються по одній, по черзі, перед нею.
+/// Невідомий шлях відповідає 404.
 /// </summary>
 public sealed class FakeDream : HttpMessageHandler
 {
-    private readonly Dictionary<string, Queue<Func<HttpResponseMessage>>> routes = new();
+    private sealed class Route
+    {
+        public Queue<Func<HttpResponseMessage>> Once { get; } = new();
+        public Func<HttpResponseMessage>? Always { get; set; }
+    }
+
+    private readonly Dictionary<string, Route> routes = new();
     private readonly List<string> requests = new();
 
     public IReadOnlyList<string> Requests
@@ -23,17 +30,17 @@ public sealed class FakeDream : HttpMessageHandler
     public DreamClient Client(int pageSize = 1000) =>
         new(DreamClient.CreateHttpClient(this)) { PageSize = pageSize, FirstRetryDelay = TimeSpan.Zero };
 
-    public FakeDream Json(string path, string json) =>
-        Add(path, () => new HttpResponseMessage(HttpStatusCode.OK)
+    public FakeDream Json(string path, string json, bool once = false) =>
+        Add(path, once, () => new HttpResponseMessage(HttpStatusCode.OK)
         {
             Content = new StringContent(json, Encoding.UTF8, "application/json"),
         });
 
-    public FakeDream Status(string path, HttpStatusCode status) =>
-        Add(path, () => new HttpResponseMessage(status));
+    public FakeDream Status(string path, HttpStatusCode status, bool once = false) =>
+        Add(path, once, () => new HttpResponseMessage(status));
 
-    public FakeDream Broken(string path) =>
-        Add(path, () => throw new HttpRequestException("з'єднання обірвано"));
+    public FakeDream Broken(string path, bool once = false) =>
+        Add(path, once, () => throw new HttpRequestException("з'єднання обірвано"));
 
     /// <summary>Стрічка з одної сторінки.</summary>
     public FakeDream Feed(string path, params (string Id, string Updated)[] entries) =>
@@ -67,10 +74,11 @@ public sealed class FakeDream : HttpMessageHandler
         return node.ToJsonString();
     }
 
-    private FakeDream Add(string path, Func<HttpResponseMessage> response)
+    private FakeDream Add(string path, bool once, Func<HttpResponseMessage> response)
     {
-        if (!routes.TryGetValue(path, out var queue)) routes[path] = queue = new();
-        queue.Enqueue(response);
+        if (!routes.TryGetValue(path, out var route)) routes[path] = route = new();
+        if (once) route.Once.Enqueue(response);
+        else route.Always = response;
         return this;
     }
 
@@ -79,13 +87,12 @@ public sealed class FakeDream : HttpMessageHandler
         string path = request.RequestUri!.PathAndQuery["/marketplace/public/dream/".Length..];
         lock (requests) requests.Add(path);
 
-        Func<HttpResponseMessage> next;
+        Func<HttpResponseMessage>? next = null;
         lock (routes)
         {
-            if (!routes.TryGetValue(path, out var queue))
-                return Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound));
-            next = queue.Count > 1 ? queue.Dequeue() : queue.Peek();
+            if (routes.TryGetValue(path, out var route))
+                next = route.Once.Count > 0 ? route.Once.Dequeue() : route.Always;
         }
-        return Task.FromResult(next());
+        return Task.FromResult(next?.Invoke() ?? new HttpResponseMessage(HttpStatusCode.NotFound));
     }
 }

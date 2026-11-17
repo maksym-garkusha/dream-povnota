@@ -54,8 +54,8 @@ public class DreamClientTests
     public async Task Server_error_is_retried()
     {
         var api = new FakeDream()
-            .Status("ideas/a", HttpStatusCode.BadGateway)
-            .Status("ideas/a", HttpStatusCode.TooManyRequests)
+            .Status("ideas/a", HttpStatusCode.BadGateway, once: true)
+            .Status("ideas/a", HttpStatusCode.TooManyRequests, once: true)
             .Json("ideas/a", "{}");
 
         Assert.Equal("{}", await api.Client().GetProjectAsync("a"));
@@ -65,7 +65,7 @@ public class DreamClientTests
     [Fact]
     public async Task Broken_connection_is_retried()
     {
-        var api = new FakeDream().Broken("objects/a").Json("objects/a", "{}");
+        var api = new FakeDream().Broken("objects/a", once: true).Json("objects/a", "{}");
 
         Assert.Equal("{}", await api.Client().GetObjectAsync("a"));
     }
