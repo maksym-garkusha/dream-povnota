@@ -480,3 +480,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# кеш карток DREAM (dotnet run -- sync --cache data)
+/data/
