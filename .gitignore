@@ -483,3 +483,7 @@ $RECYCLE.BIN/
 
 # кеш карток DREAM (dotnet run -- sync --cache data)
 /data/
+
+# те, що збирає export і report; на Pages їх викладає Actions
+/site/data.json
+/site/report.md

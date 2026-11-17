@@ -122,7 +122,8 @@ public static class DataExport
         json.WriteString("t", slice.Title);
         json.WriteNumber("n", slice.Projects);
         json.WriteNumber("full", slice.Complete);
-        json.WriteNumber("avg", Math.Round(slice.AverageScore, 4));
+        // шість знаків, щоб сторінка округлила до 0,1% так само, як звіт
+        json.WriteNumber("avg", Math.Round(slice.AverageScore, 6));
         json.WriteStartArray("c");
         foreach (var tally in slice.Checks)
         {
@@ -146,7 +147,7 @@ public static class DataExport
             else json.WriteNullValue();
             json.WriteStringValue(organisation.Slice.Title);
             json.WriteNumberValue(organisation.Slice.Projects);
-            json.WriteNumberValue(Math.Round(organisation.Slice.AverageScore, 4));
+            json.WriteNumberValue(Math.Round(organisation.Slice.AverageScore, 6));
             json.WriteEndArray();
         }
         json.WriteEndArray();
