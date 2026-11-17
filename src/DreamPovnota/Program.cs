@@ -1,13 +1,16 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using DreamPovnota.Dream;
+using DreamPovnota.Export;
+using DreamPovnota.Stats;
 using DreamPovnota.Store;
 using DreamPovnota.Sync;
 
 // dotnet run -- sync   [--cache data] [--parallel 4] [--limit N]   забрати картки з API в кеш
-// dotnet run -- export [--cache data] <тека сайту>                 data.json для сторінки
-// dotnet run -- report [--cache data] <файл.md>                    звіт
+// dotnet run -- export [--cache data] [--as-of дата] <тека сайту>  data.json для сторінки
+// dotnet run -- report [--cache data] [--as-of дата] <файл.md>     звіт
 
 Console.OutputEncoding = Encoding.UTF8;
 
@@ -27,7 +30,8 @@ switch (args[0])
 {
     case "sync":
         return await RunSync(options, cts.Token);
-    case "export":
+    case "export" when options.Rest.Count == 1:
+        return await RunExport(options, options.Rest[0], cts.Token);
     case "report":
         Console.Error.WriteLine($"Команда {args[0]} ще не реалізована");
         return 1;
@@ -71,6 +75,39 @@ static async Task<int> RunSync(Options options, CancellationToken ct)
     return 0;
 }
 
+static async Task<int> RunExport(Options options, string siteDirectory, CancellationToken ct)
+{
+    if (await LoadSummary(options, ct) is not { } summary) return 1;
+
+    await DataExport.WriteAsync(summary, siteDirectory, ct);
+    string path = Path.GetFullPath(Path.Combine(siteDirectory, DataExport.FileName));
+    Console.WriteLine(
+        $"Відкритих проєктів {summary.Open.Count}, організацій {summary.Organisations.Count}, " +
+        $"середня наповненість {summary.All.AverageScore:P1}");
+    Console.WriteLine($"{path}: {new FileInfo(path).Length / 1024} КБ");
+    return 0;
+}
+
+static async Task<Summary?> LoadSummary(Options options, CancellationToken ct)
+{
+    var store = new CardStore(options.Cache);
+    var projects = await store.ReadProjectsAsync(ct);
+    if (projects.Cards.Count == 0)
+    {
+        Console.Error.WriteLine($"У {Path.GetFullPath(options.Cache)} немає карток. Спершу: dotnet run -- sync --cache {options.Cache}");
+        return null;
+    }
+
+    var objects = await store.ReadObjectsAsync(ct);
+    var sync = await store.ReadSyncAsync(ct);
+    if (sync is null)
+        Console.WriteLine("У кеші немає sync.json: скільки було в стрічці і скільки не розібрано, невідомо");
+
+    var asOf = options.AsOf ?? TimeProvider.System.GetUtcNow();
+    Console.WriteLine($"Дата зрізу {asOf.UtcDateTime:yyyy-MM-dd HH:mm} UTC, проєктів у кеші {projects.Cards.Count}, об'єктів {objects.Cards.Count}");
+    return Summary.Build(projects.Cards, objects.Cards, asOf, sync);
+}
+
 static void Print(string what, SyncCounts c) =>
     Console.WriteLine(
         $"{what}: у стрічці {c.InFeed}, завантажено {c.Downloaded}, з кешу {c.FromCache}, " +
@@ -81,21 +118,23 @@ static int Usage()
     Console.Error.WriteLine("""
         Використання:
           sync   [--cache data] [--parallel 4] [--limit N]   забрати картки з API в кеш
-          export [--cache data] <тека сайту>                 ще не реалізовано
-          report [--cache data] <файл.md>                    ще не реалізовано
+          export [--cache data] [--as-of дата] <тека сайту>  записати data.json для сторінки
+          report [--cache data] [--as-of дата] <файл.md>     записати звіт у Markdown
 
         --limit N бере тільки перші N проєктів стрічки, для швидкої перевірки;
         картки поза цими N з кешу прибираються.
+        --as-of задає дату зрізу (типово зараз), наприклад 2026-11-17T22:00:00Z;
+        від неї рахується, чи оновлювалась картка за останній рік.
         """);
     return 2;
 }
 
-internal record Options(string Cache, int Parallel, int? Limit, IReadOnlyList<string> Rest)
+internal record Options(string Cache, int Parallel, int? Limit, DateTimeOffset? AsOf, IReadOnlyList<string> Rest)
 {
     /// <summary>null, якщо параметр невідомий або без значення.</summary>
     public static Options? Parse(IReadOnlyList<string> args)
     {
-        var options = new Options("data", 4, null, []);
+        var options = new Options("data", 4, null, null, []);
         var rest = new List<string>();
 
         for (int i = 0; i < args.Count; i++)
@@ -115,6 +154,10 @@ internal record Options(string Cache, int Parallel, int? Limit, IReadOnlyList<st
                     options = options with { Limit = limit };
                     i++;
                     break;
+                case "--as-of" when Date(value) is { } asOf:
+                    options = options with { AsOf = asOf };
+                    i++;
+                    break;
                 case var arg when arg.StartsWith("--", StringComparison.Ordinal):
                     return null;
                 default:
@@ -124,6 +167,12 @@ internal record Options(string Cache, int Parallel, int? Limit, IReadOnlyList<st
         }
         return options with { Rest = rest };
     }
+
+    // дата без зони вважається UTC, щоб зріз не залежав від годинникового поясу машини
+    private static DateTimeOffset? Date(string? value) =>
+        DateTimeOffset.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var date)
+            ? date
+            : null;
 
     private static int? PositiveNumber(string? value) =>
         int.TryParse(value, out int n) && n > 0 ? n : null;

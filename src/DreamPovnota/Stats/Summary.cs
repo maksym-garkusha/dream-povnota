@@ -95,10 +95,16 @@ public sealed record Summary(
             .ThenBy(s => s.Title, Ukrainian)
             .ToList();
 
+    /// <summary>Літера сектору або "none", якщо сектору немає чи літера невідома.</summary>
+    public static string SectorKey(ProjectCard card) =>
+        card.SectorLetter is { } letter && Cards.Sectors.Letters.Contains(letter) ? letter.ToString() : NoSectorKey;
+
+    private const string NoSectorKey = "none";
+
     private static List<Slice> SectorsOf(List<CardResult> open) =>
-        open.GroupBy(r => r.Card.SectorLetter is { } l && Cards.Sectors.Letters.Contains(l) ? l.ToString() : "none")
-            .Select(g => Slice.Of(g.Key, Cards.Sectors.Name(g.Key == "none" ? null : g.Key[0]), g.ToList()))
-            .OrderBy(s => s.Key == "none")
+        open.GroupBy(r => SectorKey(r.Card))
+            .Select(g => Slice.Of(g.Key, Cards.Sectors.Name(g.Key == NoSectorKey ? null : g.Key[0]), g.ToList()))
+            .OrderBy(s => s.Key == NoSectorKey)
             .ThenBy(s => s.Title, Ukrainian)
             .ToList();
 
