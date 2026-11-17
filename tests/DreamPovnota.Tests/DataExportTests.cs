@@ -68,6 +68,17 @@ public class DataExportTests
         Assert.Equal("E", root.GetProperty("sectors")[row[5].GetInt32()].GetProperty("k").GetString());
         Assert.Equal("2026-04-15", row[6].GetString());
         Assert.Equal(row[7].GetInt32(), row[8].GetInt32());
+        Assert.Equal(0, row[9].GetInt32());
+    }
+
+    [Fact]
+    public void Project_seeking_funding_is_flagged()
+    {
+        var seeking = Full(Stage.Implementation) with { FundingTotal = 0, FundingCommitted = 0, ContractingProcesses = 0 };
+
+        var row = Parse(Summary.Build([seeking], [], AsOf)).GetProperty("p")[0];
+
+        Assert.Equal(1, row[9].GetInt32());
     }
 
     [Fact]

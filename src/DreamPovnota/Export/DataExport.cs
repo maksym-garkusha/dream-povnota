@@ -152,7 +152,7 @@ public static class DataExport
         json.WriteEndArray();
     }
 
-    // [код без "DREAM-UA-", назва, організація, область, стадія, сектор, дата зміни, доречні, заповнені]
+    // [код без "DREAM-UA-", назва, організація, область, стадія, сектор, дата зміни, доречні, заповнені, шукає фінансування 0/1]
     // організація, область, стадія і сектор це індекси в orgs, regions, stages, sectors
     private static void WriteProjects(Utf8JsonWriter json, Summary summary)
     {
@@ -175,6 +175,7 @@ public static class DataExport
             json.WriteStringValue(card.Updated.UtcDateTime.ToString("yyyy-MM-dd"));
             json.WriteNumberValue(result.Applicable);
             json.WriteNumberValue(result.Filled);
+            json.WriteNumberValue(result.SeeksFunding ? 1 : 0);
             json.WriteEndArray();
         }
         json.WriteEndArray();
