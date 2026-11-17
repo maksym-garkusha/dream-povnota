@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/DreamPovnota/DreamPovnota.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DreamPovnota.Tests/DreamPovnota.Tests.csproj" />
+  </Folder>
+</Solution>
