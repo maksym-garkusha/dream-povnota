@@ -31,6 +31,18 @@ public static class Stages
     /// <summary>Відкриті картки беруть участь у перевірках і розрізах; закриті й невідомі ні.</summary>
     public static bool IsOpen(this Stage stage) => stage is >= Stage.Idea and <= Stage.Completed;
 
+    /// <summary>Короткий ключ для data.json і адреси сторінки.</summary>
+    public static string Key(this Stage stage) => stage switch
+    {
+        Stage.Idea => "idea",
+        Stage.Defined => "defined",
+        Stage.Appraised => "appraised",
+        Stage.Implementation => "impl",
+        Stage.Completed => "done",
+        Stage.Closed => "closed",
+        _ => "unknown",
+    };
+
     public static string Title(this Stage stage) => stage switch
     {
         Stage.Idea => "Ідея",
