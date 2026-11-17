@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using DreamPovnota.Dream;
 using DreamPovnota.Export;
+using DreamPovnota.Report;
 using DreamPovnota.Stats;
 using DreamPovnota.Store;
 using DreamPovnota.Sync;
@@ -32,9 +33,8 @@ switch (args[0])
         return await RunSync(options, cts.Token);
     case "export" when options.Rest.Count == 1:
         return await RunExport(options, options.Rest[0], cts.Token);
-    case "report":
-        Console.Error.WriteLine($"Команда {args[0]} ще не реалізована");
-        return 1;
+    case "report" when options.Rest.Count == 1:
+        return await RunReport(options, options.Rest[0], cts.Token);
     default:
         return Usage();
 }
@@ -85,6 +85,15 @@ static async Task<int> RunExport(Options options, string siteDirectory, Cancella
         $"Відкритих проєктів {summary.Open.Count}, організацій {summary.Organisations.Count}, " +
         $"середня наповненість {summary.All.AverageScore:P1}");
     Console.WriteLine($"{path}: {new FileInfo(path).Length / 1024} КБ");
+    return 0;
+}
+
+static async Task<int> RunReport(Options options, string path, CancellationToken ct)
+{
+    if (await LoadSummary(options, ct) is not { } summary) return 1;
+
+    await MarkdownReport.WriteAsync(summary, path, ct);
+    Console.WriteLine($"Звіт: {Path.GetFullPath(path)}");
     return 0;
 }
 
