@@ -28,12 +28,14 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
-      # кожен запуск бере кеш попереднього і зберігає свій: тоді качаються тільки змінені картки
+      # кожен запуск бере кеш попереднього і зберігає свій: тоді качаються тільки змінені картки.
+      # У кеші розібрані картки, тому ключ залежить від коду розбору: після його зміни
+      # старий кеш не підходить і всі картки завантажуються заново
       - uses: actions/cache@v6
         with:
           path: data
-          key: dream-cards-${{ github.run_number }}-${{ github.run_attempt }}
-          restore-keys: dream-cards-
+          key: dream-cards-${{ hashFiles('src/DreamPovnota/Cards/**') }}-${{ github.run_number }}-${{ github.run_attempt }}
+          restore-keys: dream-cards-${{ hashFiles('src/DreamPovnota/Cards/**') }}-
       - name: Sync cards with the API
         working-directory: src/DreamPovnota
         run: dotnet run -c Release -- sync --cache ../../data
