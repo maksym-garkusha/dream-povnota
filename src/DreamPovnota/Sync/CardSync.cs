@@ -53,6 +53,8 @@ public sealed class CardSync(DreamClient client, CardStore store)
 {
     public TextWriter Log { get; init; } = TextWriter.Null;
 
+    public TimeProvider Clock { get; init; } = TimeProvider.System;
+
     public async Task<SyncResult> RunAsync(SyncOptions options, CancellationToken ct = default)
     {
         var cachedProjects = await ReadCacheAsync(store.ReadProjectsAsync(ct), p => p.Id, CardStore.ProjectsFile);
@@ -78,11 +80,21 @@ public sealed class CardSync(DreamClient client, CardStore store)
         await store.WriteProjectsAsync(projects.OrderBy(p => p.Updated).ThenBy(p => p.Id, StringComparer.Ordinal), ct);
         await store.WriteObjectsAsync(objects.OrderBy(o => o.Updated).ThenBy(o => o.Id, StringComparer.Ordinal), ct);
 
-        return new SyncResult(
+        var result = new SyncResult(
             projectCounts,
             objectCounts,
             wanted.Count - wantedFeed.Count,
             unparsed.Order(StringComparer.Ordinal).ToList());
+
+        await store.WriteSyncAsync(new SyncInfo(
+            Clock.GetUtcNow(),
+            projectCounts.InFeed,
+            projectCounts.Failed,
+            projectCounts.Gone,
+            result.UnparsedIds,
+            result.ObjectsNotInFeed), ct);
+
+        return result;
     }
 
     private async Task<Dictionary<string, T>> ReadCacheAsync<T>(

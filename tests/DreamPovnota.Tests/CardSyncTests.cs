@@ -139,6 +139,20 @@ public sealed class CardSyncTests : IDisposable
     }
 
     [Fact]
+    public async Task Sync_leaves_feed_size_and_unparsed_ids_next_to_the_cache()
+    {
+        var api = Api().Json("ideas/p3", "{\"internal\":{\"id\":\"p3\"}}").Status("ideas/p2", HttpStatusCode.NotFound);
+
+        await Run(api);
+        var info = await Store.ReadSyncAsync();
+
+        Assert.NotNull(info);
+        Assert.Equal(3, info.ProjectsInFeed);
+        Assert.Equal(1, info.ProjectsGone);
+        Assert.Equal(["p3"], info.UnparsedIds);
+    }
+
+    [Fact]
     public async Task One_error_in_five_cards_is_too_many()
     {
         // 3 проєкти і 2 об'єкти, одна помилка це 20%

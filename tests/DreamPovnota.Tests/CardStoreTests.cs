@@ -111,4 +111,28 @@ public class CardStoreTests
         Assert.Single((await store.ReadObjectsAsync()).Cards);
         Assert.Equal([CardStore.ObjectsFile], Directory.GetFiles(dir.Path).Select(Path.GetFileName));
     }
+
+    [Fact]
+    public async Task Sync_info_survives_the_round_trip()
+    {
+        using var dir = new TempDir();
+        var store = new CardStore(dir.Path);
+        var info = new SyncInfo(DateTimeOffset.Parse("2026-11-18T04:30:00Z"), 16172, 1, 2, ["p3"], 4);
+
+        await store.WriteSyncAsync(info);
+        var read = await store.ReadSyncAsync();
+
+        Assert.NotNull(read);
+        Assert.Equal(info.Finished, read.Finished);
+        Assert.Equal(16172, read.ProjectsInFeed);
+        Assert.Equal(["p3"], read.UnparsedIds);
+    }
+
+    [Fact]
+    public async Task Cache_without_sync_info_reads_it_as_null()
+    {
+        using var dir = new TempDir();
+
+        Assert.Null(await new CardStore(dir.Path).ReadSyncAsync());
+    }
 }
