@@ -112,7 +112,10 @@ public sealed class ImportService(
 
     private async Task RecordAsync(CancellationToken ct)
     {
-        if (store.Current is not { } current || current.Edition.Generated == recorded || !db.IsAvailable) return;
+        if (!db.IsAvailable) return;
+        var current = store.Current;
+        bool snapshotDue = current is not null && current.Edition.Generated != recorded;
+        if (!snapshotDue && !keys.HasUnsaved) return;
 
         var started = Stopwatch.GetTimestamp();
         try
@@ -122,8 +125,11 @@ public sealed class ImportService(
                 int applied = await Migrator.MigrateAsync(db, ct);
                 if (applied > 0) log.LogInformation("Застосовано міграцій бази: {Count}", applied);
                 migrated = true;
-                await keys.SaveUnsavedAsync(ct);
             }
+
+            // ключі форм, створені, поки бази не було чи вона не відповідала: пробуємо щоразу, доки не збережуться
+            if (keys.HasUnsaved) await keys.SaveUnsavedAsync(ct);
+            if (!snapshotDue || current is null) return;
 
             int? snapshot = await SnapshotWriter.WriteAsync(db, current, ct);
             recorded = current.Edition.Generated;
@@ -136,7 +142,7 @@ public sealed class ImportService(
         catch (Exception ex) when (Db.IsOutage(ex) && !ct.IsCancellationRequested)
         {
             db.MarkDown();
-            log.LogWarning(ex, "Знімок не записано, база недоступна");
+            log.LogWarning(ex, "Знімок або ключі форм не записано, база недоступна");
         }
     }
 }

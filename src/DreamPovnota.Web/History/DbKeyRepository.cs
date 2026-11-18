@@ -65,15 +65,23 @@ public sealed class DbKeyRepository(Db db, ILogger<DbKeyRepository> log) : IXmlR
         lock (unsaved) unsaved.Add(element);
     }
 
+    public bool HasUnsaved
+    {
+        get
+        {
+            lock (unsaved) return unsaved.Count > 0;
+        }
+    }
+
     /// <summary>
-    /// Дописує в базу ключі, створені до появи таблиці: набір ключів створюється
-    /// ще на старті, а міграція йде вже після завантаження випуску.
+    /// Дописує в базу ключі, що поки живуть у пам'яті: створені до появи таблиці (набір ключів
+    /// створюється ще на старті, а міграція йде після завантаження випуску) або поки база не відповідала.
     /// </summary>
     public async Task SaveUnsavedAsync(CancellationToken ct)
     {
         XElement[] pending;
         lock (unsaved) pending = [.. unsaved];
-        // викликається одразу після вдалої міграції, тож на позначку недоступності не зважаємо
+        // викликається після вдалої міграції, тож на позначку недоступності не зважаємо
         if (pending.Length == 0 || db.Source is null) return;
 
         await using var connection = await db.Source!.OpenConnectionAsync(ct);

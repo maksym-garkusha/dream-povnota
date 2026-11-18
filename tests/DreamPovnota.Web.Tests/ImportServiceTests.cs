@@ -1,4 +1,5 @@
 using System.Net;
+using System.Xml.Linq;
 using DreamPovnota.Web.History;
 using DreamPovnota.Web.Import;
 using DreamPovnota.Web.Lists;
@@ -81,6 +82,35 @@ public class ImportServiceTests
         Assert.InRange(clock.GetUtcNow() - failedAt, ImportService.RetryDelays[0] + ImportService.RetryDelays[1], ImportService.Interval / 2);
         Assert.Null(store.Status.LastError);
         await service.StopAsync(CancellationToken.None);
+    }
+
+    [PostgresFact]
+    public async Task Form_key_made_while_the_database_was_down_is_saved_on_the_next_import()
+    {
+        await using var database = await TestDatabase.CreateAsync();
+        var configuration = new ConfigurationBuilder().AddInMemoryCollection([new("DATA_URL", "https://pages.example/data.json")]).Build();
+        var keys = new DbKeyRepository(database.Db, NullLogger<DbKeyRepository>.Instance);
+        using var exports = new ExportFiles(NullLogger<ExportFiles>.Instance);
+        using var service = new ImportService(
+            new EditionSource(new HttpClient(new FlakyPages(failures: 0)), configuration),
+            new EditionStore(),
+            database.Db,
+            keys,
+            exports,
+            new NoOutputCache(),
+            TimeProvider.System,
+            NullLogger<ImportService>.Instance);
+        Assert.True(await service.ImportOnceAsync(CancellationToken.None));
+
+        // база вже змігрована і знімок записано, а потім вона на хвилину зникає
+        database.Db.MarkDown();
+        keys.StoreElement(new XElement("key", new XAttribute("id", "k2")), "key-k2");
+        Assert.True(keys.HasUnsaved);
+        database.Db.MarkUp();
+        await service.ImportOnceAsync(CancellationToken.None);
+
+        Assert.False(keys.HasUnsaved);
+        Assert.Equal(1, await database.ScalarAsync<long>("select count(*) from data_protection_key where name = 'key-k2'"));
     }
 
     [Theory]
