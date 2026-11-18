@@ -79,10 +79,11 @@ public sealed class ImportService(
             }
             else if (await guard.CheckAsync(edition, store.Current, ct) is { } jump)
             {
-                // числа тільки в журналі, назовні в /health/ready лише тип причини
+                // поточним лишається попередній, якщо він є; числа тільки в журналі,
+                // назовні в /health/ready лише тип причини
                 store.Held(clock.GetUtcNow(), jump.Reason);
                 log.LogWarning(
-                    "Випуск від {Generated:u} ({Sha256}) не прийнято, лишається попередній: {Jump}",
+                    "Випуск від {Generated:u} ({Sha256}) не прийнято: {Jump}",
                     edition.Edition.Generated, edition.Sha256, jump);
             }
             else

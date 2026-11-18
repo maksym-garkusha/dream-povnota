@@ -67,7 +67,7 @@ public sealed record Jump(JumpKind Kind, int Before, int After, double Percent, 
     {
         JumpKind.OpenCards => $"відкритих карток було {Before}, стало {After} ({Percent:0.0} % при порозі {Limit} %)",
         JumpKind.Organisations => $"організацій було {Before}, стало {After} ({Percent:0.0} % при порозі {Limit} %)",
-        _ => $"змінилось {After} карток з {Before} ({Percent:0.0} % при порозі {Limit} %)",
+        _ => $"змінених карток {After} з {Before} ({Percent:0.0} % при порозі {Limit} %)",
     };
 }
 
