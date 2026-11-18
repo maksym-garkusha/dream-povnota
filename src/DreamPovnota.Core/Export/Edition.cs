@@ -73,10 +73,10 @@ public sealed partial record Edition(
     /// <summary>Назви організацій не обрізаються; у даних найдовша близько 200 знаків.</summary>
     public const int MaxOrganisationTitleLength = 400;
 
-    [GeneratedRegex(@"^\d{6}-[0-9A-F]{8}$")]
+    [GeneratedRegex(@"^[0-9]{6}-[0-9A-F]{8}$")]
     public static partial Regex ShortCodePattern();
 
-    [GeneratedRegex(@"^\d{8}$")]
+    [GeneratedRegex(@"^[0-9]{8}$")]
     private static partial Regex EdrpouPattern();
 
     public static string OrganisationKey(string? edrpou, string title) => edrpou ?? OrganisationNamePrefix + title;

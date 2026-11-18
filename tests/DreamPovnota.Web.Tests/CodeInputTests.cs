@@ -34,6 +34,8 @@ public class CodeInputTests
     [InlineData("DREAM-UA-050923-B400F7B2X")]
     [InlineData("050923-B400F7G2")]
     [InlineData("../ideas/050923-B400F7B2")]
+    [InlineData("DREAM-UA-٠٥٠٩٢٣-B400F7B2")]
+    [InlineData("０５０９２３-B400F7B2")]
     public void Anything_else_is_rejected_with_an_example(string input)
     {
         Assert.False(CodeInput.TryParse(input, out string? code, out string? error));

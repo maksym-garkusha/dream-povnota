@@ -73,6 +73,12 @@ public sealed class CheckModel(EditionStore store, LiveCheck live, IAntiforgery 
             case LiveStatus.TooManyObjects:
                 return Form(StatusCodes.Status422UnprocessableEntity,
                     $"У проєкті DREAM-UA-{code} понад {LiveCheck.MaxObjects} пов'язаних об'єктів, таку картку зараз не перевіряємо. Її стан є в знімку: /check/{code}.");
+            case LiveStatus.Busy:
+                int wait = Math.Max(1, (int)Math.Ceiling((outcome.RetryAfter ?? TimeSpan.FromSeconds(RetryAfterSeconds)).TotalSeconds));
+                Response.Headers.RetryAfter = wait.ToString(CultureInfo.InvariantCulture);
+                Message = $"Живих перевірок за останню годину забагато, спробуйте за кілька хвилин. Стан картки в останньому знімку: /check/{code}.";
+                Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
+                return Page();
             default:
                 Response.Headers.RetryAfter = RetryAfterSeconds.ToString(CultureInfo.InvariantCulture);
                 Message = "DREAM зараз не відповідає, спробуйте за кілька хвилин.";

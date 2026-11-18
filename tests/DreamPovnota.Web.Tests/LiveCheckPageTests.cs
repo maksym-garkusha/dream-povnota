@@ -17,6 +17,16 @@ public class LiveCheckPageTests : IClassFixture<WebFactory>
         new([new("code", code), new("__RequestVerificationToken", token)]);
 
     [Fact]
+    public async Task Code_with_non_ascii_digits_in_the_address_is_not_found()
+    {
+        var client = await factory.ReadyClientAsync();
+
+        var response = await client.GetAsync("/check/" + Uri.EscapeDataString("\u0660\u0665\u0660\u0669\u0662\u0663-B400F7B2"));
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
     public async Task Successful_check_redirects_to_the_result_and_the_seventh_in_a_minute_is_refused()
     {
         var client = await factory.ReadyClientAsync();

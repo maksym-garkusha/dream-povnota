@@ -23,7 +23,7 @@ public static class SlicesApi
                 return TypedResults.Ok(edition.Edition.Regions.Select(r => ApiMapping.Slice(r, edition.Edition.Checks)).ToList());
             })
             .WithTags("Області").WithSummary("Розрізи за областями");
-        api.MapGet("/regions/{key:regex(^(\\d{{2}}|multi|none)$)}", Region).WithTags("Області")
+        api.MapGet("/regions/{key:regex(^([0-9]{{2}}|multi|none)$)}", Region).WithTags("Області")
             .WithSummary("Розріз за однією областю");
     }
 

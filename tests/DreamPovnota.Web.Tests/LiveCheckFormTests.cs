@@ -1,4 +1,6 @@
 using System.Net;
+using DreamPovnota.Web.Web;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DreamPovnota.Web.Tests;
 
@@ -37,5 +39,26 @@ public class LiveCheckFormTests : IClassFixture<WebFactory>
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         Assert.Contains("у DREAM немає", await response.Content.ReadAsStringAsync());
+    }
+
+    [Fact]
+    public async Task Posts_without_a_form_token_do_not_use_up_the_shared_limit()
+    {
+        using var limited = new WebFactory { Replace = s => s.AddSingleton(new SharedLimits(checksPerHour: 1)) };
+        var client = await limited.ReadyClientAsync();
+
+        for (int i = 0; i < 5; i++)
+        {
+            var junk = await client.PostAsync("/check", new FormUrlEncodedContent([new("code", "DREAM-UA-010101-ABCDEF1" + i)]));
+            Assert.Equal(HttpStatusCode.BadRequest, junk.StatusCode);
+        }
+        string token = await PagesTests.TokenAsync(client);
+        var honest = await client.PostAsync("/check", new FormUrlEncodedContent([
+            new("code", "DREAM-UA-010101-ABCDEF12"),
+            new("__RequestVerificationToken", token),
+        ]));
+
+        Assert.Equal(HttpStatusCode.NotFound, honest.StatusCode);
+        Assert.True(limited.Dream.Requests > 0);
     }
 }

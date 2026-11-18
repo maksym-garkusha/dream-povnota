@@ -29,11 +29,11 @@ public static class HistoryApi
             })
             .WithSummary("Наповненість організації за знімками");
 
-        api.MapGet("/regions/{key:regex(^(\\d{{2}}|multi|none)$)}/trend", async (string key, HistoryReader history, CancellationToken ct) =>
+        api.MapGet("/regions/{key:regex(^([0-9]{{2}}|multi|none)$)}/trend", async (string key, HistoryReader history, CancellationToken ct) =>
                 await history.SliceTrendAsync('r', key, ct) is { } trend ? Results.Ok(trend) : Unavailable())
             .WithSummary("Наповненість області за знімками");
 
-        api.MapGet("/cards/{code:regex(^\\d{{6}}-[0-9A-Fa-f]{{8}}$)}/history", async (string code, EditionStore store, HistoryReader history, CancellationToken ct) =>
+        api.MapGet("/cards/{code:regex(^[0-9]{{6}}-[0-9A-Fa-f]{{8}}$)}/history", async (string code, EditionStore store, HistoryReader history, CancellationToken ct) =>
             {
                 var edition = store.Require();
                 if (!edition.CardIndexByCode.TryGetValue(code.ToUpperInvariant(), out int index))

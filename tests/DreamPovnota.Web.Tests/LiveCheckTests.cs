@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json.Nodes;
 using DreamPovnota.Cards;
 using DreamPovnota.Web.Live;
+using DreamPovnota.Web.Web;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -12,11 +13,11 @@ public class LiveCheckTests
     private static readonly string Active = Fixtures.Text("project-active.json");
     private static readonly string Code = CardParser.ParseProject(Active).Code["DREAM-UA-".Length..];
 
-    private static LiveCheck Check(FakeDream dream, IMemoryCache? cache = null)
+    private static LiveCheck Check(FakeDream dream, IMemoryCache? cache = null, SharedLimits? limits = null)
     {
         var http = new HttpClient(dream);
         LiveCheck.Configure(http);
-        return new LiveCheck(http, cache ?? new MemoryCache(new MemoryCacheOptions { SizeLimit = 10 }), TimeProvider.System, NullLogger<LiveCheck>.Instance);
+        return new LiveCheck(http, cache ?? new MemoryCache(new MemoryCacheOptions { SizeLimit = 10 }), limits ?? new SharedLimits(), TimeProvider.System, NullLogger<LiveCheck>.Instance);
     }
 
     [Fact]
@@ -30,6 +31,25 @@ public class LiveCheckTests
         Assert.True(outcome.Result!.IsOpen);
         Assert.Equal(0, outcome.Result.MissingObjects);
         Assert.Equal(outcome.Result.ScoreApplicable, outcome.Result.Filled.Count(c => c.CountsInScore) + outcome.Result.Missing.Count(c => c.CountsInScore));
+    }
+
+    [Fact]
+    public async Task Shared_limit_is_spent_only_on_requests_to_dream()
+    {
+        var dream = new FakeDream { AnyObject = Fixtures.Text("object-active.json") }.Json("ideas/" + Code, Active);
+        using var limits = new SharedLimits(checksPerHour: 1);
+        var check = Check(dream, limits: limits);
+
+        var first = await check.RunAsync(Code, CancellationToken.None);
+        int requests = dream.Requests;
+        var repeated = await check.RunAsync(Code, CancellationToken.None);
+        var other = await check.RunAsync("010101-ABCDEF12", CancellationToken.None);
+
+        Assert.Equal(LiveStatus.Found, first.Status);
+        Assert.Equal(LiveStatus.Found, repeated.Status);
+        Assert.Equal(LiveStatus.Busy, other.Status);
+        Assert.NotNull(other.RetryAfter);
+        Assert.Equal(requests, dream.Requests);
     }
 
     [Fact]

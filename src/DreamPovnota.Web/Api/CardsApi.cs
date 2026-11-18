@@ -16,7 +16,7 @@ public static class CardsApi
         api.MapGet("/cards", Cards)
             .WithSummary("Відкриті картки з фільтром")
             .WithDescription("Параметри: q (назва або код), region, org, stage, sector, missing (код перевірки), seeks=1, page, pageSize до 500.");
-        api.MapGet("/cards/{code:regex(^\\d{{6}}-[0-9A-Fa-f]{{8}}$)}", Card)
+        api.MapGet("/cards/{code:regex(^[0-9]{{6}}-[0-9A-Fa-f]{{8}}$)}", Card)
             .WithSummary("Одна картка за кодом без DREAM-UA-");
     }
 

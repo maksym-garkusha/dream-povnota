@@ -5,6 +5,7 @@ using DreamPovnota.Checks;
 using DreamPovnota.Dream;
 using DreamPovnota.Geo;
 using DreamPovnota.Stats;
+using DreamPovnota.Web.Web;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace DreamPovnota.Web.Live;
@@ -15,6 +16,9 @@ public enum LiveStatus
     NotFound,
     TooManyObjects,
     Unavailable,
+
+    /// <summary>Спільну межу перевірок на годину вичерпано; у DREAM запиту не було.</summary>
+    Busy,
 }
 
 /// <summary>Результат живої перевірки. Імен людей і кодів підприємців тут немає: їх відкидає розбір.</summary>
@@ -35,14 +39,15 @@ public sealed record LiveResult(
     int MissingObjects,
     DateTimeOffset CheckedAt);
 
-public sealed record LiveOutcome(LiveStatus Status, LiveResult? Result = null);
+/// <param name="RetryAfter">Для <see cref="LiveStatus.Busy"/>: коли межа знову пустить.</param>
+public sealed record LiveOutcome(LiveStatus Status, LiveResult? Result = null, TimeSpan? RetryAfter = null);
 
 /// <summary>
 /// Перевіряє одну картку просто зараз: проєкт і його об'єкти з API DREAM,
 /// ті самі правила, що для data.json. Результат кешується на 10 хвилин,
 /// «немає такого» на 2, щоб повторні натискання не йшли в DREAM.
 /// </summary>
-public sealed partial class LiveCheck(HttpClient http, IMemoryCache cache, TimeProvider clock, ILogger<LiveCheck> log)
+public sealed partial class LiveCheck(HttpClient http, IMemoryCache cache, SharedLimits limits, TimeProvider clock, ILogger<LiveCheck> log)
 {
     public const int MaxObjects = 30;
     public const int MaxResponseBytes = 2 * 1024 * 1024;
@@ -77,6 +82,11 @@ public sealed partial class LiveCheck(HttpClient http, IMemoryCache cache, TimeP
     public async Task<LiveOutcome> RunAsync(string code, CancellationToken ct)
     {
         if (Cached(code) is { } cached) return cached;
+
+        // спільну межу витрачаємо лише тут, перед справжнім запитом у DREAM
+        using var permit = await limits.CheckAsync(ct);
+        if (!permit.Granted) return new LiveOutcome(LiveStatus.Busy, RetryAfter: permit.RetryAfter);
+        if (Cached(code) is { } filled) return filled;
 
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(ct);
         timeout.CancelAfter(TotalTimeout);

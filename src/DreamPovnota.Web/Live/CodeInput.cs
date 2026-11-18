@@ -18,7 +18,7 @@ public static partial class CodeInput
     private static readonly string[] Hosts = ["dream.gov.ua", "www.dream.gov.ua"];
     private static readonly string[] Languages = ["ua", "en"];
 
-    [GeneratedRegex(@"^(?:DREAM-UA-)?(\d{6})-([0-9A-F]{8})$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    [GeneratedRegex(@"^(?:DREAM-UA-)?([0-9]{6})-([0-9A-F]{8})$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex CodePattern();
 
     /// <summary>Код без "DREAM-UA-" великими літерами або повідомлення для поля форми.</summary>

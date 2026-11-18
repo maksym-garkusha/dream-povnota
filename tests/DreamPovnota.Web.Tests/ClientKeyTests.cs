@@ -6,14 +6,19 @@ namespace DreamPovnota.Web.Tests;
 public class ClientKeyTests
 {
     [Fact]
-    public void Addresses_from_one_ipv6_network_share_a_key()
+    public void Addresses_from_one_ipv6_56_network_share_a_key()
     {
         Assert.Equal(
             ClientKey.Of(IPAddress.Parse("2001:db8:1:2:aaaa::1")),
             ClientKey.Of(IPAddress.Parse("2001:db8:1:2:bbbb::2")));
+        // сусідні /64 одного абонента: 2001:db8:1:200::/56
+        Assert.Equal(
+            ClientKey.Of(IPAddress.Parse("2001:db8:1:201::1")),
+            ClientKey.Of(IPAddress.Parse("2001:db8:1:2ff::1")));
         Assert.NotEqual(
-            ClientKey.Of(IPAddress.Parse("2001:db8:1:2::1")),
-            ClientKey.Of(IPAddress.Parse("2001:db8:1:3::1")));
+            ClientKey.Of(IPAddress.Parse("2001:db8:1:200::1")),
+            ClientKey.Of(IPAddress.Parse("2001:db8:1:300::1")));
+        Assert.Equal("2001:db8:1:200::/56", ClientKey.Of(IPAddress.Parse("2001:db8:1:2ab:1::1")));
     }
 
     [Fact]

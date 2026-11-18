@@ -5,9 +5,10 @@ using Microsoft.AspNetCore.RateLimiting;
 namespace DreamPovnota.Web.Web;
 
 /// <summary>
-/// Обмеження частоти. Окрім лімітів на клієнта є спільні: на живі перевірки
-/// (вони йдуть у DREAM), а на збірку вивантажень у <see cref="SharedLimits"/>. Спільні ліміти тримають
-/// навантаження навіть тоді, коли адресу клієнта за проксі Render визначено неточно.
+/// Обмеження частоти на клієнта. Спільні на весь сервіс межі для живих перевірок і збірки
+/// вивантажень бере сам обробник (<see cref="SharedLimits"/>), бо їх має витрачати тільки
+/// справжня робота. Спільні межі тримають навантаження навіть тоді, коли адресу клієнта
+/// за проксі Render визначено неточно.
 /// </summary>
 public static class Limits
 {
@@ -38,7 +39,7 @@ public static class Limits
     public static void Configure(RateLimiterOptions options)
     {
         options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-        options.GlobalLimiter = PartitionedRateLimiter.CreateChained(PerClient(), ChecksPerClientHour(), Overall());
+        options.GlobalLimiter = PartitionedRateLimiter.CreateChained(PerClient(), ChecksPerClientHour());
         options.OnRejected = OnRejectedAsync;
     }
 
@@ -55,28 +56,6 @@ public static class Limits
         PartitionedRateLimiter.Create<HttpContext, string>(context => KindOf(context.Request) == Kind.Check
             ? Window("check-hour:" + ClientKey.Of(context), ChecksPerHour, TimeSpan.FromHours(1))
             : RateLimitPartition.GetNoLimiter("none"));
-
-    private static PartitionedRateLimiter<HttpContext> Overall() =>
-        PartitionedRateLimiter.CreateChained(
-            PartitionedRateLimiter.Create<HttpContext, string>(context => KindOf(context.Request) == Kind.Check
-                ? RateLimitPartition.GetTokenBucketLimiter("checks", _ => new TokenBucketRateLimiterOptions
-                {
-                    TokenLimit = ChecksPerHourOverall,
-                    TokensPerPeriod = ChecksPerHourOverall / 60,
-                    ReplenishmentPeriod = TimeSpan.FromMinutes(1),
-                    QueueLimit = 0,
-                })
-                : RateLimitPartition.GetNoLimiter("none")),
-            PartitionedRateLimiter.Create<HttpContext, string>(context => KindOf(context.Request) switch
-            {
-                Kind.Check => RateLimitPartition.GetConcurrencyLimiter("checks-at-once", _ => new ConcurrencyLimiterOptions
-                {
-                    PermitLimit = ChecksAtOnce,
-                    QueueLimit = ChecksQueued,
-                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                }),
-                _ => RateLimitPartition.GetNoLimiter("none"),
-            }));
 
     private static RateLimitPartition<string> Window(string key, int limit, TimeSpan window) =>
         RateLimitPartition.GetFixedWindowLimiter(key, _ => new FixedWindowRateLimiterOptions

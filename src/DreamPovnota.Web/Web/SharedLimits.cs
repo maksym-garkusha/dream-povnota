@@ -14,20 +14,18 @@ public sealed class Permit(RateLimitLease? lease, TimeSpan retryAfter) : IDispos
 
 /// <summary>
 /// Спільні на весь сервіс межі для дорогої роботи. Їх бере сам обробник, а не middleware,
-/// тож межу витрачає тільки справжня робота: збірка файлу після промаху кешу. Відповідь
-/// з кешу чи відхилений запит її не з'їдають, і кількома дешевими запитами її не вичерпати.
+/// тож межу витрачає тільки справжня робота: збірка файлу після промаху кешу або запит у DREAM.
+/// Відповідь з кешу чи відхилений запит (без токена форми, з неправильним кодом) її не з'їдають,
+/// і кількома дешевими запитами її не вичерпати.
 /// </summary>
 public sealed class SharedLimits : IDisposable
 {
     private readonly TokenBucketRateLimiter exportRate;
     private readonly ConcurrencyLimiter exportAtOnce;
+    private readonly TokenBucketRateLimiter checkRate;
+    private readonly ConcurrencyLimiter checksAtOnce;
 
-    public SharedLimits()
-        : this(Limits.ExportBuildsPerMinute)
-    {
-    }
-
-    public SharedLimits(int exportBuildsPerMinute)
+    public SharedLimits(int exportBuildsPerMinute = Limits.ExportBuildsPerMinute, int checksPerHour = Limits.ChecksPerHourOverall)
     {
         exportRate = new TokenBucketRateLimiter(new TokenBucketRateLimiterOptions
         {
@@ -43,10 +41,27 @@ public sealed class SharedLimits : IDisposable
             QueueLimit = Limits.ExportBuildsQueued,
             QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
         });
+        // повний кошик на годину, поповнення рівномірне: 120 на годину це 2 на хвилину
+        checkRate = new TokenBucketRateLimiter(new TokenBucketRateLimiterOptions
+        {
+            TokenLimit = checksPerHour,
+            TokensPerPeriod = Math.Max(1, checksPerHour / 60),
+            ReplenishmentPeriod = TimeSpan.FromMinutes(1),
+            QueueLimit = 0,
+        });
+        checksAtOnce = new ConcurrencyLimiter(new ConcurrencyLimiterOptions
+        {
+            PermitLimit = Limits.ChecksAtOnce,
+            QueueLimit = Limits.ChecksQueued,
+            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+        });
     }
 
     /// <summary>Зібрати вивантаження з фільтром, якого немає в кеші.</summary>
     public Task<Permit> ExportBuildAsync(CancellationToken ct) => AcquireAsync(exportRate, exportAtOnce, ct);
+
+    /// <summary>Запит у DREAM для живої перевірки.</summary>
+    public Task<Permit> CheckAsync(CancellationToken ct) => AcquireAsync(checkRate, checksAtOnce, ct);
 
     private static async Task<Permit> AcquireAsync(RateLimiter rate, RateLimiter atOnce, CancellationToken ct)
     {
@@ -69,5 +84,7 @@ public sealed class SharedLimits : IDisposable
     {
         exportRate.Dispose();
         exportAtOnce.Dispose();
+        checkRate.Dispose();
+        checksAtOnce.Dispose();
     }
 }
