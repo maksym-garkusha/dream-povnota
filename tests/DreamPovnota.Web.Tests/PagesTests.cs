@@ -44,6 +44,35 @@ public partial class PagesTests : IClassFixture<WebFactory>
     }
 
     [Fact]
+    public async Task Navigation_marks_the_current_section_and_leads_to_changes_and_digest()
+    {
+        var client = await factory.ReadyClientAsync();
+
+        string digest = await client.GetStringAsync("/digest/25845655");
+        string home = await client.GetStringAsync("/");
+
+        Assert.Contains("<a href=\"/digest\" aria-current=\"page\">Зріз для служб</a>", digest);
+        Assert.Contains("<a href=\"/changes\">Зміни за тижнями</a>", home);
+        Assert.DoesNotContain("aria-current", home);
+    }
+
+    [Fact]
+    public async Task Check_page_has_one_heading_for_the_form_and_the_card_title_as_heading_of_a_result()
+    {
+        var client = await factory.ReadyClientAsync();
+        var edition = await Fixtures.LoadedAsync();
+        var card = edition.Edition.Cards[0];
+
+        string empty = await client.GetStringAsync("/check");
+        string snapshot = await client.GetStringAsync("/check/" + card.Code);
+
+        Assert.Single(System.Text.RegularExpressions.Regex.Matches(empty, "<h[12][ >]"));
+        Assert.Contains($"<h1 class=\"page\" id=\"page-title\">{System.Net.WebUtility.HtmlEncode(card.Title)}</h1>", snapshot);
+        Assert.Contains(">Перевірити цю картку в DREAM</button>", snapshot);
+        Assert.Contains(">Перевірити</button>", snapshot);
+    }
+
+    [Fact]
     public async Task About_names_the_stages_where_each_check_applies_in_words()
     {
         var client = await factory.ReadyClientAsync();

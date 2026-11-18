@@ -5,8 +5,11 @@
     ViewData["Title"] = Model.Code is null ? "Перевірити картку" : "Картка DREAM-UA-" + Model.Code;
     ViewData["NoIndex"] = true;
     var result = Model.Outcome?.Result;
+    var snapshotCard = result is null && Model.Code is not null && Model.Outcome is null ? Model.SnapshotCard : null;
+    // на сторінці результату головний заголовок це назва картки, а не назва форми
+    string heading = result?.Title ?? snapshotCard?.Title ?? (Model.Code is { } code ? "DREAM-UA-" + code : "Перевірити картку зараз");
 }
-<h1 class="page">Перевірити картку зараз</h1>
+<h1 class="page" id="page-title">@heading</h1>
 
 @if (Model.Message is { } message)
 {
@@ -15,11 +18,11 @@
 
 @if (result is not null)
 {
-    <section aria-labelledby="result-title">
-      <h2 id="result-title">@result.Title</h2>
+    <section aria-labelledby="page-title">
       <p class="summary-line"><span class="code">DREAM-UA-@result.Code</span> · перевірено @Format.DateTime(result.CheckedAt)</p>
       <dl class="props">
-        <dt>Організація</dt><dd>@result.OrganisationTitle@(result.Edrpou is { } edrpou ? $", ЄДРПОУ {edrpou}" : "")</dd>
+        <dt>Організація</dt><dd>@result.OrganisationTitle@(result.Edrpou is { } edrpou ? $", ЄДРПОУ {edrpou}" : "")@if (result.Edrpou is { } key && Model.Edition.OrganisationsByKey.ContainsKey(key))
+        {<text>. </text><a href="@Format.OrganisationPath(key)">Усі картки організації</a>}</dd>
         <dt>Область</dt><dd>@result.RegionTitle</dd>
         <dt>Стадія</dt><dd>@result.StageTitle</dd>
         <dt>Картка в DREAM</dt><dd><a href="@Format.PortalUrl(result.Code)">dream.gov.ua</a></dd>
@@ -41,15 +44,28 @@
           {
               <p class="note">Пов'язаних об'єктів, яких DREAM не віддав: @result.MissingObjects. Поля з них не враховано.</p>
           }
-          <h3>Що додати</h3>
-          @if (result.Missing.Count == 0)
+          // англійські поля в наповненість не входять, тому окремо, як і в боті
+          var missing = result.Missing.Where(c => c.CountsInScore).ToList();
+          var english = result.Missing.Where(c => !c.CountsInScore).ToList();
+          <h2>Що додати</h2>
+          @if (missing.Count == 0)
           {
               <p>Усе, що доречне на цій стадії, заповнено.</p>
           }
           else
           {
               <ul class="plain">
-              @foreach (var check in result.Missing)
+              @foreach (var check in missing)
+              {
+                  <li><b>@check.Title.</b> @check.Why</li>
+              }
+              </ul>
+          }
+          @if (english.Count > 0)
+          {
+              <h3>Англійською, поза підрахунком</h3>
+              <ul class="plain">
+              @foreach (var check in english)
               {
                   <li><b>@check.Title.</b> @check.Why</li>
               }
@@ -63,31 +79,37 @@
           }
           </ul>
       }
+      <p class="note">Посилання на цю сторінку можна переслати тому, хто веде картку.</p>
     </section>
 }
 else if (Model.Code is not null && Model.Outcome is null)
 {
-    <section aria-labelledby="snapshot-title">
-      @if (Model.SnapshotCard is { } snapshot)
+    <section aria-labelledby="page-title">
+      @if (snapshotCard is { } snapshot)
       {
-          <h2 id="snapshot-title">@snapshot.Title</h2>
           <p class="summary-line"><span class="code">DREAM-UA-@snapshot.Code</span></p>
           <p>У знімку від @Format.Date(Model.Edition.Edition.Generated) заповнено @Model.Edition.ScoreFilled(snapshot) з @Model.Edition.ScoreApplicable(snapshot) доречних полів. Щоб побачити поточний стан, перевірте картку в DREAM.</p>
       }
       else
       {
-          <h2 id="snapshot-title">DREAM-UA-@Model.Code</h2>
           <p>Серед відкритих карток останнього знімка цієї немає. Її можна перевірити в DREAM кнопкою нижче.</p>
       }
       <form method="post" asp-page="/Check" asp-route-code="">
         <input type="hidden" name="code" value="@Model.Code">
-        <button class="primary" type="submit">Перевірити картку зараз</button>
+        <button class="primary" type="submit">Перевірити цю картку в DREAM</button>
       </form>
     </section>
 }
 
-<section class="block" aria-labelledby="form-title">
-  <h2 id="form-title">@(Model.Code is null ? "Яку картку перевірити" : "Інша картка")</h2>
-  <p>Сервіс забере картку з DREAM і порахує ті самі поля, що й для статичної сторінки. Результат зберігається на 10 хвилин.</p>
+@if (Model.Code is null)
+{
+    <p class="lead">Сервіс забере картку з DREAM у момент натискання і покаже, які поля, доречні на її стадії, заповнено. Результат зберігається 10 хвилин.</p>
+}
+<section class="@(Model.Code is null ? null : "block")" aria-labelledby="@(Model.Code is null ? "page-title" : "form-title")">
+  @if (Model.Code is not null)
+  {
+      <h2 id="form-title">Інша картка</h2>
+      <p>Сервіс забере картку з DREAM у момент натискання і покаже, які поля, доречні на її стадії, заповнено. Результат зберігається 10 хвилин.</p>
+  }
   <partial name="_CheckForm" model="new CheckFormModel(Model.Input, Model.InputError)" />
 </section>

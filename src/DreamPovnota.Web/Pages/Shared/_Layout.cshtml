@@ -4,6 +4,9 @@
         ?? "Які поля заповнено в картках проєктів відновлення в DREAM: перевірка картки, організації, області, історія змін, вивантаження й API. Незалежний проєкт на відкритих даних.";
     // адреса з запиту: за проксі Render схему й хост відновлює UseForwardedHeaders
     string origin = $"{Context.Request.Scheme}://{Context.Request.Host}";
+    // пункт меню поточного розділу, разом з його підсторінками на кшталт /digest/{ЄДРПОУ}
+    string? Current(string section) =>
+        Context.Request.Path.Equals(section, StringComparison.OrdinalIgnoreCase) || Context.Request.Path.StartsWithSegments(section) ? "page" : null;
 }
 <!doctype html>
 <html lang="uk">
@@ -45,10 +48,12 @@
 <header class="top">
   <a class="mark" href="/">dream-povnota <i>/ відкриті дані DREAM</i></a>
   <nav aria-label="Розділи">
-    <a href="/check">Перевірити картку</a>
-    <a href="/cards">Картки</a>
-    <a href="/orgs">Організації</a>
-    <a href="/about">Як рахується</a>
+    <a href="/check" aria-current="@Current("/check")">Перевірити картку</a>
+    <a href="/cards" aria-current="@Current("/cards")">Картки</a>
+    <a href="/orgs" aria-current="@Current("/orgs")">Організації</a>
+    <a href="/changes" aria-current="@Current("/changes")">Зміни за тижнями</a>
+    <a href="/digest" aria-current="@Current("/digest")">Зріз для служб</a>
+    <a href="/about" aria-current="@Current("/about")">Як рахується</a>
   </nav>
 </header>
 
