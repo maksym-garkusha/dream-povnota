@@ -1,0 +1,92 @@
+name: history-backup
+
+# Щотижня зберігає історію сервісу в окрему гілку history: перелік знімків, зміни карток
+# у кожному знімку і наповненість областей за знімками. Безкоштовна база Render не має
+# резервних копій, а в git видно кожну зміну, тож і підміну старих даних теж.
+# Гілка, а не реліз: файли змін дописуються по одному, git зберігає тільки різницю,
+# а теги й релізи щотижня засмічували б сторінку репозиторію.
+on:
+  schedule:
+    # вівторок 07:23 UTC: сервіс уже розбудив keep-warm, а понеділковий зріз позаду
+    - cron: '23 7 * * 2'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: history-backup
+  cancel-in-progress: false
+
+env:
+  SERVICE_URL: https://dream-povnota.onrender.com
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # запис потрібен лише для пушу в гілку history
+    permissions:
+      contents: write
+    defaults:
+      run:
+        # pipefail: збій curl посеред конвеєра з jq має валити крок, а не писати порожній файл
+        shell: bash
+    steps:
+      - uses: step-security/harden-runner@1d88384fd173af6ecb012dfd0264a306b711241a # v2.22.4
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+      - name: Switch to the history branch
+        run: |
+          if git ls-remote --exit-code --heads origin history > /dev/null; then
+            git fetch --depth=1 origin history
+            git switch --create history FETCH_HEAD
+          else
+            git switch --orphan history
+          fi
+      # 503 від сплячого сервісу curl повторює сам; якщо історії немає, крок падає і нічого не комітиться
+      - name: Fetch the history from the service
+        run: |
+          get() { curl -fsS --max-time 100 --retry 4 --retry-delay 20 "$SERVICE_URL$1"; }
+          get /api/v1/snapshots | jq . > snapshots.json
+          mkdir -p changes trends/regions
+          for id in $(jq -r '.[].id' snapshots.json); do
+            file="changes/$(printf %05d "$id").json"
+            # зміни вже записаного знімка не змінюються, тож качаються тільки нові
+            [ -f "$file" ] && continue
+            get "/api/v1/changes?snapshot=$id" | jq . > "$file"
+            sleep 1
+          done
+          # окремим присвоєнням: збій у підстановці всередині for крок не валить
+          regions=$(get /api/v1/meta | jq -r '.regions[].key')
+          for key in $regions; do
+            get "/api/v1/regions/$key/trend" | jq . > "trends/regions/$key.json"
+            sleep 1
+          done
+          cat > README.md <<'TEXT'
+          # Резервна копія історії dream-povnota
+
+          Гілку щотижня оновлює workflow `history-backup.yml` з гілки `main`. Усе взято з відкритого API
+          сервісу https://dream-povnota.onrender.com, описаного в README проєкту.
+
+          - `snapshots.json`: знімки, найновіший перший (`/api/v1/snapshots`).
+          - `changes/NNNNN.json`: зміни карток у знімку порівняно з попереднім (`/api/v1/changes?snapshot=N`).
+            Для першого знімка і знімків зі зміною правил список порожній, як і в API. Файл пишеться один раз.
+          - `trends/regions/КЛЮЧ.json`: наповненість області за знімками (`/api/v1/regions/КЛЮЧ/trend`).
+
+          Персональних даних тут немає, як і в API. Незалежний навчальний проєкт на відкритих даних,
+          не пов'язаний з державними органами, не офіційна статистика.
+          TEXT
+      - name: Commit to the history branch
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Нових знімків немає"
+            exit 0
+          fi
+          last=$(jq -r '.[0].id' snapshots.json)
+          git -c user.name="Maksym Harkusha" -c user.email="128023116+maksym-garkusha@users.noreply.github.com" \
+            commit --quiet --message "Back up the history up to snapshot $last"
+          git push origin history
