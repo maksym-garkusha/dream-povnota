@@ -4,7 +4,7 @@ How complete the project records in the DREAM system are: which fields are fille
 
 **Live page: [maksym-garkusha.github.io/dream-povnota](https://maksym-garkusha.github.io/dream-povnota/)** (in Ukrainian). The data is refreshed every day. The top of the page has a few key findings, each with a button that shows the records behind it; below are a tile map of the regions and the list of records, which can be filtered to one region and downloaded as CSV to pass on to communities.
 
-**Web service: [dream-povnota.onrender.com](https://dream-povnota.onrender.com)** (in Ukrainian). It checks a single record right now, shows organisation and region pages with a change history, exports any selection to CSV or Excel and serves the same data through an API. It runs on a free plan and goes to sleep when nobody uses it, so the first request after a pause can take about a minute. See [Web service](#web-service).
+**Web service: [dream-povnota.onrender.com](https://dream-povnota.onrender.com)** (in Ukrainian). It checks a single record right now, shows organisation and region pages with a change history, exports any selection to CSV or Excel and serves the same data through an API. It runs on a free plan. An uptime monitor polls it around the clock, so it normally stays awake; if it does fall asleep, the first request takes about a minute. See [Web service](#web-service).
 
 **Telegram bot: [@dream_povnota_bot](https://t.me/dream_povnota_bot)** (in Ukrainian). Send it a DREAM project code or a record link and it replies with the relevant fields that are filled in and those that are missing.
 
@@ -431,7 +431,7 @@ Free plan limits according to the Render documentation as of November 2026:
 - 0.1 CPU and 512 MB of memory; the service sleeps after 15 minutes without requests and takes about a minute to wake up;
 - 750 running hours a month for the whole account and 5 GB of outbound traffic, which is why responses are compressed and cached and requests to DREAM are limited;
 - the free database has 1 GB of disk and stops working 30 days after it is created; 14 days later it is deleted. The site keeps working after that, because the current state comes from Pages, but the history is lost unless the database is moved to a paid plan or another PostgreSQL first. Moving means changing `DATABASE_URL`; nothing in the code changes;
-- `keep-warm.yml` opens `/health/live` every 10 minutes on weekdays from 07:00 to 19:00 Kyiv time (an hour later in summer) so that the service does not fall asleep. That is about 265 hours a month.
+- `keep-warm.yml` opens `/health/live` every 10 minutes on weekdays from 07:00 to 19:00 Kyiv time (an hour later in summer) so that the service does not fall asleep. That is about 265 hours a month. An external uptime monitor opens `/health/ready` every 10 minutes around the clock, so the service currently never sleeps: a 31-day month is 744 of the 750 hours. A second free service would not fit on this account, and `keep-warm.yml` stays as a fallback in case the monitor is switched off.
 
 The keys that sign the live check form tokens are stored in the same database without encryption: they only protect against a forged form and have nothing to do with personal data. The Data Protection warning about a missing key encryptor in the log is therefore expected.
 
