@@ -136,6 +136,8 @@ public sealed class ImportService(
             db.MarkUp();
             if (snapshot is null) return;
 
+            // транзакцію знімка вже закомічено: спершу нове покоління ключа кешу, потім очищення
+            store.HistoryChanged();
             await outputCache.EvictByTagAsync(CacheTag, ct);
             log.LogInformation("Знімок {Snapshot} записано за {Elapsed:0.0} с", snapshot, Stopwatch.GetElapsedTime(started).TotalSeconds);
         }

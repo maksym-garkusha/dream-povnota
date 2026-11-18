@@ -85,6 +85,29 @@ public class ImportServiceTests
     }
 
     [PostgresFact]
+    public async Task New_edition_and_its_snapshot_each_move_the_cache_generation()
+    {
+        await using var database = await TestDatabase.CreateAsync();
+        var configuration = new ConfigurationBuilder().AddInMemoryCollection([new("DATA_URL", "https://pages.example/data.json")]).Build();
+        var store = new EditionStore();
+        using var exports = new ExportFiles(NullLogger<ExportFiles>.Instance);
+        using var service = new ImportService(
+            new EditionSource(new HttpClient(new FlakyPages(failures: 0)), configuration),
+            store,
+            database.Db,
+            new DbKeyRepository(database.Db, NullLogger<DbKeyRepository>.Instance),
+            exports,
+            new NoOutputCache(),
+            TimeProvider.System,
+            NullLogger<ImportService>.Instance);
+
+        Assert.True(await service.ImportOnceAsync(CancellationToken.None));
+
+        Assert.Equal(1L, await database.ScalarAsync<long>("select count(*) from snapshot"));
+        Assert.Equal(2, store.Generation);
+    }
+
+    [PostgresFact]
     public async Task Form_key_made_while_the_database_was_down_is_saved_on_the_next_import()
     {
         await using var database = await TestDatabase.CreateAsync();

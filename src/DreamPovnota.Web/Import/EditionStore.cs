@@ -8,8 +8,17 @@ public sealed class EditionStore
 {
     private LoadedEdition? current;
     private ImportStatus status = new(null, null, null);
+    private long generation;
 
     public LoadedEdition? Current => Volatile.Read(ref current);
+
+    /// <summary>
+    /// Росте з кожним новим випуском і знімком історії; входить у ключ кешу відповідей.
+    /// Самого очищення кешу за тегом мало: запит, який прочитав дані за мить до зміни,
+    /// кладе відповідь у кеш уже після очищення. З поколінням у ключі вона лягає під
+    /// старий ключ, і нові запити її не бачать.
+    /// </summary>
+    public long Generation => Interlocked.Read(ref generation);
 
     public ImportStatus Status => Volatile.Read(ref status);
 
@@ -21,7 +30,11 @@ public sealed class EditionStore
     {
         Volatile.Write(ref current, edition);
         Volatile.Write(ref status, new ImportStatus(at, at, null));
+        Interlocked.Increment(ref generation);
     }
+
+    /// <summary>Знімок історії закомічено: відповіді з історією, зібрані раніше, застаріли.</summary>
+    public void HistoryChanged() => Interlocked.Increment(ref generation);
 
     public void Checked(DateTimeOffset at) =>
         Volatile.Write(ref status, Status with { LastChecked = at, LastError = null });

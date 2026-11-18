@@ -121,22 +121,7 @@ builder.Services.AddOpenApi(o => o.AddDocumentTransformer((document, _, _) =>
         "Незалежний навчальний проєкт на відкритих даних, не пов'язаний з державними органами.";
     return Task.CompletedTask;
 }));
-builder.Services.AddOutputCache(o =>
-{
-    o.SizeLimit = 64 * 1024 * 1024;
-    o.MaximumBodySize = 8 * 1024 * 1024;
-    o.AddPolicy(ImportService.CacheTag, policy => policy
-        .Expire(ImportService.Interval)
-        .SetVaryByQuery("*")
-        .Tag(ImportService.CacheTag));
-    // вивантаження кешуються тільки за параметрами фільтра; повний файл без фільтра лежить готовим
-    // на диску (ExportFiles), тож у кеш у пам'яті його не кладемо
-    o.AddPolicy(CardsApi.ExportCachePolicy, policy => policy
-        .Expire(ImportService.Interval)
-        .SetVaryByQuery(CardFilter.FilterNames)
-        .With(context => CardFilter.FilterNames.Any(name => !string.IsNullOrWhiteSpace(context.HttpContext.Request.Query[name])))
-        .Tag(ImportService.CacheTag));
-});
+builder.Services.AddOutputCache(CachePolicies.Configure);
 builder.Services.AddResponseCompression(o =>
 {
     o.EnableForHttps = true;
