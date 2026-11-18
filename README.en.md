@@ -180,6 +180,7 @@ tests/       xUnit; fixtures are real API responses with personal names replaced
 - checking a single record at the moment of the request: paste a DREAM project code or record link, and the service fetches it from the API and evaluates the same fields as the page;
 - organisation and region pages listing the fields that are missing, with links to the records that lack each field;
 - a change history from snapshot to snapshot, with Atom feeds per organisation and region;
+- changes by week: how many records were updated, how many fields filled in, how many records appeared and moved to another stage, with a separate total for the restoration agency and services (see [Changes by week](#changes-by-week));
 - CSV and Excel export of any selection;
 - an open API described with OpenAPI;
 - a Telegram bot with the same record check, when it is switched on (see [Telegram bot](#telegram-bot)).
@@ -255,6 +256,7 @@ curl 'https://dream-povnota.onrender.com/api/v1/changes?region=74'
 | `/api/v1/orgs`, `/api/v1/orgs/{key}`, `/api/v1/orgs/{key}/trend` | organisation search, one organisation, completeness by snapshot |
 | `/api/v1/regions`, `/api/v1/regions/{key}`, `/api/v1/regions/{key}/trend` | the same for regions |
 | `/api/v1/snapshots`, `/api/v1/changes` | snapshots, and record changes in a snapshot (`snapshot`, `org`, `region`) |
+| `/api/v1/changes/summary` | changes by week and by day for the first week, the same figures as on `/changes` |
 
 A record code is written without `DREAM-UA-`. An organisation key is its EDRPOU code, or `n:` and the name for an organisation without one. A region key is the two KATOTTG digits (`74`), `multi` or `none`. One IP address can make 120 requests and 10 file exports a minute.
 
@@ -343,6 +345,14 @@ curl -sS "https://api.telegram.org/bot$TOKEN/setWebhook" \
 ```
 
 If Render has its own `TELEGRAM_WEBHOOK_SECRET`, use `read -rs SECRET` instead of the second line. `curl -sS "https://api.telegram.org/bot$TOKEN/getWebhookInfo"` in the same shell shows the webhook state: `pending_update_count` is the queue on Telegram's side and `last_error_message` the latest delivery error, if there was one. Links in replies point to `https://dream-povnota.onrender.com`; the `PUBLIC_URL` variable sets a different address. While the free instance is asleep, the first message waits about a minute for the service to wake up.
+
+### Changes by week
+
+The [`/changes`](https://dream-povnota.onrender.com/changes) page counts, from the service's own history, what changed in the open records each week: in how many records the update date in DREAM changed, how many fields were filled in and which ones, how many records appeared and how many moved to another stage. The same figures are given as one total for the restoration agency and services from the digest list, without comparing the services with each other, plus up to three examples of where the most fields were filled in that week. The first week of the history is also shown day by day. DREAM does not publish a change history, so these figures exist only from the point the service started collecting them, 18 November 2026.
+
+Weeks are ISO weeks, from Monday, in Kyiv time. Each period is compared as a whole: the records in the last snapshot before it starts against the last snapshot inside it. A record changed twice in one week therefore counts once, and the days need not add up to the week. A field counts as filled in if it was relevant at the record's stage and empty at the start and filled in at the end; the bit masks of the two snapshots are matched by check code, since the list of checks may have changed. "Updated within the last year" is not counted as a field here, as it follows from the update date. At most the last 12 weeks are shown.
+
+The SVG charts are drawn by the server, with no scripts and no inline styles, so the CSP stays as strict as before. Each group of charts is followed by a table with the same figures. `/api/v1/changes/summary` returns these totals, and the [`/changes.atom`](https://dream-povnota.onrender.com/changes.atom) feed has one entry per week; the entry for the current week is updated with every snapshot. `/api/v1/changes` was already taken by record changes in a single snapshot (the history backup reads it), so the summary sits next to it.
 
 ### Digest for the restoration services
 
