@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Security.Cryptography;
 using System.Text.Json;
 using DreamPovnota.Digest;
 using DreamPovnota.Dream;
@@ -17,17 +18,20 @@ public static class DigestCommand
     {
         var clock = Stopwatch.StartNew();
         Edition edition;
+        string sha256;
         try
         {
-            await using var file = File.OpenRead(editionPath);
-            edition = await Edition.ReadAsync(file, ct);
+            // хеш рахується з тих самих байтів, що й розбір, а не з окремого читання файлу
+            byte[] body = await File.ReadAllBytesAsync(editionPath, ct);
+            sha256 = Convert.ToHexStringLower(SHA256.HashData(body));
+            edition = await Edition.ReadAsync(new MemoryStream(body, writable: false), ct);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidDataException)
         {
             Console.Error.WriteLine($"data.json не прочитано: {ex.Message}");
             return 1;
         }
-        log.WriteLine($"Випуск від {edition.Generated:u}, тиждень {DigestText.Period(DigestBuilder.WeekFrom(edition), DigestBuilder.WeekTo(edition))}");
+        log.WriteLine($"Випуск від {edition.Generated:u}, SHA-256 {sha256}, тиждень {DigestText.Period(DigestBuilder.WeekFrom(edition), DigestBuilder.WeekTo(edition))}");
 
         foreach (var (edrpou, title) in DigestOrganisations.Unlisted(edition.Organisations.Select(o => (o.Edrpou, o.Title))))
             log.WriteLine($"Схожа організація, якої немає в переліку: {edrpou ?? "без ЄДРПОУ"} {title}");
@@ -39,7 +43,7 @@ public static class DigestCommand
         int files = 0;
         foreach (var organisation in DigestOrganisations.All)
         {
-            var digest = DigestBuilder.Build(edition, organisation, baseline);
+            var digest = DigestBuilder.Build(edition, sha256, organisation, baseline);
 
             string xlsx = Path.Combine(directory, digest.FileName("xlsx"));
             await using (var file = File.Create(xlsx)) await DigestWorkbook.WriteAsync(file, digest, ct);

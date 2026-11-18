@@ -10,9 +10,10 @@ public static class MetaApi
     {
         app.MapGet("/api/v1/meta", (EditionStore store) =>
             {
-                var e = store.Require().Edition;
+                var loaded = store.Require();
+                var e = loaded.Edition;
                 return TypedResults.Ok(new MetaInfo(
-                    new EditionInfo(e.Generated, e.Synced, e.Cards.Count),
+                    new EditionInfo(e.Generated, e.Synced, e.Cards.Count, loaded.Sha256),
                     e.Checks.Select(c => new CheckInfo(c.Code, c.Title, c.Group, c.CountsInScore, c.From, c.Until, c.Condition, c.Why)).ToList(),
                     e.Regions.Select(r => new KeyTitle(r.Key, r.Title)).ToList(),
                     e.Stages.Select(s => new KeyTitle(s.Key, s.Title)).ToList(),

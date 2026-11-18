@@ -96,6 +96,21 @@ public class DigestTests : IClassFixture<WebFactory>
     }
 
     [Fact]
+    public async Task Service_prints_the_hash_of_the_edition_it_accepted_in_both_files()
+    {
+        var client = await factory.ReadyClientAsync();
+        string prefix = Convert.ToHexStringLower(SHA256.HashData(await File.ReadAllBytesAsync(EditionPath)))[..16];
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(await client.GetByteArrayAsync("/digest/25845655.pdf"));
+        var sheet = MiniExcelLibs.MiniExcel.Query(new MemoryStream(await client.GetByteArrayAsync("/digest/25845655.xlsx")), useHeaderRow: true, sheetName: DigestWorkbook.SummarySheet)
+            .Cast<IDictionary<string, object?>>()
+            .ToDictionary(row => (string)row["Показник"]!, row => row["Значення"]);
+
+        Assert.Contains(prefix, string.Join(" ", pdf.GetPage(1).GetWords().Select(w => w.Text)), StringComparison.Ordinal);
+        Assert.Equal(prefix, sheet["SHA-256 data.json, перші 16 знаків"]);
+    }
+
+    [Fact]
     public async Task Baseline_without_a_database_is_unavailable_and_checks_its_date()
     {
         var client = await factory.ReadyClientAsync();
@@ -144,7 +159,7 @@ public class DigestTests : IClassFixture<WebFactory>
         await using var web = new WebFactory { DataUrl = EditionPath, DatabaseUrl = database.Url };
         var client = await web.ReadyClientAsync();
         var baseline = await new DigestHistoryClient(client).FetchAsync(client.BaseAddress!.ToString(), DigestBuilder.WeekFrom(current.Edition), CancellationToken.None);
-        var digest = DigestBuilder.Build(current.Edition, DigestOrganisations.Find("05422303")!, baseline);
+        var digest = DigestBuilder.Build(current.Edition, current.Sha256, DigestOrganisations.Find("05422303")!, baseline);
         string html = await client.GetStringAsync("/digest/05422303");
 
         // PostgreSQL зберігає час з точністю до мікросекунди

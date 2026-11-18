@@ -118,5 +118,8 @@ public class ApiTests : IClassFixture<WebFactory>
 
         Assert.Equal(edition.Edition.Checks.Count, json.RootElement.GetProperty("checks").GetArrayLength());
         Assert.Equal(edition.Edition.Regions.Count, json.RootElement.GetProperty("regions").GetArrayLength());
+        // той самий хеш, що в sha256sum data.json і в атестації site.yml
+        string sha256 = Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(await File.ReadAllBytesAsync(Fixtures.EditionPath)));
+        Assert.Equal(sha256, json.RootElement.GetProperty("edition").GetProperty("sha256").GetString());
     }
 }

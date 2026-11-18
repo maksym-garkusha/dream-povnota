@@ -57,6 +57,7 @@ public static class DigestWorkbook
             ("Організація", d.Organisation.Title),
             ("ЄДРПОУ", d.Organisation.Edrpou),
             ("Випуск даних", DigestText.DateTime(d.Generated)),
+            ("SHA-256 data.json, перші 16 знаків", d.EditionHashPrefix),
             ("Відкритих карток", d.Open),
             ("Заповнено все доречне", d.Complete),
             ($"Оновлено за тиждень, {d.WeekTitle}", d.UpdatedThisWeek),

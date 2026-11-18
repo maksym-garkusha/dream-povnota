@@ -248,7 +248,7 @@ curl 'https://dream-povnota.onrender.com/api/v1/changes?region=74'
 
 | Path | Returns |
 |---|---|
-| `/api/v1/meta` | data edition, checks, regions, stages, sectors |
+| `/api/v1/meta` | data edition with the file's SHA-256, checks, regions, stages, sectors |
 | `/api/v1/cards` | records with a filter: `q`, `region`, `org`, `stage`, `sector`, `missing`, `seeks=1`, `page`, `pageSize` up to 500 |
 | `/api/v1/cards/{code}`, `/api/v1/cards/{code}/history` | one record; the same with its versions in the history |
 | `/api/v1/cards.csv`, `/api/v1/cards.xlsx` | the same selection as a file, all rows |
@@ -351,7 +351,7 @@ A weekly digest for the State Agency for Restoration and Infrastructure Developm
 Each organisation gets two files:
 
 - an xlsx workbook with the sheets "Зріз" (summary), "Картки" (stage, fields not filled, what to add first, link to the DREAM record) and "Що змінилось за тиждень" (which records were updated and which fields were filled in during the week);
-- a one-page A4 PDF: open records, how many have every applicable field filled, how many were updated during the week, up to five fields that are easiest to add, and a link to the organisation page.
+- a one-page A4 PDF: open records, how many have every applicable field filled, how many were updated during the week, up to five fields that are easiest to add, and a link to the organisation page. The footer gives the edition date and the first 16 characters of the SHA-256 of the `data.json` the file was built from; the "Зріз" sheet of the xlsx has them too.
 
 The week is the seven days up to and including the edition date. "Updated this week" uses the record's update date in DREAM. Newly filled fields come from the history in the service database: the state of the records at the start of the week is compared with the current edition, by check code rather than by bit. History starts on 18 November 2026, and until it covers a full week the files say so. "What to add first" follows the order in `DigestEase`: fields picked from a list or written in one line come first (sector, English title, duration), then texts, files and the cost estimate. As on the pages, English fields do not count towards "every applicable field filled", so for a record they come first only once everything else is filled.
 
@@ -363,7 +363,7 @@ The same without the service:
 dotnet run -- digest --edition ../../site/data.json --history https://dream-povnota.onrender.com ../../digest
 ```
 
-`--history` points to where the start-of-week state comes from (`/api/v1/digest/baseline`). Without it, or if the service does not answer, the digest is built without newly filled fields and the files say so. Every Monday the `digest.yml` workflow does the same: the files stay as a workflow artifact for 30 days and are not published on Pages.
+`--history` points to where the start-of-week state comes from (`/api/v1/digest/baseline`). Without it, or if the service does not answer, the digest is built without newly filled fields and the files say so. Every Monday the `digest.yml` workflow does the same: the files stay as a workflow artifact for 30 days and are not published on Pages. Before building, it compares the SHA-256 of `data.json` on Pages with `/api/v1/meta` and builds nothing if they differ (see [Data integrity](#data-integrity)).
 
 The PDF is written with PdfPig 0.1.16 and the xlsx with MiniExcel 1.47.1, both under the Apache 2.0 licence. The PDF embeds IBM Plex Sans 3.004; its SIL Open Font License 1.1 sits next to the font in `src/DreamPovnota.Core/Digest/Fonts/OFL.txt`. The author property of the files is "Максим Гаркуша"; Creator and Producer carry the project name.
 
@@ -378,6 +378,8 @@ The service does not accept a new `data.json` in which far more changed at once 
 The previous edition then stays current. `/health/ready` shows the type of the reason in `lastError` (`EditionGuard: open-cards`, `EditionGuard: organisations` or `EditionGuard: changed-cards`), and the figures go to the log at Warning level. The reason stays until the next edition is accepted.
 
 Where the limits come from. The `data.json` of 18 November 2026 has 14,610 open records and 2,834 organisations. Over the last 12 months the busiest day saw 116 records (0.8%) last updated on 25 March 2026; no other day had more than 33 (0.2%). The update date in `data.json` is the latest one, so these are lower bounds. By the date in the project code, the most records created in one day was 355 on 11 September 2023, 2.4% of today's open records; the busiest week, 19 to 25 August 2024, had 1,051 (7.2%). On the service, neighbouring snapshots of 18 November 2026 all had 14,610 open records, with 0 to 2 records changed. So 5% and 20% leave ample room for an ordinary day and for a week without a published edition. DREAM has had mass updates too: 3,746 records, 25.6% of today's open ones, were last updated on 23 January 2025. If such an update changes fields, the guard will stop it, and the edition will have to be accepted by hand.
+
+`/api/v1/meta` returns the SHA-256 of the accepted edition in `edition.sha256`, in the same form as `sha256sum data.json` prints it. The service builds the digest right after the import and only from the accepted edition, and the first 16 characters of the hash, with the edition date, appear in the PDF footer and on the "Зріз" sheet of the xlsx. A recipient can check which file a digest was built from.
 
 A genuine jump is accepted like this: check that `site.yml` built the file from this repository's code, and put its SHA-256 into the `ImportGuard__AcceptSha256` variable on Render. It applies only to the file with that hash. The limits are set with `ImportGuard__OpenCardsPercent`, `ImportGuard__OrganisationsPercent` and `ImportGuard__ChangedCardsPercent`.
 

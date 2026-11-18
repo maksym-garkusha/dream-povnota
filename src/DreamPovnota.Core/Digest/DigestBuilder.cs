@@ -33,8 +33,12 @@ public static class DigestBuilder
     public static DateTimeOffset BaselineAt(Edition edition) =>
         new(WeekFrom(edition).ToDateTime(TimeOnly.MinValue), TimeSpan.Zero);
 
-    public static OrganisationDigest Build(Edition edition, DigestOrganisation organisation, DigestBaseline? baseline)
+    /// <param name="editionSha256">SHA-256 файлу data.json у hex: друкується у файлах зрізу.</param>
+    public static OrganisationDigest Build(Edition edition, string editionSha256, DigestOrganisation organisation, DigestBaseline? baseline)
     {
+        if (editionSha256.Length != 64 || !editionSha256.All(char.IsAsciiHexDigitLower))
+            throw new ArgumentException("SHA-256 має бути 64 знаками hex малими літерами", nameof(editionSha256));
+
         int scoreMask = edition.Checks
             .Select((check, i) => check.CountsInScore ? 1 << i : 0)
             .Aggregate(0, (mask, bit) => mask | bit);
@@ -58,6 +62,7 @@ public static class DigestBuilder
         return new OrganisationDigest(
             organisation,
             edition.Generated,
+            editionSha256,
             weekFrom,
             weekTo,
             digestCards,

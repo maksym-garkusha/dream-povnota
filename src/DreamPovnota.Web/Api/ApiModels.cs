@@ -31,7 +31,8 @@ public sealed record CheckCount(string Code, int Applicable, int Filled);
 
 public sealed record SliceItem(string Key, string Title, int Open, int Complete, double AvgScore, IReadOnlyList<CheckCount> Checks);
 
-public sealed record EditionInfo(DateTimeOffset Generated, DateTimeOffset? Synced, int Open);
+/// <param name="Sha256">SHA-256 прийнятого data.json у hex: так само, як sha256sum і атестація в site.yml.</param>
+public sealed record EditionInfo(DateTimeOffset Generated, DateTimeOffset? Synced, int Open, string Sha256);
 
 public sealed record CheckInfo(string Code, string Title, string Group, bool Score, string From, string Until, string? Condition, string Why);
 

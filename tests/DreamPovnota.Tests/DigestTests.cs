@@ -1,4 +1,5 @@
 using System.IO.Compression;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using DreamPovnota.Digest;
@@ -24,8 +25,12 @@ public partial class DigestTests
         return await Edition.ReadAsync(file);
     }
 
+    /// <summary>SHA-256 фікстури, як його рахує сервіс і друкує sha256sum.</summary>
+    private static readonly string EditionSha256 =
+        Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Fixture.Path("digest-edition.json"))));
+
     private static OrganisationDigest Build(Edition edition, string edrpou, DigestBaseline? baseline = null) =>
-        DigestBuilder.Build(edition, DigestOrganisations.Find(edrpou)!, baseline);
+        DigestBuilder.Build(edition, EditionSha256, DigestOrganisations.Find(edrpou)!, baseline);
 
     /// <summary>Стан на початок тижня, такий самий, як тепер, з тими самими бітами.</summary>
     private static DigestBaseline SameAsNow(Edition edition, DateTimeOffset historyFrom) => new(
@@ -249,9 +254,37 @@ public partial class DigestTests
 
         foreach (var organisation in DigestOrganisations.All)
         {
-            using var document = PdfDocument.Open(DigestPdf.Write(DigestBuilder.Build(edition, organisation, null)));
+            using var document = PdfDocument.Open(DigestPdf.Write(DigestBuilder.Build(edition, EditionSha256, organisation, null)));
             Assert.Equal(1, document.NumberOfPages);
         }
+    }
+
+    [Fact]
+    public async Task Pdf_footer_and_summary_sheet_name_the_edition_and_its_hash()
+    {
+        var digest = Build(await EditionAsync(), Cherkasy);
+        using var xlsx = new MemoryStream();
+
+        await DigestWorkbook.WriteAsync(xlsx, digest, CancellationToken.None);
+        string cells = CellText(Parts(xlsx.ToArray()));
+        using var pdf = PdfDocument.Open(DigestPdf.Write(digest));
+        string text = string.Join(" ", pdf.GetPage(1).GetWords().Select(w => w.Text));
+
+        Assert.Equal(EditionSha256[..16], digest.EditionHashPrefix);
+        Assert.Contains($"Випуск даних {DigestText.DateTime(digest.Generated)}, SHA-256 файлу data.json починається з {EditionSha256[..16]}.", text, StringComparison.Ordinal);
+        Assert.Contains("SHA-256 data.json, перші 16 знаків\n" + EditionSha256[..16], cells, StringComparison.Ordinal);
+        Assert.DoesNotContain(EditionSha256[..17], text + cells, StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("D87A91D62E4AFD678D944905A1C0225B35F48DD80E3A0628C919E7BE4ACA498E")]
+    [InlineData("d87a91d62e4afd67")]
+    public async Task Digest_needs_the_full_lowercase_sha256_of_its_edition(string sha256)
+    {
+        var edition = await EditionAsync();
+
+        Assert.Throws<ArgumentException>(() => DigestBuilder.Build(edition, sha256, DigestOrganisations.All[0], null));
     }
 
     [Fact]
@@ -271,6 +304,8 @@ public partial class DigestTests
             string text = CellText(Parts(xlsx.ToArray()));
             using var pdf = PdfDocument.Open(DigestPdf.Write(digest));
             text += string.Join(" ", pdf.GetPage(1).GetWords().Select(w => w.Text));
+            // у hex хешу випадково бувають підряд вісім чи десять цифр
+            text = text.Replace(digest.EditionHashPrefix, "", StringComparison.Ordinal);
 
             Assert.DoesNotContain("010125-BBBBBBBB", text, StringComparison.Ordinal);
             Assert.DoesNotContain("Фізична особа", text, StringComparison.Ordinal);

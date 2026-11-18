@@ -64,7 +64,7 @@ public sealed class DigestFiles(HistoryReader history, TimeProvider clock, ILogg
         var entries = new List<DigestEntry>(DigestOrganisations.All.Count);
         foreach (var organisation in DigestOrganisations.All)
         {
-            var digest = DigestBuilder.Build(loaded.Edition, organisation, baseline);
+            var digest = DigestBuilder.Build(loaded.Edition, loaded.Sha256, organisation, baseline);
             using var xlsx = new MemoryStream();
             await DigestWorkbook.WriteAsync(xlsx, digest, CancellationToken.None);
             entries.Add(new DigestEntry(

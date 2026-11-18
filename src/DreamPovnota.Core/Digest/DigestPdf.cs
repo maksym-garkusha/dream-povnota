@@ -90,6 +90,8 @@ public static class DigestPdf
         p.Link(d.DigestPage, 10.5);
 
         p.Footer(
+            $"Випуск даних {DigestText.DateTime(d.Generated)}, SHA-256 файлу data.json починається з {d.EditionHashPrefix}. " +
+            "Повний хеш є в /api/v1/meta сервісу, а походження data.json підтверджує атестація GitHub. " +
             "Незалежний навчальний проєкт на відкритих даних, не пов'язаний з державними органами, не офіційна статистика. " +
             "Дані: публічний API DREAM (dream.gov.ua), ліцензія CC BY 4.0. «Заповнено все доречне» рахується без англійських полів, як на сторінці організації.");
     }

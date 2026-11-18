@@ -32,6 +32,23 @@ jobs:
       # зріз однаково збирається, а у файлах сказано, що історії немає
       - name: Wake the service
         run: curl -fsS --max-time 100 --retry 2 --retry-delay 10 -o /dev/null "$SERVICE_URL/health/live" || echo "Сервіс не відповів"
+      # зріз адресний, тож збирається лише з випуску, який прийняв запобіжник сервісу:
+      # SHA-256 файлу з Pages має збігтися з /api/v1/meta. Поки сервіс щойно прокинувся
+      # і ще завантажує випуск, meta відповідає 503, тому кілька спроб
+      - name: Check that the service accepted this edition
+        run: |
+          expected=$(sha256sum data.json | cut -d' ' -f1)
+          accepted=""
+          for attempt in 1 2 3 4 5 6; do
+            accepted=$(curl -fsS --max-time 60 "$SERVICE_URL/api/v1/meta" | jq -r '.edition.sha256 // empty') && [ -n "$accepted" ] && break
+            sleep 20
+          done
+          echo "data.json з Pages:  $expected"
+          echo "прийнятий сервісом: ${accepted:-немає відповіді}"
+          if [ "$accepted" != "$expected" ]; then
+            echo "::error::Сервіс не прийняв цей випуск data.json або ще не завантажив його. Причина в /health/ready, зріз не зібрано."
+            exit 1
+          fi
       - name: Build the digest
         working-directory: src/DreamPovnota
         run: dotnet run -c Release -- digest --edition ../../data.json --history "$SERVICE_URL" ../../digest

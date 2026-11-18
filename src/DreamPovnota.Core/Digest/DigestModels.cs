@@ -89,11 +89,13 @@ public enum HistoryCoverage
 }
 
 /// <summary>Зріз однієї організації на дату випуску data.json.</summary>
+/// <param name="EditionSha256">SHA-256 файлу data.json, з якого зібрано зріз, у hex малими літерами.</param>
 /// <param name="WeekFrom">Перший день тижня; тиждень це сім днів до дати випуску включно.</param>
 /// <param name="ComparedWith">Дата знімка, з яким порівнювали; null без історії.</param>
 public sealed record OrganisationDigest(
     DigestOrganisation Organisation,
     DateTimeOffset Generated,
+    string EditionSha256,
     DateOnly WeekFrom,
     DateOnly WeekTo,
     IReadOnlyList<DigestCard> Cards,
@@ -115,6 +117,9 @@ public sealed record OrganisationDigest(
     public string DigestPage => DigestBuilder.ServiceUrl + "/digest/" + Organisation.Edrpou;
 
     public string WeekTitle => DigestText.Period(WeekFrom, WeekTo);
+
+    /// <summary>Перші 16 знаків хешу: досить, щоб звірити файл з /api/v1/meta чи атестацією, і вміщається в рядок.</summary>
+    public string EditionHashPrefix => EditionSha256[..16];
 
     /// <summary>Одне речення про те, наскільки повна історія за тиждень.</summary>
     public string HistoryNote => History switch
