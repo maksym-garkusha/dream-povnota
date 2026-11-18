@@ -8,4 +8,14 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MiniExcel" Version="1.47.1" />
+    <PackageReference Include="PdfPig" Version="0.1.16" />
+  </ItemGroup>
+
+  <!-- шрифт для PDF зрізу; ліцензія OFL.txt лежить поруч -->
+  <ItemGroup>
+    <EmbeddedResource Include="Digest\Fonts\*.ttf" LogicalName="DreamPovnota.Digest.Fonts.%(Filename)%(Extension)" />
+  </ItemGroup>
+
 </Project>

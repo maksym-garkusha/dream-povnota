@@ -1,0 +1,48 @@
+using System.Globalization;
+
+namespace DreamPovnota.Digest;
+
+/// <summary>Числа, дати й відмінки для зрізу; веб-сторінки беруть звідси ж <see cref="Plural"/>.</summary>
+public static class DigestText
+{
+    private static readonly CultureInfo Ukrainian = CultureInfo.GetCultureInfo("uk-UA");
+
+    // в образі без бази часових поясів показуємо дату за UTC, а не падаємо
+    private static readonly TimeZoneInfo Kyiv =
+        TimeZoneInfo.TryFindSystemTimeZoneById("Europe/Kyiv", out var zone) ? zone : TimeZoneInfo.Utc;
+
+    public static string Number(int value) => value.ToString("N0", Ukrainian);
+
+    public static string Date(DateOnly date) => date.ToString("dd.MM.yyyy", Ukrainian);
+
+    public static string Date(DateTimeOffset moment) => TimeZoneInfo.ConvertTime(moment, Kyiv).ToString("dd.MM.yyyy", Ukrainian);
+
+    public static string DateTime(DateTimeOffset moment) =>
+        TimeZoneInfo.ConvertTime(moment, Kyiv).ToString("dd.MM.yyyy, HH:mm", Ukrainian)
+        + (Kyiv == TimeZoneInfo.Utc ? " UTC" : " за Києвом");
+
+    /// <summary>«12.11–18.11.2026»; якщо тиждень на межі років, обидві дати повністю.</summary>
+    public static string Period(DateOnly from, DateOnly to) =>
+        from.Year == to.Year
+            ? from.ToString("dd.MM", Ukrainian) + "–" + Date(to)
+            : Date(from) + "–" + Date(to);
+
+    /// <summary>«1 картка», «3 картки», «12 карток».</summary>
+    public static string Cards(int count) => Number(count) + " " + Plural(count, "картка", "картки", "карток");
+
+    /// <summary>«у 1 картці», «у 12 картках».</summary>
+    public static string InCards(int count) => "у " + Number(count) + " " + Plural(count, "картці", "картках", "картках");
+
+    public static string Plural(int count, string one, string few, string many)
+    {
+        int lastTwo = Math.Abs(count) % 100;
+        int last = lastTwo % 10;
+        if (lastTwo is >= 11 and <= 14) return many;
+        return last switch
+        {
+            1 => one,
+            >= 2 and <= 4 => few,
+            _ => many,
+        };
+    }
+}
