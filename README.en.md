@@ -402,6 +402,8 @@ gh attestation verify zriz-37641918-2026-11-23.pdf -R maksym-garkusha/dream-povn
 
 A file changed after the build fails the check, since the attestation is bound to the SHA-256 of its content. The attestation shows where a file came from, not that the code it was built from is right: it does not protect against a malicious commit on `main`.
 
+Every job in `site.yml`, `digest.yml` and `tests.yml` starts with `step-security/harden-runner` in `audit` mode: it records where the runner connects and which processes it starts. That log will become the list of allowed endpoints, and the mode will then change to `block`.
+
 ### Deployment and free plan limits
 
 `render.yaml` is a Render Blueprint: a free web service built from the Docker image and a free PostgreSQL 18 database in Frankfurt. Render injects `DATABASE_URL` from the managed database itself, so there is no secret in the repository, in CI or in the Actions settings. Apart from it, the service reads `DATA_URL`, the address of `data.json`, and, for the bot, `TELEGRAM_BOT_TOKEN`, entered by hand in the Render settings, and if needed `TELEGRAM_WEBHOOK_SECRET` and `TELEGRAM_WEBHOOK_URL`. New versions are currently deployed by hand from the Render dashboard or through its API: the Render app is not yet connected to the repository, so `autoDeployTrigger: commit` in the Blueprint takes effect only once it is. The Docker image is built in CI on every push, so a broken Dockerfile shows up before a deploy.
