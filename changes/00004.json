@@ -1,0 +1,38 @@
+{
+  "snapshot": {
+    "id": 4,
+    "generated": "2026-11-18T09:25:43.01969+00:00",
+    "synced": "2026-11-18T09:25:41.011758+00:00",
+    "open": 14610,
+    "added": 0,
+    "removed": 0,
+    "changed": 2,
+    "rulesChanged": false
+  },
+  "items": [
+    {
+      "snapshot": 4,
+      "code": "110225-5B3C1E90",
+      "title": "Капітальний ремонт дороги С041007 від с-ща Вишневе до м. Перещепине (М18)",
+      "kind": 2,
+      "stageFrom": "idea",
+      "stageTo": "idea",
+      "nowFilled": [],
+      "noLongerFilled": [],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 4,
+      "code": "180624-52E48D56",
+      "title": "Капітальний ремонт захисної споруди цивільного захисту (протирадіаційне укриття №14335) в КП «Царичанська центральна лікарня» Царичанської селищної ради Дніпро…",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [
+        "fresh"
+      ],
+      "newlyApplicable": []
+    }
+  ]
+}
