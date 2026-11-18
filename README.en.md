@@ -180,7 +180,8 @@ tests/       xUnit; fixtures are real API responses with personal names replaced
 - organisation and region pages listing the fields that are missing, with links to the records that lack each field;
 - a change history from snapshot to snapshot, with Atom feeds per organisation and region;
 - CSV and Excel export of any selection;
-- an open API described with OpenAPI.
+- an open API described with OpenAPI;
+- a Telegram bot with the same record check, when it is switched on (see [Telegram bot](#telegram-bot)).
 
 It is the same independent learning project built on open data: it is not affiliated with any government body, and its figures are not official statistics.
 
@@ -195,6 +196,7 @@ flowchart LR
   User((User)) --> Web
   User --> Pages
   Web -- one record per request --> DREAM
+  TG((Telegram)) -- webhook --> Web
   KW[keep-warm.yml] -. working hours .-> Web
 ```
 
@@ -279,9 +281,68 @@ in
 
 The base address stays fixed and the filter goes into `Query`, so scheduled refresh in the Power BI Service works with anonymous access. The two-minute timeout covers the service waking up.
 
+### Telegram bot
+
+The same check as the `/check` form, in Telegram: send the bot a project code or a record link and it replies in plain text, in Ukrainian. The bot only works in private chats. While no bot token is configured, the service has no webhook address at all.
+
+The reply to `DREAM-UA-190424-A10FC799`:
+
+```
+Капітальний ремонт та модернізація харчоблоку Авдіївського ліцею в с. Авдіївка Чернігівської області.
+DREAM-UA-190424-A10FC799
+Стадія: Реалізація
+Організація: ПОНОРНИЦЬКА СЕЛИЩНА РАДА
+Заповнено 10 з 10 доречних полів.
+
+Заповнено:
+• Опис проєкту
+• Місце (код КАТОТТГ)
+• Сектор
+• Документи або фото
+• Тривалість
+• Мета
+• Кошторисна вартість
+• Джерело фінансування
+• Закупівля або договір
+• Оновлювалась за останній рік
+
+Англійською, поза підрахунком:
+• є: Назва англійською
+• є: Опис англійською
+
+Усе, що доречне на цій стадії, заповнено.
+
+Картка в DREAM: https://dream.gov.ua/ua/project/DREAM-UA-190424-A10FC799/profile
+Усі картки організації: https://dream-povnota.onrender.com/org/04412567
+Перевірено 18.11.2026, 08:31 за Києвом.
+```
+
+When something is missing, a «Не заповнено» (not filled in) list appears, and the line saying that everything relevant is filled in is replaced by «Дописати першим» (add first): the first missing field and why it matters. The English title and description are listed apart, because they do not count towards completeness, as on the page. The organisation link is there when the service has a page for it. `/start` and `/help` explain what the bot does, `/check <code>` works too, and a message without a code gets an example of the format.
+
+**How it works.** Telegram sends every message as a POST to `/telegram/<secret>` and puts the same secret in the `X-Telegram-Bot-Api-Secret-Token` header. The service compares both with `TELEGRAM_WEBHOOK_SECRET` in constant time: a different path gets 404, a different header 401. A genuine update is answered with 200 straight away and the record is checked in the background from a queue of 20 messages, so Telegram does not wait for DREAM and does not send the same update again. The code is taken from the text by the same parser the form uses, and the service builds the request to DREAM itself. The service-wide limit of 120 live checks an hour is shared by the form and the bot and, as before, is spent only on a real request to DREAM. The bot answers one chat at most 6 times a minute and 30 times an hour, and says so once every 10 minutes when the limit is reached. Replies are sent without `parse_mode`, so a record title from DREAM cannot turn into markup.
+
+**What the bot does not keep.** The message text and chat id stay in memory while the reply is prepared and are not written anywhere, neither to the database nor to the log. The log only gets the type of a failure, such as «Telegram відповів 403» (Telegram answered 403). Per-chat limits are counted in memory, keyed not by the chat id but by its HMAC fingerprint under a random key that disappears when the service restarts. Telegram itself sees the messages, as with any bot.
+
+**How to switch it on.**
+
+1. In Telegram, open [BotFather](https://t.me/BotFather), send `/newbot` and choose the bot's name and username. BotFather gives you a token.
+2. Make up a webhook secret: 16 to 256 characters from `A-Z`, `a-z`, `0-9`, `_` and `-`, for example the output of `openssl rand -hex 32`.
+3. In Render: the `dream-povnota` service, Environment, add `TELEGRAM_BOT_TOKEN` and `TELEGRAM_WEBHOOK_SECRET`, save and deploy. `render.yaml` declares both with `sync: false`, without values: the values live only in the Render settings.
+4. Tell Telegram where to send messages (put the same values in place of `<TOKEN>` and `<SECRET>`):
+
+```bash
+curl -sS "https://api.telegram.org/bot<TOKEN>/setWebhook" \
+  --data-urlencode "url=https://dream-povnota.onrender.com/telegram/<SECRET>" \
+  --data-urlencode "secret_token=<SECRET>" \
+  --data-urlencode 'allowed_updates=["message"]' \
+  --data-urlencode "drop_pending_updates=true"
+```
+
+`https://api.telegram.org/bot<TOKEN>/getWebhookInfo` shows the webhook state: `pending_update_count` is the queue on Telegram's side and `last_error_message` the latest delivery error, if there was one. Links in replies point to `https://dream-povnota.onrender.com`; the `PUBLIC_URL` variable sets a different address. While the free instance is asleep, the first message waits about a minute for the service to wake up.
+
 ### Deployment and free plan limits
 
-`render.yaml` is a Render Blueprint: a free web service built from the Docker image and a free PostgreSQL 18 database in Frankfurt. Render injects `DATABASE_URL` from the managed database itself, so there is no secret in the repository, in CI or in the Actions settings. Apart from it, the service reads only `DATA_URL`, the address of `data.json`. New versions are currently deployed by hand from the Render dashboard or through its API: the Render app is not yet connected to the repository, so `autoDeployTrigger: commit` in the Blueprint takes effect only once it is. The Docker image is built in CI on every push, so a broken Dockerfile shows up before a deploy.
+`render.yaml` is a Render Blueprint: a free web service built from the Docker image and a free PostgreSQL 18 database in Frankfurt. Render injects `DATABASE_URL` from the managed database itself, so there is no secret in the repository, in CI or in the Actions settings. Apart from it, the service reads `DATA_URL`, the address of `data.json`, and, for the bot, `TELEGRAM_BOT_TOKEN` and `TELEGRAM_WEBHOOK_SECRET`, which are entered by hand in the Render settings. New versions are currently deployed by hand from the Render dashboard or through its API: the Render app is not yet connected to the repository, so `autoDeployTrigger: commit` in the Blueprint takes effect only once it is. The Docker image is built in CI on every push, so a broken Dockerfile shows up before a deploy.
 
 Free plan limits according to the Render documentation as of November 2026:
 
