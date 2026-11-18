@@ -64,15 +64,25 @@ public class TelegramBotTests
     }
 
     [Fact]
-    public async Task Token_without_a_secret_keeps_the_bot_off()
+    public async Task Token_alone_registers_the_webhook_and_answers_with_the_derived_secret()
     {
         using var factory = new WebFactory();
         factory.Settings[BotSettings.TokenName] = Token;
+        factory.Settings[BotSettings.RenderUrlName] = "https://povnota.example";
         var client = await factory.ReadyClientAsync();
 
-        var response = await PostAsync(client, Update("/start"), header: "");
+        var registered = await factory.Telegram.NextAsync();
+        string derived = BotSettings.DeriveSecret(Token);
+        var refused = await PostAsync(client, Update("/start"));
+        var accepted = await PostAsync(client, Update("/start"), header: derived);
+        var sent = await factory.Telegram.NextAsync();
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Equal("https://api.telegram.org/bot" + Token + "/setWebhook", registered.Url);
+        Assert.Equal("https://povnota.example/telegram/webhook", registered.Body.GetProperty("url").GetString());
+        Assert.Equal(derived, registered.Body.GetProperty("secret_token").GetString());
+        Assert.Equal(HttpStatusCode.Unauthorized, refused.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, accepted.StatusCode);
+        Assert.Contains(BotReply.Disclaimer, sent.Text);
     }
 
     [Theory]

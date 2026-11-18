@@ -28,6 +28,7 @@ public static class TelegramBot
         services.AddSingleton<BotQueue>();
         services.AddSingleton<ChatLimits>();
         services.AddHostedService<BotWorker>();
+        services.AddHostedService<WebhookRegistration>();
         services.AddHttpClient<TelegramClient>(TelegramClient.Configure)
             .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
             {

@@ -6,12 +6,14 @@ namespace DreamPovnota.Web.Tests;
 
 public class BotPartsTests
 {
-    private static BotSettings Settings(string? token, string? secret, string? site = null) =>
+    private static BotSettings Settings(string? token, string? secret, string? site = null, string? webhookUrl = null, string? renderUrl = null) =>
         BotSettings.From(new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
         {
             [BotSettings.TokenName] = token,
             [BotSettings.SecretName] = secret,
             [BotSettings.SiteName] = site,
+            [BotSettings.WebhookUrlName] = webhookUrl,
+            [BotSettings.RenderUrlName] = renderUrl,
         }).Build());
 
     [Fact]
@@ -24,7 +26,6 @@ public class BotPartsTests
     }
 
     [Theory]
-    [InlineData(TelegramBotTests.Token, null)]
     [InlineData(TelegramBotTests.Token, "short")]
     [InlineData(TelegramBotTests.Token, "has spaces in the secret value")]
     [InlineData("not-a-token", TelegramBotTests.Secret)]
@@ -37,6 +38,50 @@ public class BotPartsTests
         Assert.NotNull(settings.Problem);
         Assert.DoesNotContain(token, settings.Problem);
         Assert.Equal("", settings.Token);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("  ")]
+    public void Without_a_secret_it_is_derived_from_the_token(string? secret)
+    {
+        var settings = Settings(TelegramBotTests.Token, secret);
+
+        Assert.True(settings.Enabled);
+        Assert.Equal(BotSettings.DeriveSecret(TelegramBotTests.Token), settings.Secret);
+        Assert.Matches("^[0-9a-f]{64}$", settings.Secret);
+    }
+
+    [Fact]
+    public void Derived_secret_is_stable_and_differs_between_tokens()
+    {
+        string first = BotSettings.DeriveSecret(TelegramBotTests.Token);
+
+        Assert.Equal(first, BotSettings.DeriveSecret(TelegramBotTests.Token));
+        Assert.NotEqual(first, BotSettings.DeriveSecret("123456:another-test-token-000000"));
+        Assert.DoesNotContain("test-token", first);
+    }
+
+    [Fact]
+    public void Explicit_secret_wins_over_the_derived_one()
+    {
+        Assert.Equal(TelegramBotTests.Secret, Settings(TelegramBotTests.Token, TelegramBotTests.Secret).Secret);
+    }
+
+    [Theory]
+    [InlineData("https://bot.example", null, "https://bot.example/telegram/webhook")]
+    [InlineData("https://bot.example/telegram/webhook", null, "https://bot.example/telegram/webhook")]
+    [InlineData(null, "https://dream-povnota.onrender.com", "https://dream-povnota.onrender.com/telegram/webhook")]
+    [InlineData("https://bot.example", "https://dream-povnota.onrender.com", "https://bot.example/telegram/webhook")]
+    [InlineData("http://bot.example", "https://dream-povnota.onrender.com", "https://dream-povnota.onrender.com/telegram/webhook")]
+    [InlineData(null, null, null)]
+    [InlineData("http://bot.example", null, null)]
+    public void Webhook_address_comes_from_the_variable_or_from_render(string? webhookUrl, string? renderUrl, string? expected)
+    {
+        var settings = Settings(TelegramBotTests.Token, null, webhookUrl: webhookUrl, renderUrl: renderUrl);
+
+        Assert.Equal(expected, settings.WebhookUrl?.ToString());
     }
 
     [Fact]

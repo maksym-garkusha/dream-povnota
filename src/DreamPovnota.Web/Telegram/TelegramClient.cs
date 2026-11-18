@@ -10,7 +10,7 @@ public sealed class TelegramException(int status) : Exception($"Telegram від�
 }
 
 /// <summary>
-/// Єдиний метод Bot API, який потрібен боту: sendMessage. Токен стоїть у шляху запиту,
+/// Два методи Bot API, які потрібні боту: sendMessage і setWebhook. Токен стоїть у шляху запиту,
 /// тому журнал HttpClient для цього клієнта вимкнено, а помилку описуємо тільки кодом статусу.
 /// </summary>
 public sealed class TelegramClient(HttpClient http, BotSettings settings)
@@ -31,16 +31,24 @@ public sealed class TelegramClient(HttpClient http, BotSettings settings)
     }
 
     /// <summary>Звичайний текст без parse_mode і без прев'ю посилань.</summary>
-    public async Task SendMessageAsync(long chatId, string text, CancellationToken ct)
+    public Task SendMessageAsync(long chatId, string text, CancellationToken ct) =>
+        CallAsync("sendMessage", new SendMessage(chatId, text, new LinkPreviewOptions(IsDisabled: true)), ct);
+
+    /// <summary>Тільки звичайні повідомлення; накопичені поки сервіс спав не відкидаємо.</summary>
+    public Task SetWebhookAsync(Uri url, CancellationToken ct) =>
+        CallAsync("setWebhook", new SetWebhook(url.ToString(), settings.Secret, ["message"], DropPendingUpdates: false), ct);
+
+    private async Task CallAsync<T>(string method, T body, CancellationToken ct)
     {
-        var message = new SendMessage(chatId, text, new LinkPreviewOptions(IsDisabled: true));
         // косу риску на початку не прибирати: без неї "bot123:..." читається як адреса зі схемою "bot123"
-        var path = new Uri($"/bot{settings.Token}/sendMessage", UriKind.Relative);
-        using var response = await http.PostAsJsonAsync(path, message, Json, ct);
+        var path = new Uri($"/bot{settings.Token}/{method}", UriKind.Relative);
+        using var response = await http.PostAsJsonAsync(path, body, Json, ct);
         if (!response.IsSuccessStatusCode) throw new TelegramException((int)response.StatusCode);
     }
 
     private sealed record SendMessage(long ChatId, string Text, LinkPreviewOptions LinkPreviewOptions);
+
+    private sealed record SetWebhook(string Url, string SecretToken, string[] AllowedUpdates, bool DropPendingUpdates);
 
     private sealed record LinkPreviewOptions(bool IsDisabled);
 }
