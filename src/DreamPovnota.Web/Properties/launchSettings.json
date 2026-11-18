@@ -4,8 +4,7 @@
       "commandName": "Project",
       "applicationUrl": "http://localhost:5080",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "DATA_URL": "../../site/data.json"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }
