@@ -183,7 +183,7 @@ public class ChangeSummaryTests
     }
 
     [Fact]
-    public void Services_are_summed_and_the_fastest_three_are_named_in_list_order_on_ties()
+    public void Services_are_summed_and_only_counted_never_named()
     {
         const string agency = "37641918", vinnytsia = "25845655", kyiv = "26345736", lviv = "25253009";
         var summary = Summarise([Snapshot(1, First), Snapshot(2, First.AddHours(5))], plan =>
@@ -201,19 +201,27 @@ public class ChangeSummaryTests
         Assert.Equal(8, week.Services.FieldsFilled);
         Assert.Equal(4, week.Services.CardsWithFields);
         Assert.Equal(1, week.Services.UpdatedCards);
-        // у Вінницькій і Київській по два поля, а Вінницька в переліку раніше
-        Assert.Equal([lviv, vinnytsia, kyiv], week.Fastest.Select(s => s.Edrpou));
-        Assert.Equal(new ServiceExample(lviv, "Служба відновлення та розвитку інфраструктури у Львівській області", 3, 1), week.Fastest[0]);
+        Assert.Equal(4, week.ServicesWithChanges);
+
+        string feed = Feeds.ChangesFeed.Build("https://example.org", "example.org", summary);
+        Assert.Contains("Зміни були в 4 з 22 організацій переліку.", feed);
+        Assert.DoesNotContain(Digest.DigestOrganisations.All, o => feed.Contains(o.Title, StringComparison.Ordinal));
     }
 
     [Fact]
-    public void A_week_without_new_fields_names_no_service()
+    public void A_service_counts_as_changed_for_any_change_and_not_for_a_mere_new_version()
     {
         var summary = Summarise([Snapshot(1, First), Snapshot(2, First.AddHours(5))], plan =>
-            [Changed(Week(plan), Bits(0), Bits(0), Bits(0), edrpou: "26345736", updatedDays: 1)]);
+        [
+            Changed(Week(plan), Bits(0), Bits(0), Bits(0), edrpou: "26345736", updatedDays: 1),
+            new(Week(plan), true, "25253009", null, null, null, null, "idea", Date, Bits(0)),
+            // нова версія без змін у рахованих полях, наприклад інший сектор
+            Changed(Week(plan), Bits(0), Bits(0), Bits(0), edrpou: "25845655"),
+        ]);
 
         Assert.Equal(1, summary.Weeks[0].Services.UpdatedCards);
-        Assert.Empty(summary.Weeks[0].Fastest);
+        Assert.Equal(1, summary.Weeks[0].Services.NewCards);
+        Assert.Equal(2, summary.Weeks[0].ServicesWithChanges);
     }
 
     [Fact]
@@ -274,9 +282,9 @@ public class ChangeSummaryTests
         Assert.True(w48.InProgress);
         Assert.Equal(edition.Checks[bit].Code, Assert.Single(w47.All.Fields).Check);
         Assert.Equal((1, 1), (w47.Services.UpdatedCards, w47.Services.FieldsFilled));
-        Assert.Equal("26345736", Assert.Single(w47.Fastest).Edrpou);
+        Assert.Equal(1, w47.ServicesWithChanges);
         Assert.False(w48.Services.HasChanges);
-        Assert.Empty(w48.Fastest);
+        Assert.Equal(0, w48.ServicesWithChanges);
 
         var total = summary.Total!;
         Assert.Equal((2, 1, 1, 1), (total.All.UpdatedCards, total.All.FieldsFilled, total.All.NewCards, total.All.StageMoves));

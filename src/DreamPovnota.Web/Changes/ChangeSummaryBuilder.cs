@@ -20,19 +20,16 @@ public sealed record PlannedPeriod(int Number, PeriodKind Kind, PeriodSpan Span,
 /// <summary>
 /// Рахує рух у картках за періодами з історії: які картки оновили, які поля дозаповнили,
 /// скільки карток нових і скільки перейшло на іншу стадію. Окремо те саме для агентства
-/// й служб відновлення з <see cref="DigestOrganisations"/>, разом, без порівняння служб.
+/// й служб відновлення з <see cref="DigestOrganisations"/>, разом: служби не називаються
+/// і між собою не порівнюються, є тільки число тих, де щось змінилось.
 /// </summary>
 public static class ChangeSummaryBuilder
 {
-    public const int FastestCount = 3;
-
     // «Оновлювалась за останній рік» не поле картки, а наслідок дати оновлення,
     // яку вже пораховано в оновлених картках
     private static readonly HashSet<string> NotFields = new(StringComparer.Ordinal) { "fresh" };
 
-    private static readonly Dictionary<string, int> ServiceOrder = DigestOrganisations.All
-        .Select((o, i) => (o.Edrpou, i))
-        .ToDictionary(x => x.Edrpou, x => x.i, StringComparer.Ordinal);
+    private static readonly HashSet<string> Services = DigestOrganisations.All.Select(o => o.Edrpou).ToHashSet(StringComparer.Ordinal);
 
     /// <summary>Стадії поточного випуску в його порядку: ключ і назва для переходів між стадіями.</summary>
     public static IReadOnlyList<(string Key, string Title)> StagesOf(Import.LoadedEdition edition) =>
@@ -103,36 +100,27 @@ public static class ChangeSummaryBuilder
 
         if (!period.Compares)
             return new PeriodChanges(span.From, span.To, isoWeek, observedFrom, inProgress, period.Snapshots,
-                null, null, false, ChangeCounts.Empty, ChangeCounts.Empty, []);
+                null, null, false, ChangeCounts.Empty, ChangeCounts.Empty, 0);
 
         var from = period.From!;
         var to = period.To!;
         var fields = FieldMap(from, to);
         var all = new Tally();
         var services = new Tally();
-        var perService = new Dictionary<string, (int Fields, int Cards)>(StringComparer.Ordinal);
+        var changedServices = new HashSet<string>(StringComparer.Ordinal);
 
         foreach (var row in rows)
         {
             var filled = Filled(row, fields);
             all.Add(row, filled);
-            if (row.Edrpou is not { } edrpou || !ServiceOrder.ContainsKey(edrpou)) continue;
-            services.Add(row, filled);
-            if (filled.Count == 0) continue;
-            var (f, c) = perService.GetValueOrDefault(edrpou);
-            perService[edrpou] = (f + filled.Count, c + 1);
+            if (row.Edrpou is not { } edrpou || !Services.Contains(edrpou)) continue;
+            if (services.Add(row, filled)) changedServices.Add(edrpou);
         }
 
-        var fastest = perService
-            .OrderByDescending(s => s.Value.Fields)
-            .ThenBy(s => ServiceOrder[s.Key])
-            .Take(FastestCount)
-            .Select(s => new ServiceExample(s.Key, DigestOrganisations.Find(s.Key)!.Title, s.Value.Fields, s.Value.Cards))
-            .ToList();
         bool rulesChanged = snapshots.Any(s => s.Id > from.Id && s.Id <= to.Id && s.RulesChanged);
 
         return new PeriodChanges(span.From, span.To, isoWeek, observedFrom, inProgress, period.Snapshots,
-            from.Generated, to.Generated, rulesChanged, all.Counts(to, stages), services.Counts(to, stages), fastest);
+            from.Generated, to.Generated, rulesChanged, all.Counts(to, stages), services.Counts(to, stages), changedServices.Count);
     }
 
     /// <summary>Перевірки, що є в обох знімках, з бітом у кожному: біти різних переліків означають різне.</summary>
@@ -164,26 +152,34 @@ public static class ChangeSummaryBuilder
         private readonly Dictionary<(string From, string To), int> stages = [];
         private int updated, filled, cardsWithFields, added, moved;
 
-        public void Add(CardTransition row, IReadOnlyList<string> filledCodes)
+        /// <returns>Чи порахувалась картка хоч в одному з чисел.</returns>
+        public bool Add(CardTransition row, IReadOnlyList<string> filledCodes)
         {
             if (row.Appeared)
             {
                 added++;
-                return;
+                return true;
             }
             // картка повернулась до відкритих після того, як зникла: не нова, а порівнювати нема з чим
-            if (row.StageFrom is null) return;
+            if (row.StageFrom is null) return false;
 
-            if (row.UpdatedFrom != row.UpdatedTo) updated++;
+            bool counted = false;
+            if (row.UpdatedFrom != row.UpdatedTo)
+            {
+                updated++;
+                counted = true;
+            }
             if (row.StageFrom != row.StageTo)
             {
                 moved++;
                 stages[(row.StageFrom, row.StageTo)] = stages.GetValueOrDefault((row.StageFrom, row.StageTo)) + 1;
+                counted = true;
             }
-            if (filledCodes.Count == 0) return;
+            if (filledCodes.Count == 0) return counted;
             cardsWithFields++;
             filled += filledCodes.Count;
             foreach (string code in filledCodes) fields[code] = fields.GetValueOrDefault(code) + 1;
+            return true;
         }
 
         public ChangeCounts Counts(SnapshotMark to, IReadOnlyList<(string Key, string Title)> stageList)

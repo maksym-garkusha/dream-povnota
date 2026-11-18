@@ -6,9 +6,6 @@ public sealed record FieldCount(string Check, string Title, int Fields);
 /// <summary>Скільки карток перейшло з однієї стадії на іншу.</summary>
 public sealed record StageMove(string From, string FromTitle, string To, string ToTitle, int Cards);
 
-/// <summary>Організація з переліку служб, де за період дозаповнили найбільше полів.</summary>
-public sealed record ServiceExample(string Edrpou, string Title, int Fields, int Cards);
-
 /// <summary>Рух у картках за період: стан на початок порівняно зі станом на кінець.</summary>
 /// <param name="UpdatedCards">Картки, у яких змінилась дата оновлення в DREAM.</param>
 /// <param name="FieldsFilled">Поля, що на початок були доречні й порожні, а на кінець заповнені.</param>
@@ -37,7 +34,7 @@ public sealed record ChangeCounts(
 /// <param name="ComparedFrom">Дата випуску знімка на початок; null, якщо порівнювати не було з чим.</param>
 /// <param name="RulesChanged">Між знімками змінився перелік перевірок: поля порівнюються лише ті, що є в обох.</param>
 /// <param name="Services">Те саме для агентства й служб відновлення разом.</param>
-/// <param name="Fastest">До трьох служб, де дозаповнили найбільше полів; порожньо, якщо ніде.</param>
+/// <param name="ServicesWithChanges">У скількох організаціях переліку служб щось змінилось; які саме, не кажемо, щоб їх не порівнювали.</param>
 public sealed record PeriodChanges(
     DateOnly From,
     DateOnly To,
@@ -50,7 +47,7 @@ public sealed record PeriodChanges(
     bool RulesChanged,
     ChangeCounts All,
     ChangeCounts Services,
-    IReadOnlyList<ServiceExample> Fastest);
+    int ServicesWithChanges);
 
 /// <summary>Рух у відкритих картках за тижнями з історії сервісу.</summary>
 /// <param name="HistoryFrom">Дата випуску першого знімка; null, поки знімків немає.</param>

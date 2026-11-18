@@ -69,12 +69,12 @@ public static class ChangesFeed
     {
         var html = new StringBuilder();
         Part(html, "Усі відкриті картки", week, week.All, null);
-        Part(html, "Агентство і служби відновлення", week, week.Services, week.Fastest);
+        Part(html, "Агентство і служби відновлення", week, week.Services, week.ServicesWithChanges);
         foreach (string note in ChangeText.Notes(week, PeriodKind.Week)) html.Append("<p>").Append(WebUtility.HtmlEncode(note)).Append("</p>");
         return html.ToString();
     }
 
-    private static void Part(StringBuilder html, string title, PeriodChanges week, ChangeCounts counts, IReadOnlyList<ServiceExample>? fastest)
+    private static void Part(StringBuilder html, string title, PeriodChanges week, ChangeCounts counts, int? servicesChanged)
     {
         html.Append("<h3>").Append(WebUtility.HtmlEncode(title)).Append("</h3>");
         if (ChangeText.Nothing(week, counts, PeriodKind.Week) is { } nothing)
@@ -90,7 +90,7 @@ public static class ChangesFeed
             "Нових карток: " + Format.Number(counts.NewCards),
             "Перейшли на іншу стадію: " + Format.Number(counts.StageMoves) + (counts.Stages.Count > 0 ? $" ({ChangeText.StageList(counts.Stages)})" : ""),
         };
-        if (fastest is { Count: > 0 }) lines.Add("Де пішло найшвидше: " + ChangeText.FastestList(fastest));
+        if (servicesChanged > 0) lines.Add(ChangeText.ServicesChanged(servicesChanged.Value));
         html.Append("<ul>");
         foreach (string line in lines) html.Append("<li>").Append(WebUtility.HtmlEncode(line)).Append("</li>");
         html.Append("</ul>");

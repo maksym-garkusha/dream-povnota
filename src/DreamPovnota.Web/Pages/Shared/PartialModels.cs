@@ -10,5 +10,5 @@ public sealed record FillTableModel(LoadedEdition Edition, IReadOnlyList<CheckTa
 
 public sealed record BarModel(double Share);
 
-/// <param name="Services">Числа агентства й служб відновлення замість усіх карток, з «де пішло найшвидше».</param>
+/// <param name="Services">Числа агентства й служб відновлення разом замість усіх карток.</param>
 public sealed record ChangesTableModel(IReadOnlyList<Changes.PeriodChanges> Periods, Changes.PeriodKind Kind, bool Services);

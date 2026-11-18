@@ -59,7 +59,7 @@ else
 
         <section class="block" id="services" aria-labelledby="services-title">
           <h2 id="services-title">Агентство і служби відновлення</h2>
-          <p>Державне агентство відновлення та @Format.Number(services) @Format.Plural(services, "обласна служба", "обласні служби", "обласних служб") відновлення, той самий перелік, що й у <a href="/digest">зрізі для служб</a>. Числа сумарні, служби між собою не порівнюються. «Де пішло найшвидше» називає до трьох організацій, у картках яких за тиждень дозаповнили найбільше полів.</p>
+          <p>Державне агентство відновлення та @Format.Number(services) @Format.Plural(services, "обласна служба", "обласні служби", "обласних служб") відновлення, той самий перелік, що й у <a href="/digest">зрізі для служб</a>. Числа сумарні, окремі служби тут не називаються: що змінилось у кожній, видно на її сторінці зрізу.</p>
           <p class="scope">Разом за @ChangeText.Title(total, PeriodKind.Total)</p>
           <div class="figures">
           @foreach (var measure in ChangesModel.Measures)

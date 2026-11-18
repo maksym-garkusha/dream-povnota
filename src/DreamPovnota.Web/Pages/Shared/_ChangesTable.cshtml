@@ -20,7 +20,7 @@
       if (ChangeText.Nothing(period, counts, Model.Kind) is { } nothing) details.Add(nothing);
       if (counts.Fields.Count > 0) details.Add("Дозаповнені поля: " + ChangeText.FieldList(counts.Fields) + ".");
       if (counts.Stages.Count > 0) details.Add("Стадії: " + ChangeText.StageList(counts.Stages) + ".");
-      if (Model.Services && period.Fastest.Count > 0) details.Add("Де пішло найшвидше: " + ChangeText.FastestList(period.Fastest) + ".");
+      if (Model.Services && period.ServicesWithChanges > 0) details.Add(ChangeText.ServicesChanged(period.ServicesWithChanges));
       details.AddRange(ChangeText.Notes(period, Model.Kind));
       <tr class="@(details.Count > 0 ? "period has-detail" : "period")">
         <th scope="row">@ChangeText.Title(period, Model.Kind)</th>

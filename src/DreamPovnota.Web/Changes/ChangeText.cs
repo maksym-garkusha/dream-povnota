@@ -37,9 +37,9 @@ public static class ChangeText
     public static string StageList(IEnumerable<StageMove> stages) =>
         string.Join(", ", stages.Select(s => $"{s.FromTitle} → {s.ToTitle} {Format.Number(s.Cards)}"));
 
-    /// <summary>«Служба ... у Львівській області: 4 поля у 2 картках».</summary>
-    public static string FastestList(IEnumerable<ServiceExample> services) =>
-        string.Join("; ", services.Select(s => $"{s.Title}: {Fields(s.Fields)} {Format.InCards(s.Cards)}"));
+    /// <summary>«Зміни були в 4 з 22 організацій переліку.» Без назв: служби між собою не порівнюються.</summary>
+    public static string ServicesChanged(int count) =>
+        $"Зміни були в {Format.Number(count)} з {Format.Number(DigestOrganisations.All.Count)} організацій переліку.";
 
     /// <summary>Чому чисел за період немає або чому вони нулі; null, якщо зміни є.</summary>
     public static string? Nothing(PeriodChanges period, ChangeCounts counts, PeriodKind kind)

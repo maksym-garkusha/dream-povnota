@@ -30,7 +30,7 @@ public static class HistoryApi
             .WithDescription(
                 "Для кожного тижня (ISO, за київським часом), дня першого тижня історії і всього показаного часу: оновлені картки " +
                 "(змінилась дата оновлення в DREAM), дозаповнені поля за типами перевірок, нові картки, переходи між стадіями. " +
-                "services: те саме для агентства й служб відновлення разом, fastest: до трьох із них, де дозаповнили найбільше полів. " +
+                "services: те саме для агентства й служб відновлення разом, servicesWithChanges: у скількох із них щось змінилось. " +
                 $"Не більше {ChangeCalendar.MaxWeeks} останніх тижнів.");
 
         api.MapGet("/orgs/{key}/trend", async (string key, EditionStore store, HistoryReader history, CancellationToken ct) =>
