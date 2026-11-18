@@ -36,3 +36,31 @@ public sealed record CardHistoryPoint(int Snapshot, DateTimeOffset Date, string 
 
 /// <summary>Чиї зміни показувати: організації (ключ як на сторінці), області або всі.</summary>
 public sealed record HistoryScope(string? Organisation = null, string? Region = null);
+
+public sealed record RuleCheck(string Code, string Title);
+
+/// <summary>Знімок з переліком перевірок, за яким у ньому складено бітові маски.</summary>
+/// <param name="RulesChanged">Перелік перевірок інший, ніж у попередньому знімку.</param>
+public sealed record SnapshotMark(int Id, DateTimeOffset Generated, bool RulesChanged, IReadOnlyList<RuleCheck> Checks);
+
+/// <summary>Два знімки, стан карток у яких порівнюється: на початок періоду і на кінець.</summary>
+/// <param name="Period">Номер періоду, яким позначено рядки відповіді.</param>
+public sealed record SnapshotPair(int Period, int From, int To);
+
+/// <summary>
+/// Картка, у якої між двома знімками пари щось змінилось і яка відкрита в другому.
+/// Поля «From» порожні, якщо в першому знімку картки серед відкритих не було.
+/// </summary>
+/// <param name="Appeared">Картка вперше з'явилась в історії після першого знімка пари.</param>
+/// <param name="Edrpou">ЄДРПОУ організації, що веде картку в другому знімку.</param>
+public sealed record CardTransition(
+    int Period,
+    bool Appeared,
+    string? Edrpou,
+    string? StageFrom,
+    DateOnly? UpdatedFrom,
+    int? ApplicableFrom,
+    int? FilledFrom,
+    string StageTo,
+    DateOnly UpdatedTo,
+    int FilledTo);

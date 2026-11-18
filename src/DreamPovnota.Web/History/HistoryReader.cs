@@ -190,6 +190,67 @@ public sealed class HistoryReader(Db db, ILogger<HistoryReader> log)
             rows.ToDictionary(r => r.Code, r => new CardMasks(r.Applicable, r.Filled), StringComparer.Ordinal));
     }, ct);
 
+    /// <summary>Усі знімки від першого з переліками перевірок: з них складаються тижні сторінки змін.</summary>
+    public Task<IReadOnlyList<SnapshotMark>?> SnapshotMarksAsync(CancellationToken ct) =>
+        ReadAsync<IReadOnlyList<SnapshotMark>>(async (c, t) =>
+        {
+            var rows = await c.QueryAsync<(int Id, DateTime Generated, bool RulesChanged, short RulesId, string Checks)>(new CommandDefinition(
+                """
+                select s.id, s.generated, s.rules_changed, s.rules_id, r.checks::text
+                from snapshot s join rules r on r.id = s.rules_id
+                order by s.id
+                """, transaction: t, cancellationToken: ct));
+            // переліків перевірок одиниці, а знімків сотні: кожен перелік розбираємо один раз
+            var rules = new Dictionary<short, IReadOnlyList<RuleCheck>>();
+            return rows.Select(r =>
+            {
+                if (!rules.TryGetValue(r.RulesId, out var checks)) rules[r.RulesId] = checks = RuleChecks(r.Checks);
+                return new SnapshotMark(r.Id, Utc(r.Generated), r.RulesChanged, checks);
+            }).ToList();
+        }, ct);
+
+    /// <summary>
+    /// Картки, що змінились між знімками кожної пари і відкриті в другому з них, зі станом
+    /// на обох краях. Проміжні версії не потрібні: період порівнюється цілим, початок з кінцем.
+    /// </summary>
+    public Task<IReadOnlyList<CardTransition>?> TransitionsAsync(IReadOnlyList<SnapshotPair> pairs, CancellationToken ct) =>
+        ReadAsync<IReadOnlyList<CardTransition>>(async (c, t) =>
+        {
+            if (pairs.Count == 0) return [];
+            var parameters = new
+            {
+                periods = pairs.Select(p => p.Period).ToArray(),
+                starts = pairs.Select(p => p.From).ToArray(),
+                ends = pairs.Select(p => p.To).ToArray(),
+            };
+            // картки, у яких версія почалась або закінчилась між знімками; not upper_inf
+            // дає планувальнику частковий індекс card_version_to
+            var rows = await c.QueryAsync<CardTransition>(new CommandDefinition(
+                """
+                with pair as (
+                  select * from unnest(@periods::int[], @starts::int[], @ends::int[]) as p(period, s, e)
+                ),
+                touched as (
+                  select p.period, v.card_id from pair p
+                  join card_version v on lower(v.valid_during) > p.s and lower(v.valid_during) <= p.e
+                  union
+                  select p.period, v.card_id from pair p
+                  join card_version v on not upper_inf(v.valid_during)
+                                     and upper(v.valid_during) > p.s and upper(v.valid_during) <= p.e
+                )
+                select t.period as Period, c.first_snapshot > p.s as Appeared, o.edrpou::text as Edrpou,
+                       a.stage as StageFrom, a.updated as UpdatedFrom, a.applicable as ApplicableFrom, a.filled as FilledFrom,
+                       b.stage as StageTo, b.updated as UpdatedTo, b.filled as FilledTo
+                from touched t
+                join pair p on p.period = t.period
+                join card c on c.id = t.card_id
+                join card_version b on b.card_id = t.card_id and b.valid_during @> p.e
+                join organisation o on o.id = b.org_id
+                left join card_version a on a.card_id = t.card_id and a.valid_during @> p.s
+                """, parameters, t, cancellationToken: ct));
+            return rows.ToList();
+        }, ct);
+
     private async Task<T?> ReadAsync<T>(Func<NpgsqlConnection, NpgsqlTransaction, Task<T?>> read, CancellationToken ct)
         where T : class
     {
@@ -224,6 +285,14 @@ public sealed class HistoryReader(Db db, ILogger<HistoryReader> log)
     {
         using var document = JsonDocument.Parse(checksJson);
         return document.RootElement.EnumerateArray().Select(c => c.GetProperty("code").GetString()!).ToArray();
+    }
+
+    private static List<RuleCheck> RuleChecks(string checksJson)
+    {
+        using var document = JsonDocument.Parse(checksJson);
+        return document.RootElement.EnumerateArray()
+            .Select(c => new RuleCheck(c.GetProperty("code").GetString()!, c.GetProperty("title").GetString()!))
+            .ToList();
     }
 
     private static DateTimeOffset Utc(DateTime value) => new(DateTime.SpecifyKind(value, DateTimeKind.Utc));
