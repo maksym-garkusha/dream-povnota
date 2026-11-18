@@ -1,6 +1,7 @@
 using DreamPovnota.Web.History;
 using DreamPovnota.Web.Import;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 
 namespace DreamPovnota.Web.Api;
 
@@ -57,6 +58,14 @@ public static class MetaApi
                 return current is null
                     ? Results.Json(body, statusCode: StatusCodes.Status503ServiceUnavailable)
                     : Results.Json(body);
+            })
+            .ExcludeFromDescription();
+        // для монітора, який дивиться лише на код відповіді: тут 503 і тоді, коли /health/ready ще дає 200.
+        // Усе береться з пам'яті, базу не питає
+        app.MapGet("/health/fresh", (EditionStore store, TimeProvider clock, IOptions<FreshnessLimits> limits) =>
+            {
+                var report = Freshness.Of(store, clock.GetUtcNow(), limits.Value);
+                return Results.Json(report, statusCode: report.Fresh ? StatusCodes.Status200OK : StatusCodes.Status503ServiceUnavailable);
             })
             .ExcludeFromDescription();
     }

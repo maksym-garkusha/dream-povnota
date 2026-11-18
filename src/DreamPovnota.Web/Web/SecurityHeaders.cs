@@ -41,6 +41,10 @@ public static class SecurityHeaders
         if (path.StartsWithSegments("/api") || path.StartsWithSegments("/openapi"))
             headers.AccessControlAllowOrigin = "*";
 
+        // службові відповіді для моніторингу пошуковикам ні до чого, як і зріз
+        if (path.StartsWithSegments("/health"))
+            headers["X-Robots-Tag"] = Api.DigestApi.NoIndex;
+
         if (IsPrivate(path) || context.Response.StatusCode >= 400)
         {
             headers.CacheControl = "no-store";

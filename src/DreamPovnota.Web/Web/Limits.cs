@@ -33,7 +33,7 @@ public static class Limits
     private static Kind KindOf(HttpRequest request)
     {
         var path = request.Path;
-        // /health/ready ходить у базу, тож його ліміт як у сторінки; без ліміту лише перевірка Render
+        // /health/ready ходить у базу, тож у нього і в /health/fresh ліміт як у сторінки; без ліміту лише перевірка Render
         if (path.StartsWithSegments("/health/live") || path.StartsWithSegments("/status") || path.StartsWithSegments("/error"))
             return Kind.None;
         if (path.StartsWithSegments(Telegram.TelegramBot.Path)) return Kind.Telegram;

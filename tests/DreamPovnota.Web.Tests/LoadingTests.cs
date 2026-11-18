@@ -1,4 +1,5 @@
 using System.Net;
+using System.Text.Json;
 
 namespace DreamPovnota.Web.Tests;
 
@@ -36,5 +37,18 @@ public class LoadingTests : IDisposable
 
         Assert.Equal(HttpStatusCode.OK, (await client.GetAsync("/health/live")).StatusCode);
         Assert.Equal(HttpStatusCode.ServiceUnavailable, (await client.GetAsync("/health/ready")).StatusCode);
+    }
+
+    [Fact]
+    public async Task Freshness_without_an_edition_is_503_with_no_edition()
+    {
+        var client = factory.CreateClient();
+
+        var response = await client.GetAsync("/health/fresh");
+        using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+
+        Assert.Equal(HttpStatusCode.ServiceUnavailable, response.StatusCode);
+        Assert.Equal("no-edition", json.RootElement.GetProperty("reason").GetString());
+        Assert.Equal(JsonValueKind.Null, json.RootElement.GetProperty("editionAgeHours").ValueKind);
     }
 }
