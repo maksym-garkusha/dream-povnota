@@ -28,6 +28,7 @@ public sealed class LoadedEdition
     {
         Edition = edition;
         ContentHash = contentHash;
+        Sha256 = Convert.ToHexStringLower(contentHash);
         scoreMask = edition.Checks
             .Select((check, i) => check.CountsInScore ? 1 << i : 0)
             .Aggregate(0, (mask, bit) => mask | bit);
@@ -60,6 +61,9 @@ public sealed class LoadedEdition
 
     /// <summary>SHA-256 тіла файлу.</summary>
     public byte[] ContentHash { get; }
+
+    /// <summary>Той самий SHA-256 у hex малими літерами, як його друкує sha256sum.</summary>
+    public string Sha256 { get; }
 
     public IReadOnlyDictionary<string, int> CardIndexByCode { get; }
 

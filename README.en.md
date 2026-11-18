@@ -367,6 +367,22 @@ dotnet run -- digest --edition ../../site/data.json --history https://dream-povn
 
 The PDF is written with PdfPig 0.1.16 and the xlsx with MiniExcel 1.47.1, both under the Apache 2.0 licence. The PDF embeds IBM Plex Sans 3.004; its SIL Open Font License 1.1 sits next to the font in `src/DreamPovnota.Core/Digest/Fonts/OFL.txt`. The author property of the files is "Максим Гаркуша"; Creator and Producer carry the project name.
 
+### Data integrity
+
+The service does not accept a new `data.json` in which far more changed at once than in a usual day. A tampered or broken file on Pages therefore reaches neither the pages, nor the history, nor the digest for the restoration services. A new edition is compared with the current one, and after a restart, when nothing is in memory yet, with the latest snapshot in the database. The edition is rejected if:
+
+- the number of open records changed by more than 5%;
+- the number of organisations with open records changed by more than 5%;
+- more than 20% of records changed: new ones, removed ones, and those whose applicable or filled fields differ. Fields are compared by check code, so a new check on its own does not mark records as changed.
+
+The previous edition then stays current. `/health/ready` shows the type of the reason in `lastError` (`EditionGuard: open-cards`, `EditionGuard: organisations` or `EditionGuard: changed-cards`), and the figures go to the log at Warning level. The reason stays until the next edition is accepted.
+
+Where the limits come from. The `data.json` of 18 November 2026 has 14,610 open records and 2,834 organisations. Over the last 12 months the busiest day saw 116 records (0.8%) last updated on 25 March 2026; no other day had more than 33 (0.2%). The update date in `data.json` is the latest one, so these are lower bounds. By the date in the project code, the most records created in one day was 355 on 11 September 2023, 2.4% of today's open records; the busiest week, 19 to 25 August 2024, had 1,051 (7.2%). On the service, neighbouring snapshots of 18 November 2026 all had 14,610 open records, with 0 to 2 records changed. So 5% and 20% leave ample room for an ordinary day and for a week without a published edition. DREAM has had mass updates too: 3,746 records, 25.6% of today's open ones, were last updated on 23 January 2025. If such an update changes fields, the guard will stop it, and the edition will have to be accepted by hand.
+
+A genuine jump is accepted like this: check that `site.yml` built the file from this repository's code, and put its SHA-256 into the `ImportGuard__AcceptSha256` variable on Render. It applies only to the file with that hash. The limits are set with `ImportGuard__OpenCardsPercent`, `ImportGuard__OrganisationsPercent` and `ImportGuard__ChangedCardsPercent`.
+
+What the guard cannot do. If after a restart the database is missing or does not answer, there is nothing to compare with, and the first edition is accepted with a warning in the log. If an edition is rejected right after a restart, there is no previous one in memory, and the pages answer 503 until a good file appears on Pages: showing nothing is better than showing tampered data.
+
 ### Deployment and free plan limits
 
 `render.yaml` is a Render Blueprint: a free web service built from the Docker image and a free PostgreSQL 18 database in Frankfurt. Render injects `DATABASE_URL` from the managed database itself, so there is no secret in the repository, in CI or in the Actions settings. Apart from it, the service reads `DATA_URL`, the address of `data.json`, and, for the bot, `TELEGRAM_BOT_TOKEN`, entered by hand in the Render settings, and if needed `TELEGRAM_WEBHOOK_SECRET` and `TELEGRAM_WEBHOOK_URL`. New versions are currently deployed by hand from the Render dashboard or through its API: the Render app is not yet connected to the repository, so `autoDeployTrigger: commit` in the Blueprint takes effect only once it is. The Docker image is built in CI on every push, so a broken Dockerfile shows up before a deploy.

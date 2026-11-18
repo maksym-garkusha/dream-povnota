@@ -56,6 +56,8 @@ builder.Services.Configure<ForwardedHeadersOptions>(o =>
 
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddSingleton<EditionStore>();
+builder.Services.Configure<GuardLimits>(builder.Configuration.GetSection(GuardLimits.Section));
+builder.Services.AddSingleton<EditionGuard>();
 builder.Services.AddMemoryCache(o => o.SizeLimit = 500);
 
 builder.Services.AddHttpClient(EditionSource.HttpClientName, client =>

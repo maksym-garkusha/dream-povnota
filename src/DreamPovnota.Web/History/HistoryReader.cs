@@ -2,6 +2,7 @@ using System.Data;
 using System.Text.Json;
 using Dapper;
 using DreamPovnota.Digest;
+using DreamPovnota.Web.Import;
 using Npgsql;
 
 namespace DreamPovnota.Web.History;
@@ -165,6 +166,29 @@ public sealed class HistoryReader(Db db, ILogger<HistoryReader> log)
                 Codes(taken.Checks),
                 rows.Select(r => new BaselineCard(r.Code, r.Title, r.Edrpou, r.Stage, r.Updated, r.Applicable, r.Filled)).ToList());
         }, ct);
+
+    /// <summary>
+    /// Останній знімок для запобіжника імпорту: чинні версії карток і перелік перевірок.
+    /// Знімок пишеться тільки з прийнятого випуску, тож це останній прийнятий стан.
+    /// </summary>
+    public Task<GuardBaseline?> GuardBaselineAsync(CancellationToken ct) => ReadAsync<GuardBaseline>(async (c, t) =>
+    {
+        string? checks = await c.QuerySingleOrDefaultAsync<string?>(new CommandDefinition(
+            "select r.checks::text from snapshot s join rules r on r.id = s.rules_id order by s.id desc limit 1",
+            transaction: t, cancellationToken: ct));
+        if (checks is null) return null;
+
+        var rows = (await c.QueryAsync<(string Code, int Organisation, int Applicable, int Filled)>(new CommandDefinition(
+            """
+            select c.code, v.org_id, v.applicable, v.filled
+            from card_version v join card c on c.id = v.card_id
+            where upper_inf(v.valid_during)
+            """, transaction: t, cancellationToken: ct))).ToList();
+        return new GuardBaseline(
+            rows.Select(r => r.Organisation).Distinct().Count(),
+            Codes(checks),
+            rows.ToDictionary(r => r.Code, r => new CardMasks(r.Applicable, r.Filled), StringComparer.Ordinal));
+    }, ct);
 
     private async Task<T?> ReadAsync<T>(Func<NpgsqlConnection, NpgsqlTransaction, Task<T?>> read, CancellationToken ct)
         where T : class

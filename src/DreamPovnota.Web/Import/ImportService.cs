@@ -9,8 +9,9 @@ namespace DreamPovnota.Web.Import;
 /// Забирає data.json одразу після старту і далі щогодини, поки екземпляр не спить.
 /// Після збою пробує частіше (10 с, 30 с, 1, 2, 5 хв, далі кожні 10 хв): поки випуску
 /// немає, усі сторінки відповідають 503, і чекати годину через один обірваний запит не можна.
-/// Новий випуск одразу стає поточним; кеш сторінок, зібраних зі старого, скидається,
-/// а повні вивантаження нового випуску починають збиратися у фоні.
+/// Новий випуск спершу проходить <see cref="EditionGuard"/>: якщо в ньому за раз змінилось
+/// забагато, поточним лишається попередній. Прийнятий випуск одразу стає поточним; кеш
+/// сторінок, зібраних зі старого, скидається, а повні вивантаження нового починають збиратися у фоні.
 /// Потім, якщо є база, випуск записується знімком історії, і після нього збирається зріз
 /// для служб відновлення. Збій бази не заважає
 /// поточному стану: знімок допишеться наступного разу.
@@ -18,6 +19,7 @@ namespace DreamPovnota.Web.Import;
 public sealed class ImportService(
     EditionSource source,
     EditionStore store,
+    EditionGuard guard,
     Db db,
     DbKeyRepository keys,
     ExportFiles exports,
@@ -74,6 +76,14 @@ public sealed class ImportService(
             if (edition is null)
             {
                 store.Checked(clock.GetUtcNow());
+            }
+            else if (await guard.CheckAsync(edition, store.Current, ct) is { } jump)
+            {
+                // числа тільки в журналі, назовні в /health/ready лише тип причини
+                store.Held(clock.GetUtcNow(), jump.Reason);
+                log.LogWarning(
+                    "Випуск від {Generated:u} ({Sha256}) не прийнято, лишається попередній: {Jump}",
+                    edition.Edition.Generated, edition.Sha256, jump);
             }
             else
             {
