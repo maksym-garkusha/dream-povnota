@@ -1,8 +1,9 @@
 @model CheckFormModel
+@using DreamPovnota.Web.Live
 <form class="panel" method="post" asp-page="/Check" asp-route-code="">
   <div class="field">
     <label for="code">Код проєкту DREAM або посилання на картку</label>
-    <p class="hint" id="code-hint">Наприклад, DREAM-UA-050923-B400F7B2 або https://dream.gov.ua/ua/project/DREAM-UA-050923-B400F7B2/profile</p>
+    <p class="hint" id="code-hint">Наприклад, @CodeInput.ExampleCode або @CodeInput.ExampleLink</p>
     @if (Model.Error is not null)
     {
         <p class="error" id="code-error">@Model.Error</p>

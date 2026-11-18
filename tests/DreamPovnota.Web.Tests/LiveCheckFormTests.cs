@@ -21,8 +21,12 @@ public class LiveCheckFormTests : IClassFixture<WebFactory>
             new("__RequestVerificationToken", token),
         ]));
 
+        string html = await response.Content.ReadAsStringAsync();
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        Assert.Contains("Не схоже на код DREAM", await response.Content.ReadAsStringAsync());
+        Assert.Contains("Не схоже на код DREAM", html);
+        // і в підказці над полем, і в помилці приклад відкритої картки
+        Assert.Contains("Наприклад, DREAM-UA-190424-A10FC799 або https://dream.gov.ua/ua/project/DREAM-UA-190424-A10FC799/profile", html);
+        Assert.DoesNotContain("050923-B400F7B2</p>", html);
         Assert.Equal(0, factory.Dream.Requests);
     }
 

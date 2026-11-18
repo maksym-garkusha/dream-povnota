@@ -134,7 +134,7 @@ public class BotReplyTests
     {
         string text = BotReply.Help(Site);
 
-        Assert.Contains(BotReply.ExampleCode, text);
+        Assert.Contains(CodeInput.ExampleCode, text);
         Assert.Contains(BotReply.Disclaimer, text);
         Assert.Contains(Site.ToString(), text);
     }

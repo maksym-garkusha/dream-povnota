@@ -32,7 +32,7 @@ public static class BotMessage
     private static readonly char[] Spaces = [' ', '\n', '\r', '\t'];
     private static readonly char[] Punctuation = ['.', ',', ';', ':', '!', '?', '(', ')', '[', ']', '<', '>', '«', '»', '"', '\''];
 
-    public const string CheckWithoutCode = "Після /check додайте код, наприклад /check " + BotReply.ExampleCode;
+    public const string CheckWithoutCode = "Після /check додайте код, наприклад /check " + CodeInput.ExampleCode;
 
     public const string UnknownCommand = "Такої команди немає. Надішліть код проєкту DREAM або посилання на картку, довідка: /help";
 

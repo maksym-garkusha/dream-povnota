@@ -12,8 +12,12 @@ public static partial class CodeInput
 {
     public const int MaxLength = 300;
 
-    public const string Example =
-        "Не схоже на код DREAM. Приклад: DREAM-UA-050923-B400F7B2 або посилання https://dream.gov.ua/ua/project/DREAM-UA-050923-B400F7B2/profile";
+    /// <summary>Відкрита картка: на приклад з підказки прийде повна відповідь, а не «картку закрито».</summary>
+    public const string ExampleCode = "DREAM-UA-190424-A10FC799";
+
+    public const string ExampleLink = "https://dream.gov.ua/ua/project/" + ExampleCode + "/profile";
+
+    public const string Example = "Не схоже на код DREAM. Приклад: " + ExampleCode + " або посилання " + ExampleLink;
 
     private static readonly string[] Hosts = ["dream.gov.ua", "www.dream.gov.ua"];
     private static readonly string[] Languages = ["ua", "en"];

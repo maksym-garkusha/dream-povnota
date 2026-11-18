@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Net;
 using System.Text;
 using DreamPovnota.Cards;
+using DreamPovnota.Web.Live;
 using DreamPovnota.Web.Telegram;
 using DreamPovnota.Web.Web;
 using Microsoft.Extensions.DependencyInjection;
@@ -158,6 +159,10 @@ public class TelegramBotTests
         var sent = await factory.Telegram.NextAsync();
 
         Assert.Contains("Не схоже на код DREAM", sent.Text);
+        // приклад той самий, що в /help, і це відкрита картка; 050923-B400F7B2 уже закрита
+        Assert.Contains("DREAM-UA-190424-A10FC799", sent.Text);
+        Assert.DoesNotContain("050923-B400F7B2", sent.Text);
+        Assert.Contains(CodeInput.ExampleCode, BotReply.Help(new Uri("https://dream-povnota.onrender.com")));
         Assert.Equal(0, factory.Dream.Requests);
     }
 
