@@ -75,8 +75,9 @@ public partial class ChangesPageTests : IClassFixture<WebFactory>
 
         await using var app = new WebFactory { DatabaseUrl = database.Url };
         var client = await app.ReadyClientAsync();
+        // сервіс пише знімок у фоні після імпорту; під навантаженням усього прогону це буває й кілька секунд
         JsonElement summary = default;
-        for (int i = 0; i < 50; i++)
+        for (int i = 0; i < 300; i++)
         {
             var response = await client.GetAsync("/api/v1/changes/summary");
             if (response.IsSuccessStatusCode)
