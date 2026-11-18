@@ -65,8 +65,9 @@ public class KeyRepositoryTests
 
     private static async Task WaitForSnapshot(HttpClient client)
     {
-        // не /health/ready: той відповідає з кешу на 10 с
-        for (int i = 0; i < 100; i++)
+        // не /health/ready: той відповідає з кешу на 10 с. До 30 с, бо на завантаженому раннері CI,
+        // поки паралельно стартують інші тестові застосунки, перший знімок раз не встиг за 10 с
+        for (int i = 0; i < 300; i++)
         {
             var response = await client.GetAsync("/api/v1/snapshots");
             if (response.IsSuccessStatusCode)
