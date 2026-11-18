@@ -315,6 +315,11 @@ dl.props dd { margin: 0; }
 }
 dl.props dd, .summary-line, h1.page, section h2 { overflow-wrap: anywhere; }
 
+/* перелік /digest: тільки назва й кількість карток, без чисел наповненості */
+.orglist { list-style: none; margin: 22px 0 14px; padding: 0; border-top: 1px solid var(--line); max-width: 46em; }
+.orglist li { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 16px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.orglist span { color: var(--muted); font-size: 15px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
 /* сторінка змін: малі графіки за тижнями й днями, таблиці з тими самими числами */
 .multiples { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 18px 0; }
 .multiples figure { margin: 0; background: var(--card); border: 1px solid var(--line); border-radius: 4px; padding: 12px 14px 4px; min-width: 0; }

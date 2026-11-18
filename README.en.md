@@ -367,7 +367,7 @@ Each organisation gets two files:
 
 The week is the seven days up to and including the edition date. "Updated this week" uses the record's update date in DREAM. Newly filled fields come from the history in the service database: the state of the records at the start of the week is compared with the current edition, by check code rather than by bit. History starts on 18 November 2026, and until it covers a full week the files say so. "What to add first" follows the order in `DigestEase`: fields picked from a list or written in one line come first (sector, English title, duration), then texts, files and the cost estimate. As on the pages, English fields do not count towards "every applicable field filled", so for a record they come first only once everything else is filled.
 
-The service has `/digest` (a fixed order: the agency, then the services by region name) and `/digest/{EDRPOU}` with the same figures and xlsx and PDF buttons. Pages and files are excluded from search engines (`noindex`, `X-Robots-Tag`), the files share the export rate limit, and they are built once per data edition.
+The service has `/digest` and `/digest/{EDRPOU}`. The `/digest` list shows only the organisation names and the number of open records, in a fixed order (the agency, then the services by region name), since the services are not compared with each other. Completeness figures and the xlsx and PDF buttons are only on the page of a single organisation. Pages and files are excluded from search engines (`noindex`, `X-Robots-Tag`), the files share the export rate limit, and they are built once per data edition.
 
 The same without the service:
 

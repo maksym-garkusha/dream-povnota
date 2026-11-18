@@ -8,26 +8,14 @@
     var first = Model.Set.Entries[0].Digest;
 }
 <h1 class="page">Зріз для служб відновлення</h1>
-<p class="lead">Державне агентство відновлення та розвитку інфраструктури України і обласні служби відновлення та розвитку інфраструктури: відкриті картки, які вони ведуть у DREAM. Для кожної організації є таблиця xlsx з полями кожної картки і сторінка PDF з трьома числами.</p>
-<p class="note">Тиждень: @first.WeekTitle. Дані станом на @DigestText.DateTime(first.Generated). @first.HistoryNote</p>
-<p class="note">Як рухались картки агентства й служб за тижнями, сумарно, з графіками: <a href="/changes#services">рух у картках</a>.</p>
+<p class="lead">Для кожної організації з переліку окрема сторінка: PDF на одну сторінку для керівника і таблиця xlsx для того, хто веде картки, з полем, яке варто дописати першим у кожній картці. Служби між собою не порівнюються, тому чисел наповненості в цьому переліку немає.</p>
+<p class="note">Дані станом на @DigestText.DateTime(first.Generated). Як рухались картки агентства й служб разом, з графіками: <a href="/changes#services">рух у картках за тижнями</a>.</p>
 
-<div class="tablewrap">
-<table>
-  <thead><tr><th scope="col">Організація</th><th scope="col">ЄДРПОУ</th><th scope="col" class="num">Відкритих карток</th><th scope="col" class="num">Заповнено все доречне</th><th scope="col" class="num">Оновлено за тиждень</th></tr></thead>
-  <tbody>
-  @foreach (var entry in Model.Set.Entries)
-  {
-      var d = entry.Digest;
-      <tr>
-        <td><a href="/digest/@d.Organisation.Edrpou">@d.Organisation.Title</a></td>
-        <td class="code">@d.Organisation.Edrpou</td>
-        <td class="num">@Format.Number(d.Open)</td>
-        <td class="num">@Format.Number(d.Complete)</td>
-        <td class="num">@Format.Number(d.UpdatedThisWeek)</td>
-      </tr>
-  }
-  </tbody>
-</table>
-</div>
-<p class="note">Перелік закріплено кодами ЄДРПОУ за даними DREAM на @DigestOrganisations.ListDate: організації, у назві яких є «агентство відновлення» або «служба відновлення». Порядок: агентство, далі служби за назвою області. «Заповнено все доречне» рахується без англійських полів, як на сторінках організацій.</p>
+<ul class="orglist">
+@foreach (var entry in Model.Set.Entries)
+{
+    var d = entry.Digest;
+    <li><a href="/digest/@d.Organisation.Edrpou">@d.Organisation.Title</a> <span>@Format.Number(d.Open) @Format.Plural(d.Open, "відкрита картка", "відкриті картки", "відкритих карток")</span></li>
+}
+</ul>
+<p class="note">Перелік закріплено кодами ЄДРПОУ за даними DREAM на @DigestOrganisations.ListDate: організації, у назві яких є «агентство відновлення» або «служба відновлення». Порядок: агентство, далі служби за назвою області.</p>

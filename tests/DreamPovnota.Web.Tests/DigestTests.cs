@@ -42,6 +42,10 @@ public class DigestTests : IClassFixture<WebFactory>
         Assert.All(positions, p => Assert.True(p > 0));
         Assert.Equal(positions.Order(), positions);
         Assert.Contains("Не пов'язаний з державними органами", html);
+        // служби не порівнюються: у переліку немає ні наповненості, ні оновлень
+        Assert.DoesNotContain("Заповнено все доречне", html);
+        Assert.DoesNotContain("Оновлено за", html);
+        Assert.DoesNotContain("<table", html);
     }
 
     [Fact]
