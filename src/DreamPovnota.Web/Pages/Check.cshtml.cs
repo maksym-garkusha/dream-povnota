@@ -76,7 +76,7 @@ public sealed class CheckModel(EditionStore store, LiveCheck live, IAntiforgery 
             case LiveStatus.Busy:
                 int wait = Math.Max(1, (int)Math.Ceiling((outcome.RetryAfter ?? TimeSpan.FromSeconds(RetryAfterSeconds)).TotalSeconds));
                 Response.Headers.RetryAfter = wait.ToString(CultureInfo.InvariantCulture);
-                Message = $"Живих перевірок за останню годину забагато, спробуйте за кілька хвилин. Стан картки в останньому знімку: /check/{code}.";
+                Message = $"Перевірок за останню годину забагато, сервіс обмежує запити до DREAM. Спробуйте за кілька хвилин. Стан картки в останньому знімку: /check/{code}.";
                 Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
                 return Page();
             default:

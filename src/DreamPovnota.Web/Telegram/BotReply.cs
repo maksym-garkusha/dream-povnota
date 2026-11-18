@@ -14,7 +14,8 @@ public static class BotReply
 {
     public const int MaxTitle = 120;
 
-    public const string Disclaimer = "Незалежний інструмент на відкритих даних DREAM, не офіційний сервіс.";
+    /// <summary>Той самий підпис, що на сайті; стоїть і в кінці відповіді на картку, бо її пересилають далі.</summary>
+    public const string Disclaimer = "Незалежний навчальний проєкт на відкритих даних, не офіційна статистика.";
 
     public static string Help(Uri site) =>
         "Перевіряю, наскільки заповнена картка проєкту в DREAM.\n\n" +
@@ -40,7 +41,7 @@ public static class BotReply
             $"У проєкті DREAM-UA-{code} понад {LiveCheck.MaxObjects} пов'язаних об'єктів, таку картку зараз не перевіряю. " +
             $"Її стан в останньому знімку: {SnapshotUrl(site, code)}",
         LiveStatus.Busy =>
-            $"Живих перевірок за останню годину забагато, спробуйте за {Minutes(outcome.RetryAfter ?? TimeSpan.FromMinutes(1))}. " +
+            $"Перевірок за останню годину забагато, сервіс обмежує запити до DREAM. Спробуйте за {Minutes(outcome.RetryAfter ?? TimeSpan.FromMinutes(1))}. " +
             $"Стан картки в останньому знімку: {SnapshotUrl(site, code)}",
         _ => "DREAM зараз не відповідає, спробуйте за кілька хвилин.",
     };
@@ -81,7 +82,8 @@ public static class BotReply
             text.AppendLine("Усі картки організації: " + new Uri(site, Format.OrganisationPath(edrpou)));
         text.Append("Перевірено " + Format.DateTime(result.CheckedAt) + ".");
 
-        return Shorten(text.ToString(), BotMessage.MaxLength);
+        // підпис додаємо після скорочення, щоб довга відповідь його не втратила
+        return Shorten(text.ToString(), BotMessage.MaxLength - Disclaimer.Length - 1) + "\n" + Disclaimer;
     }
 
     private static void List(StringBuilder text, string title, IEnumerable<Check> checks)

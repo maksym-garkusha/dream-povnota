@@ -33,6 +33,17 @@ public partial class PagesTests : IClassFixture<WebFactory>
     }
 
     [Fact]
+    public async Task Home_says_it_is_not_official_statistics_before_the_check_form()
+    {
+        var client = await factory.ReadyClientAsync();
+
+        string html = await client.GetStringAsync("/");
+
+        int disclaimer = html.IndexOf("Незалежний навчальний проєкт на відкритих даних, не офіційна статистика.", StringComparison.Ordinal);
+        Assert.InRange(disclaimer, 0, html.IndexOf("<form", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public async Task About_names_the_stages_where_each_check_applies_in_words()
     {
         var client = await factory.ReadyClientAsync();

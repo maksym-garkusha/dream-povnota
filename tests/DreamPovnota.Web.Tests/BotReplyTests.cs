@@ -41,6 +41,21 @@ public class BotReplyTests
         Assert.Contains(first is null ? "Усе, що доречне на цій стадії, заповнено." : "Дописати першим: " + first.Title, text);
         Assert.Contains("Картка в DREAM: https://dream.gov.ua/ua/project/DREAM-UA-" + code + "/profile", text);
         Assert.Contains("Усі картки організації: https://dream-povnota.example/org/" + result.Edrpou, text);
+        Assert.EndsWith("\n" + BotReply.Disclaimer, text);
+    }
+
+    [Fact]
+    public async Task Disclaimer_survives_when_a_long_reply_is_cut()
+    {
+        var (code, outcome) = await CheckedAsync("project-active.json");
+        var result = outcome.Result!;
+        // 400 рядків переліку роблять відповідь довшою за межу повідомлення Telegram
+        var changed = outcome with { Result = result with { Missing = Enumerable.Repeat(result.Missing.Concat(result.Filled).First(), 400).ToList() } };
+
+        string text = BotReply.Check(code, changed, Site, organisationOnSite: false);
+
+        Assert.True(text.Length <= BotMessage.MaxLength);
+        Assert.EndsWith("\n" + BotReply.Disclaimer, text);
     }
 
     [Fact]
@@ -120,7 +135,7 @@ public class BotReplyTests
     [Theory]
     [InlineData(LiveStatus.NotFound, "у DREAM немає")]
     [InlineData(LiveStatus.TooManyObjects, "https://dream-povnota.example/check/010101-ABCDEF12")]
-    [InlineData(LiveStatus.Busy, "спробуйте за 5 хв")]
+    [InlineData(LiveStatus.Busy, "Спробуйте за 5 хв")]
     [InlineData(LiveStatus.Unavailable, "DREAM зараз не відповідає")]
     public void Other_outcomes_are_explained(LiveStatus status, string expected)
     {

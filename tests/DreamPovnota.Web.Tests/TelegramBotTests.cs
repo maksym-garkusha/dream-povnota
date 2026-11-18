@@ -178,7 +178,7 @@ public class TelegramBotTests
         var second = await factory.Telegram.NextAsync();
 
         Assert.Contains("доречних полів", first.Text);
-        Assert.Contains("Живих перевірок за останню годину забагато", second.Text);
+        Assert.Contains("Перевірок за останню годину забагато, сервіс обмежує запити до DREAM.", second.Text);
     }
 
     [Fact]
