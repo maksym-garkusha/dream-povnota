@@ -1,0 +1,23 @@
+# Локальний запуск з базою: docker compose up --build, далі http://localhost:10000
+# Пароль тут одноразовий і тільки для локальної бази в контейнері.
+services:
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: dream
+      POSTGRES_PASSWORD: dream
+      POSTGRES_DB: dream
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dream"]
+      interval: 2s
+      retries: 15
+  web:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://dream:dream@db:5432/dream
+      DATA_URL: https://maksym-garkusha.github.io/dream-povnota/data.json
+    ports:
+      - "10000:10000"

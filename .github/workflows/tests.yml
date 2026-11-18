@@ -16,4 +16,19 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '11.0.x'
-      - run: dotnet test
+      - run: dotnet build -c Release
+      - run: dotnet format --verify-no-changes --no-restore
+      - run: dotnet test -c Release --no-build
+      # будь-яка відома вразливість у пакетах, разом із транзитивними, валить збірку
+      - name: Check packages for known vulnerabilities
+        run: |
+          dotnet list package --vulnerable --include-transitive | tee vulnerable.txt
+          ! grep -q -E '^\s+>' vulnerable.txt
+
+  # Docker тут не запускається, тож образ збираємо на раннері GitHub:
+  # зламаний Dockerfile має падати тут, а не на Render
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker build --tag dream-povnota:ci .

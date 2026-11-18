@@ -1,0 +1,36 @@
+# Render Blueprint: безкоштовний веб-сервіс з Docker і безкоштовна PostgreSQL у Франкфурті.
+# DATABASE_URL Render підставляє сам з керованої бази, тож жодного секрету тут немає.
+databases:
+  - name: dream-povnota-db
+    plan: free
+    region: frankfurt
+    databaseName: dream_povnota
+    user: dream_povnota
+    postgresMajorVersion: "18"
+    ipAllowList: []
+
+services:
+  - type: web
+    name: dream-povnota
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health/live
+    autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - src/DreamPovnota.Core/**
+        - src/DreamPovnota.Web/**
+        - Dockerfile
+        - .dockerignore
+        - global.json
+        - render.yaml
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: dream-povnota-db
+          property: connectionString
+      - key: DATA_URL
+        value: https://maksym-garkusha.github.io/dream-povnota/data.json
