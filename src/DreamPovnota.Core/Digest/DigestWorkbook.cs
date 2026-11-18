@@ -7,7 +7,7 @@ using MiniExcelLibs.OpenXml;
 namespace DreamPovnota.Digest;
 
 /// <summary>
-/// Книга зрізу: «Зріз» з числами, «Картки» і «Що змінилось за тиждень».
+/// Книга зрізу: «Зріз» з числами, «Картки» і «Що змінилось за 7 днів».
 /// Файл невеликий (сотні рядків), тож збирається в пам'яті.
 /// </summary>
 public static class DigestWorkbook
@@ -17,7 +17,7 @@ public static class DigestWorkbook
 
     public const string SummarySheet = "Зріз";
     public const string CardsSheet = "Картки";
-    public const string WeekSheet = "Що змінилось за тиждень";
+    public const string WeekSheet = "Що змінилось за 7 днів";
 
     private static readonly XNamespace ContentTypes = "http://schemas.openxmlformats.org/package/2006/content-types";
     private static readonly XNamespace Relationships = "http://schemas.openxmlformats.org/package/2006/relationships";
@@ -60,7 +60,8 @@ public static class DigestWorkbook
             ("SHA-256 data.json, перші 16 знаків", d.EditionHashPrefix),
             ("Відкритих карток", d.Open),
             ("Заповнено все доречне", d.Complete),
-            ($"Оновлено за тиждень, {d.WeekTitle}", d.UpdatedThisWeek),
+            ("Остання зміна картки в DREAM", d.LastUpdated is { } last ? Iso(last) : "карток немає"),
+            ($"Оновлено за 7 днів, {d.WeekTitle}", d.UpdatedThisWeek),
             ("Історія змін", d.HistoryNote),
             ("Сторінка організації", d.OrganisationPage),
             ("Джерело", "Публічний API DREAM (dream.gov.ua), ліцензія даних CC BY 4.0"),
@@ -92,7 +93,7 @@ public static class DigestWorkbook
 
         // таблиця без жодного рядка вийшла б без заголовків, а пояснення про історію
         // має бути видно на цьому аркуші, а не тільки на першому
-        if (rows.Count == 0) rows.Add(WeekRow(null, null, $"Змін за тиждень {d.WeekTitle} немає.", null, null, null, null, null, null));
+        if (rows.Count == 0) rows.Add(WeekRow(null, null, $"Змін за 7 днів, {d.WeekTitle}, немає.", null, null, null, null, null, null));
         if (d.History != HistoryCoverage.FullWeek) rows.Add(WeekRow(null, null, d.HistoryNote, null, null, null, null, null, null));
         return rows;
     }
@@ -105,7 +106,7 @@ public static class DigestWorkbook
         ("Назва", title),
         ("Що сталося", kind),
         ("Оновлено в DREAM", updated),
-        ("Стадія на початок тижня", stageFrom),
+        ("Стадія на початок 7 днів", stageFrom),
         ("Стадія тепер", stageTo),
         ("Дозаповнено", nowFilled),
         ("Стало незаповненим", noLonger));

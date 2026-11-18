@@ -8,7 +8,7 @@
     ViewData["NoIndex"] = true;
 }
 <h1 class="page">@d.Organisation.Title</h1>
-<p class="lead">ЄДРПОУ @d.Organisation.Edrpou. Зріз відкритих карток у DREAM за тиждень @d.WeekTitle.</p>
+<p class="lead">ЄДРПОУ @d.Organisation.Edrpou. Стан відкритих карток у DREAM на @DigestText.Date(d.Generated) і зміни за 7 днів, @d.WeekTitle.</p>
 <ul class="links">
   <li><a href="/digest/@(d.Organisation.Edrpou).xlsx" rel="nofollow" download>Таблиця xlsx</a></li>
   <li><a href="/digest/@(d.Organisation.Edrpou).pdf" rel="nofollow" download>Сторінка PDF</a></li>
@@ -18,16 +18,20 @@
   }
   <li><a href="/digest">Інші організації</a></li>
 </ul>
+<p class="note">PDF на одну сторінку можна переслати керівнику служби, таблицю xlsx тому, хто веде картки в DREAM: у ній для кожної картки вказано, що дописати першим, і є посилання на саму картку в DREAM.</p>
 
-<div class="figures">
+<div class="figures three">
   <div class="figure"><b>@Format.Number(d.Open)</b><span>@Format.Plural(d.Open, "відкрита картка", "відкриті картки", "відкритих карток")</span></div>
   <div class="figure"><b>@Format.Number(d.Complete)</b><span>заповнено все доречне</span></div>
-  <div class="figure"><b>@Format.Number(d.UpdatedThisWeek)</b><span>оновлено за тиждень</span></div>
+  @if (d.LastUpdated is { } last)
+  {
+      <div class="figure"><b>@Format.Date(last)</b><span>остання зміна картки в DREAM</span></div>
+  }
 </div>
-<p class="note">Дані станом на @DigestText.DateTime(d.Generated). «Заповнено все доречне» рахується без англійських полів.</p>
+<p class="note">За останні 7 днів оновлено в DREAM: @Format.Cards(d.UpdatedThisWeek). Дані станом на @DigestText.DateTime(d.Generated). «Заповнено все доречне» рахується без англійських полів.</p>
 
 <section class="block" aria-labelledby="easy-title">
-  <h2 id="easy-title">Що найпростіше підтягнути</h2>
+  <h2 id="easy-title">Що найпростіше дозаповнити</h2>
   @if (d.Open == 0)
   {
       <p>Відкритих карток організації в цьому випуску немає.</p>
@@ -49,7 +53,7 @@
 </section>
 
 <section class="block" aria-labelledby="week-title">
-  <h2 id="week-title">За тиждень</h2>
-  <p>Оновлено в DREAM: @Format.Cards(d.UpdatedThisWeek).@if (d.History != HistoryCoverage.Unavailable) {<text> Дозаповнено полів: @Format.Number(d.FieldsFilledThisWeek).</text>}</p>
+  <h2 id="week-title">За 7 днів, @d.WeekTitle</h2>
+  <p>@d.RecentSentence</p>
   <p class="note">@d.HistoryNote Перелік змін по картках на аркуші «@DigestWorkbook.WeekSheet» у таблиці xlsx.</p>
 </section>

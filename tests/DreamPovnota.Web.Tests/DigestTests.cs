@@ -58,7 +58,11 @@ public class DigestTests : IClassFixture<WebFactory>
         Assert.Contains("<meta name=\"robots\" content=\"noindex\">", html);
         Assert.Contains("<b>16</b><span>відкритих карток</span>", html);
         Assert.Contains("<b>14</b><span>заповнено все доречне</span>", html);
-        Assert.Contains("<b>0</b><span>оновлено за тиждень</span>", html);
+        // дата останньої зміни замість великого нуля за 7 днів; сам лічильник дрібним текстом
+        Assert.Contains("<b>11.06.2025</b><span>остання зміна картки в DREAM</span>", html);
+        Assert.Contains("За останні 7 днів оновлено в DREAM: 0 карток.", html);
+        Assert.Contains("Картки організації в DREAM за ці дні не оновлювались.", html);
+        Assert.DoesNotContain("тиждень", html);
         Assert.Contains("href=\"/digest/25845655.xlsx\"", html);
         Assert.Contains("href=\"/digest/25845655.pdf\"", html);
         Assert.Contains("Історія змін зараз недоступна", html);
@@ -173,7 +177,8 @@ public class DigestTests : IClassFixture<WebFactory>
         Assert.Equal(current.Edition.Checks.Select(c => c.Code), baseline.Checks);
         Assert.Equal(HistoryCoverage.FullWeek, digest.History);
         Assert.Equal(["Документи або фото"], Assert.Single(digest.Week).NowFilled);
-        Assert.Contains("Дозаповнено полів: 1.", html);
+        Assert.EndsWith("озаповнили 1 поле.", digest.RecentSentence);
+        Assert.Contains(digest.RecentSentence, html);
         Assert.Contains("Порівняння зі станом карток на 08.11.2026.", html);
     }
 }

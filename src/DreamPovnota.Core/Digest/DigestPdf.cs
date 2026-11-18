@@ -8,7 +8,8 @@ using UglyToad.PdfPig.Writer;
 namespace DreamPovnota.Digest;
 
 /// <summary>
-/// Одна сторінка A4: три числа, до п'яти полів, які найпростіше дописати, тиждень і посилання.
+/// Одна сторінка A4: два числа й дата останньої зміни, до п'яти полів, які найпростіше дописати,
+/// зміни за 7 днів і посилання.
 /// Шрифт IBM Plex Sans (SIL OFL 1.1) лежить поруч у Fonts і вбудовується у файл,
 /// тож кирилиця однакова на будь-якому комп'ютері. Назви карток сюди не потрапляють:
 /// весь текст наш, і для нього в шрифті є всі знаки.
@@ -48,19 +49,19 @@ public static class DigestPdf
 
     private static void Draw(Page p, OrganisationDigest d)
     {
-        p.Text($"Зріз наповненості карток DREAM · випуск даних {DigestText.Date(d.Generated)}", 9.5, Muted);
+        p.Text($"Незалежний навчальний проєкт на відкритих даних DREAM, не офіційна статистика. Випуск даних {DigestText.Date(d.Generated)}.", 9.5, Muted);
         p.Gap(10);
         p.Text(d.Organisation.Title, 19, Ink, bold: true, leading: 1.2);
         p.Text("ЄДРПОУ " + d.Organisation.Edrpou, 10, Muted);
         p.Gap(18);
 
         p.Figures(
-            (d.Open, DigestText.Plural(d.Open, "відкрита картка", "відкриті картки", "відкритих карток")),
-            (d.Complete, "заповнено все доречне"),
-            (d.UpdatedThisWeek, "оновлено за тиждень " + d.WeekTitle));
+            (DigestText.Number(d.Open), DigestText.Plural(d.Open, "відкрита картка", "відкриті картки", "відкритих карток")),
+            (DigestText.Number(d.Complete), "заповнено все доречне"),
+            (d.LastUpdated is { } last ? DigestText.Date(last) : "немає", "остання зміна картки в DREAM"));
         p.Rule();
 
-        p.Text("Що найпростіше підтягнути", 13, Ink, bold: true);
+        p.Text("Що найпростіше дозаповнити", 13, Ink, bold: true);
         p.Gap(4);
         if (d.Open == 0)
             p.Text("Відкритих карток організації в цьому випуску немає.", 10.5, Ink);
@@ -76,24 +77,22 @@ public static class DigestPdf
         p.Gap(8);
         p.Rule();
 
-        p.Text("За тиждень", 13, Ink, bold: true);
+        p.Text($"За 7 днів, {d.WeekTitle}", 13, Ink, bold: true);
         p.Gap(4);
-        string filled = d.History == HistoryCoverage.Unavailable ? ""
-            : $" Дозаповнено полів: {DigestText.Number(d.FieldsFilledThisWeek)}.";
-        p.Text($"Оновлено в DREAM: {DigestText.Cards(d.UpdatedThisWeek)}.{filled}", 10.5, Ink);
+        p.Text(d.RecentSentence, 10.5, Ink);
         p.Text(d.HistoryNote, 9.5, Muted);
         p.Gap(14);
 
         p.Text("Сторінка організації з усіма картками:", 10.5, Ink);
         p.Link(d.OrganisationPage, 10.5);
-        p.Text("Таблиця з полями кожної картки (xlsx):", 10.5, Ink);
+        p.Text("Сторінка зрізу з таблицею xlsx:", 10.5, Ink);
         p.Link(d.DigestPage, 10.5);
 
         p.Footer(
-            $"Випуск даних {DigestText.DateTime(d.Generated)}, SHA-256 файлу data.json починається з {d.EditionHashPrefix}. " +
-            "Повний хеш є в /api/v1/meta сервісу, а походження data.json підтверджує атестація GitHub. " +
             "Незалежний навчальний проєкт на відкритих даних, не пов'язаний з державними органами, не офіційна статистика. " +
-            "Дані: публічний API DREAM (dream.gov.ua), ліцензія CC BY 4.0. «Заповнено все доречне» рахується без англійських полів, як на сторінці організації.");
+            "Дані: публічний API DREAM (dream.gov.ua), ліцензія CC BY 4.0. «Заповнено все доречне» рахується без англійських полів, як на сторінці організації. " +
+            $"Випуск даних {DigestText.DateTime(d.Generated)}, SHA-256 файлу data.json починається з {d.EditionHashPrefix}; " +
+            "повний хеш є в /api/v1/meta сервісу, а походження data.json підтверджує атестація GitHub.");
     }
 
     private static string PdfDate(DateTimeOffset moment) =>
@@ -139,8 +138,8 @@ public static class DigestPdf
             y -= 4;
         }
 
-        /// <summary>Три великі числа в ряд з підписами під ними.</summary>
-        public void Figures(params (int Value, string Caption)[] figures)
+        /// <summary>Три великі значення в ряд з підписами під ними; задовге значення, як дата, дрібнішає, щоб уміститися в колонку.</summary>
+        public void Figures(params (string Value, string Caption)[] figures)
         {
             double column = Width / figures.Length;
             double top = y;
@@ -149,7 +148,8 @@ public static class DigestPdf
             {
                 double x = Margin + i * column;
                 double line = top - 30;
-                page.AddText(DigestText.Number(figures[i].Value), 30, new PdfPoint(x, line), heavy);
+                double size = Math.Min(30, 30 * (column - 14) / Math.Max(Measure(figures[i].Value, 30, heavy), 1));
+                page.AddText(figures[i].Value, size, new PdfPoint(x, line), heavy);
                 page.SetTextAndFillColor(Muted.R, Muted.G, Muted.B);
                 foreach (string caption in Wrap(figures[i].Caption, 10, regular, column - 14))
                 {

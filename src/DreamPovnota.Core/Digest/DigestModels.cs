@@ -90,7 +90,7 @@ public enum HistoryCoverage
 
 /// <summary>Зріз однієї організації на дату випуску data.json.</summary>
 /// <param name="EditionSha256">SHA-256 файлу data.json, з якого зібрано зріз, у hex малими літерами.</param>
-/// <param name="WeekFrom">Перший день тижня; тиждень це сім днів до дати випуску включно.</param>
+/// <param name="WeekFrom">Перший з 7 днів до дати випуску включно. Це не тиждень ISO, як на сторінці змін, тож у текстах «7 днів».</param>
 /// <param name="ComparedWith">Дата знімка, з яким порівнювали; null без історії.</param>
 public sealed record OrganisationDigest(
     DigestOrganisation Organisation,
@@ -109,8 +109,30 @@ public sealed record OrganisationDigest(
 {
     public int Open => Cards.Count;
 
-    /// <summary>Скільки полів дозаповнено за тиждень у всіх картках разом.</summary>
+    /// <summary>Скільки полів дозаповнено за 7 днів у всіх картках разом.</summary>
     public int FieldsFilledThisWeek => Week.Sum(c => c.NowFilled.Count);
+
+    /// <summary>
+    /// Найсвіжіша дата оновлення в DREAM серед відкритих карток; null, якщо карток немає.
+    /// Дата замість лічильника за 7 днів: нуль великим числом читається як оцінка.
+    /// </summary>
+    public DateOnly? LastUpdated => Cards.Count == 0 ? null : Cards.Max(c => c.Updated);
+
+    /// <summary>Що сталося за 7 днів одним реченням; коли змін немає, так і пишемо.</summary>
+    public string RecentSentence
+    {
+        get
+        {
+            var parts = new List<string>();
+            if (UpdatedThisWeek > 0)
+                parts.Add($"оновили {DigestText.Number(UpdatedThisWeek)} {DigestText.Plural(UpdatedThisWeek, "картку", "картки", "карток")}");
+            if (History != HistoryCoverage.Unavailable && FieldsFilledThisWeek > 0)
+                parts.Add($"дозаповнили {DigestText.Number(FieldsFilledThisWeek)} {DigestText.Plural(FieldsFilledThisWeek, "поле", "поля", "полів")}");
+            if (parts.Count == 0) return "Картки організації в DREAM за ці дні не оновлювались.";
+            string sentence = string.Join(", ", parts) + ".";
+            return char.ToUpperInvariant(sentence[0]) + sentence[1..];
+        }
+    }
 
     public string OrganisationPage => DigestBuilder.ServiceUrl + "/org/" + Organisation.Edrpou;
 
@@ -121,7 +143,7 @@ public sealed record OrganisationDigest(
     /// <summary>Перші 16 знаків хешу: досить, щоб звірити файл з /api/v1/meta чи атестацією, і вміщається в рядок.</summary>
     public string EditionHashPrefix => EditionSha256[..16];
 
-    /// <summary>Одне речення про те, наскільки повна історія за тиждень.</summary>
+    /// <summary>Одне речення про те, наскільки повна історія за ці 7 днів.</summary>
     public string HistoryNote => History switch
     {
         HistoryCoverage.Unavailable =>

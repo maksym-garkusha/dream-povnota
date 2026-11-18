@@ -315,6 +315,10 @@ dl.props dd { margin: 0; }
 }
 dl.props dd, .summary-line, h1.page, section h2 { overflow-wrap: anywhere; }
 
+/* сторінка однієї служби: три плитки в ряд, на телефоні одна під одною, бо дата довга */
+.figures.three { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 640px) { .figures.three { grid-template-columns: 1fr; } }
+
 /* перелік /digest: тільки назва й кількість карток, без чисел наповненості */
 .orglist { list-style: none; margin: 22px 0 14px; padding: 0; border-top: 1px solid var(--line); max-width: 46em; }
 .orglist li { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 16px; padding: 10px 0; border-bottom: 1px solid var(--line); }

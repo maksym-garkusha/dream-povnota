@@ -24,7 +24,7 @@ public static class DigestBuilder
 
     public static string PortalLink(string code) => PortalPrefix + code + "/profile";
 
-    /// <summary>Тиждень це сім днів до дати випуску включно, за UTC, як дати оновлення в data.json.</summary>
+    /// <summary>Сім днів до дати випуску включно, за UTC, як дати оновлення в data.json.</summary>
     public static DateOnly WeekTo(Edition edition) => DateOnly.FromDateTime(edition.Generated.UtcDateTime);
 
     public static DateOnly WeekFrom(Edition edition) => WeekTo(edition).AddDays(-(WeekDays - 1));

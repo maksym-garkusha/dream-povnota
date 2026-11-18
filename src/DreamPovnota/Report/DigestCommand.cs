@@ -31,7 +31,7 @@ public static class DigestCommand
             Console.Error.WriteLine($"data.json не прочитано: {ex.Message}");
             return 1;
         }
-        log.WriteLine($"Випуск від {edition.Generated:u}, SHA-256 {sha256}, тиждень {DigestText.Period(DigestBuilder.WeekFrom(edition), DigestBuilder.WeekTo(edition))}");
+        log.WriteLine($"Випуск від {edition.Generated:u}, SHA-256 {sha256}, 7 днів {DigestText.Period(DigestBuilder.WeekFrom(edition), DigestBuilder.WeekTo(edition))}");
 
         foreach (var (edrpou, title) in DigestOrganisations.Unlisted(edition.Organisations.Select(o => (o.Edrpou, o.Title))))
             log.WriteLine($"Схожа організація, якої немає в переліку: {edrpou ?? "без ЄДРПОУ"} {title}");
@@ -54,7 +54,7 @@ public static class DigestCommand
             files += 2;
             log.WriteLine(
                 $"{organisation.Edrpou}: відкритих {digest.Open}, заповнено все доречне {digest.Complete}, " +
-                $"оновлено за тиждень {digest.UpdatedThisWeek}, змін у таблиці {digest.Week.Count}");
+                $"оновлено за 7 днів {digest.UpdatedThisWeek}, змін у таблиці {digest.Week.Count}");
         }
 
         log.WriteLine(

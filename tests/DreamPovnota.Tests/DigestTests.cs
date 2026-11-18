@@ -239,12 +239,31 @@ public partial class DigestTests
         Assert.Equal((595, 842), ((int)page.Width, (int)page.Height));
         Assert.Contains("Вінницькій", text, StringComparison.Ordinal);
         // PdfPig читає слова рядками: спершу три числа, під ними підписи
-        Assert.Contains("16 14 0 відкритих карток заповнено все доречне оновлено за тиждень", text, StringComparison.Ordinal);
+        Assert.Contains("16 14 11.06.2025 відкритих карток заповнено все доречне остання зміна картки в DREAM", text, StringComparison.Ordinal);
+        Assert.Contains("Картки організації в DREAM за ці дні не оновлювались.", text, StringComparison.Ordinal);
+        Assert.StartsWith("Незалежний навчальний проєкт на відкритих даних DREAM, не офіційна статистика.", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("тижд", text, StringComparison.Ordinal);
         Assert.Contains("https://dream-povnota.onrender.com/org/25845655", text, StringComparison.Ordinal);
         Assert.Equal("Максим Гаркуша", document.Information.Author);
         Assert.Equal("dream-povnota", document.Information.Producer);
         Assert.Equal("dream-povnota", document.Information.Creator);
         Assert.DoesNotContain("pdfpig", Encoding.Latin1.GetString(pdf), StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task Recent_changes_are_one_plain_sentence_and_say_so_when_there_are_none()
+    {
+        var digest = Build(await EditionAsync(), Vinnytsia);
+        WeekChange Filled(int fields) => new("010101-ABCDEF12", "Школа", WeekChangeKind.Updated, new DateOnly(2026, 11, 17), "idea", "idea",
+            Enumerable.Repeat("Сектор", fields).ToList(), []);
+
+        Assert.Equal("Картки організації в DREAM за ці дні не оновлювались.", digest.RecentSentence);
+        Assert.Equal("Оновили 3 картки, дозаповнили 5 полів.",
+            (digest with { UpdatedThisWeek = 3, Week = [Filled(5)], History = HistoryCoverage.FullWeek }).RecentSentence);
+        Assert.Equal("Дозаповнили 1 поле.", (digest with { Week = [Filled(1)], History = HistoryCoverage.Partial }).RecentSentence);
+        // без історії про дозаповнені поля нічого не відомо, тож і не кажемо
+        Assert.Equal("Оновили 1 картку.", (digest with { UpdatedThisWeek = 1, Week = [Filled(2)] }).RecentSentence);
+        Assert.Equal(new DateOnly(2025, 6, 11), digest.LastUpdated);
     }
 
     [Fact]
@@ -271,7 +290,7 @@ public partial class DigestTests
         string text = string.Join(" ", pdf.GetPage(1).GetWords().Select(w => w.Text));
 
         Assert.Equal(EditionSha256[..16], digest.EditionHashPrefix);
-        Assert.Contains($"Випуск даних {DigestText.DateTime(digest.Generated)}, SHA-256 файлу data.json починається з {EditionSha256[..16]}.", text, StringComparison.Ordinal);
+        Assert.Contains($"Випуск даних {DigestText.DateTime(digest.Generated)}, SHA-256 файлу data.json починається з {EditionSha256[..16]};", text, StringComparison.Ordinal);
         Assert.Contains("SHA-256 data.json, перші 16 знаків\n" + EditionSha256[..16], cells, StringComparison.Ordinal);
         Assert.DoesNotContain(EditionSha256[..17], text + cells, StringComparison.Ordinal);
     }
