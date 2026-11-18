@@ -12,6 +12,7 @@ using DreamPovnota.Sync;
 // dotnet run -- sync   [--cache data] [--parallel 2] [--limit N]   забрати картки з API в кеш
 // dotnet run -- export [--cache data] [--as-of дата] <тека сайту>  data.json для сторінки
 // dotnet run -- report [--cache data] [--as-of дата] <файл.md>     звіт
+// dotnet run -- digest --edition data.json [--history адреса] <тека> зріз для служб відновлення
 
 Console.OutputEncoding = Encoding.UTF8;
 
@@ -35,6 +36,8 @@ switch (args[0])
         return await RunExport(options, options.Rest[0], cts.Token);
     case "report" when options.Rest.Count == 1:
         return await RunReport(options, options.Rest[0], cts.Token);
+    case "digest" when options.Rest.Count == 1 && options.Edition is not null:
+        return await DigestCommand.RunAsync(options.Edition, options.History, options.Rest[0], Console.Out, cts.Token);
     default:
         return Usage();
 }
@@ -134,16 +137,22 @@ static int Usage()
           sync   [--cache data] [--parallel 2] [--limit N]   забрати картки з API в кеш
           export [--cache data] [--as-of дата] <тека сайту>  записати data.json для сторінки
           report [--cache data] [--as-of дата] <файл.md>     записати звіт у Markdown
+          digest --edition data.json [--history адреса] <тека>
+                                                       xlsx і PDF зрізу для агентства й служб відновлення
 
         --limit N бере тільки перші N проєктів стрічки, для швидкої перевірки;
         картки поза цими N з кешу прибираються.
         --as-of задає дату зрізу (типово зараз), наприклад 2026-11-17T22:00:00Z;
         від неї рахується, чи оновлювалась картка за останній рік.
+        --history дає адресу веб-сервісу, звідки взяти стан карток на початок тижня,
+        наприклад https://dream-povnota.onrender.com; без неї зріз без дозаповнених полів.
         """);
     return 2;
 }
 
-internal record Options(string Cache, int Parallel, int? Limit, DateTimeOffset? AsOf, IReadOnlyList<string> Rest)
+internal record Options(
+    string Cache, int Parallel, int? Limit, DateTimeOffset? AsOf, IReadOnlyList<string> Rest,
+    string? Edition = null, string? History = null)
 {
     /// <summary>null, якщо параметр невідомий або без значення.</summary>
     public static Options? Parse(IReadOnlyList<string> args)
@@ -170,6 +179,14 @@ internal record Options(string Cache, int Parallel, int? Limit, DateTimeOffset? 
                     break;
                 case "--as-of" when Date(value) is { } asOf:
                     options = options with { AsOf = asOf };
+                    i++;
+                    break;
+                case "--edition" when value is not null:
+                    options = options with { Edition = value };
+                    i++;
+                    break;
+                case "--history" when Uri.TryCreate(value, UriKind.Absolute, out var uri) && uri.Scheme is "https" or "http":
+                    options = options with { History = value };
                     i++;
                     break;
                 case var arg when arg.StartsWith("--", StringComparison.Ordinal):
