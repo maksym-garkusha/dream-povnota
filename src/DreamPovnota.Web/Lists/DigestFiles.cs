@@ -73,6 +73,8 @@ public sealed class DigestFiles(HistoryReader history, TimeProvider clock, ILogg
                 File(DigestPdf.Write(digest), DigestPdf.ContentType, digest, "pdf", prefix)));
         }
 
+        // як і після повних вивантажень: разове сміття збірки не має лишатися в 512 МБ екземпляра
+        GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, blocking: true, compacting: true);
         log.LogInformation(
             "Зрізи для служб відновлення зібрано за {Elapsed:0.0} с, {Bytes} КБ, історія {History}",
             System.Diagnostics.Stopwatch.GetElapsedTime(started).TotalSeconds,
