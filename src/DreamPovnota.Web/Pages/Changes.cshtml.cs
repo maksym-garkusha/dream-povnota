@@ -55,6 +55,16 @@ public sealed class ChangesModel(EditionStore store, HistoryReader history, Time
                 return new ChartColumn(ChangeText.Short(p), value, ChangeText.IsPartial(p), $"{ChangeText.Title(p, kind)}: {text}");
             }).ToList());
 
+    /// <summary>
+    /// Графіки малюються, коли порівняти можна хоча б два періоди: один стовпчик на осі «0…1»
+    /// виглядає як збій, а ті самі числа однаково є в таблиці.
+    /// </summary>
+    public static bool Drawable(IReadOnlyList<PeriodChanges> periods) => periods.Count(p => p.ComparedFrom is not null) >= 2;
+
+    /// <summary>Чи є в графіку хоч одне ненульове значення; порожні осі замінює одне речення.</summary>
+    public static bool HasValues(ChangeMeasure measure, IReadOnlyList<PeriodChanges> periods, Func<PeriodChanges, ChangeCounts> slice) =>
+        periods.Any(p => p.ComparedFrom is not null && measure.Value(slice(p)) > 0);
+
     /// <summary>Число в таблиці; риска, якщо за період порівнювати не було з чим.</summary>
     public static string Cell(PeriodChanges period, int value) => period.ComparedFrom is null ? "–" : Format.Number(value);
 }

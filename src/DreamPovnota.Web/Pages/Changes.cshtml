@@ -2,6 +2,7 @@
 @model ChangesModel
 @using DreamPovnota.Digest
 @using DreamPovnota.Web.Changes
+@using DreamPovnota.Web.Pages.Shared
 @{
     ViewData["Title"] = "Рух у картках за тижнями";
     ViewData["Description"] = "Скільки карток проєктів у DREAM оновили, скільки полів дозаповнили, скільки карток з'явилося і перейшло на іншу стадію, тиждень за тижнем.";
@@ -13,7 +14,7 @@
 <link rel="alternate" type="application/atom+xml" title="Рух у картках DREAM за тижнями" href="/changes.atom">
 }
 <h1 class="page">Рух у картках DREAM за тижнями</h1>
-<p class="lead">Скільки карток проєктів оновили, скільки полів у них дозаповнили, скільки карток з'явилося і скільки перейшло на іншу стадію. Історії змін DREAM не показує, тож сервіс веде її сам: кожен новий випуск даних стає знімком, і тижні порівнюються за знімками.</p>
+<p class="lead">Скільки карток проєктів оновили, скільки полів у них дозаповнили, скільки карток з'явилося і скільки перейшло на іншу стадію. Відкритий API DREAM віддає поточний стан карток, тож історію змін сервіс збирає сам: кожен новий випуск даних стає знімком, і тижні порівнюються за знімками.</p>
 
 @if (s is null)
 {
@@ -25,7 +26,7 @@ else if (s.Snapshots == 0 || total is null)
 }
 else
 {
-    <p class="note">Історію ведемо з @Format.Date(s.HistoryFrom!.Value), раніших змін тут немає. Останній знімок @Format.DateTime(s.LastSnapshot!.Value), усього знімків @Format.Number(s.Snapshots). <a href="/changes.atom">Стрічка Atom</a>; ті самі числа в <a href="/api/v1/changes/summary">JSON</a>.</p>
+    <p class="note">Історію ведемо з @Format.Date(s.HistoryFrom!.Value), раніших змін тут немає. Останній знімок @Format.DateTime(s.LastSnapshot!.Value), усього знімків @Format.Number(s.Snapshots).</p>
 
     @if (total.ComparedFrom is null)
     {
@@ -33,7 +34,7 @@ else
     }
     else
     {
-        <p class="scope">Разом за @ChangeText.Title(total, PeriodKind.Total)</p>
+        <p class="scope">@ChangeText.Span(total)</p>
         <div class="figures">
         @foreach (var measure in ChangesModel.Measures)
         {
@@ -42,25 +43,10 @@ else
         }
         </div>
 
-        <section class="block" aria-labelledby="weeks-title">
-          <h2 id="weeks-title">За тижнями</h2>
-          <p>Тиждень з понеділка до неділі за київським часом. Світліший стовпчик означає неповний тиждень: історія почалась усередині нього або він ще триває. Точні числа в таблиці під графіками.</p>
-          <div class="multiples">
-          @foreach (var measure in ChangesModel.Measures)
-          {
-              <figure>
-                <figcaption>@measure.Title</figcaption>
-                @Html.Raw(ChangesModel.Chart("weeks-" + measure.Key, measure, s.Weeks, PeriodKind.Week, p => p.All))
-              </figure>
-          }
-          </div>
-          <partial name="_ChangesTable" model="new DreamPovnota.Web.Pages.Shared.ChangesTableModel(s.Weeks, PeriodKind.Week, Services: false)" />
-        </section>
-
         <section class="block" id="services" aria-labelledby="services-title">
           <h2 id="services-title">Агентство і служби відновлення</h2>
           <p>Державне агентство відновлення та @Format.Number(services) @Format.Plural(services, "обласна служба", "обласні служби", "обласних служб") відновлення, той самий перелік, що й у <a href="/digest">зрізі для служб</a>. Числа сумарні, окремі служби тут не називаються: що змінилось у кожній, видно на її сторінці зрізу.</p>
-          <p class="scope">Разом за @ChangeText.Title(total, PeriodKind.Total)</p>
+          <p class="scope">@ChangeText.Span(total)</p>
           <div class="figures">
           @foreach (var measure in ChangesModel.Measures)
           {
@@ -68,35 +54,35 @@ else
               <div class="figure"><b>@Format.Number(value)</b><span>@ChangesModel.FigureLabel(measure, value)</span></div>
           }
           </div>
-          <div class="multiples">
-          @foreach (var measure in ChangesModel.Measures.Take(2))
-          {
-              <figure>
-                <figcaption>@measure.Title</figcaption>
-                @Html.Raw(ChangesModel.Chart("services-" + measure.Key, measure, s.Weeks, PeriodKind.Week, p => p.Services))
-              </figure>
-          }
-          </div>
-          <partial name="_ChangesTable" model="new DreamPovnota.Web.Pages.Shared.ChangesTableModel(s.Weeks, PeriodKind.Week, Services: true)" />
+          <partial name="_ChangeCharts" model='new ChangeChartsModel(s.Weeks, PeriodKind.Week, ChangesModel.Measures.Take(2).ToList(), p => p.Services, "services")' />
+          <partial name="_ChangesTable" model='new ChangesTableModel(s.Weeks, PeriodKind.Week, Services: true, Caption: "Агентство і служби відновлення за тижнями")' />
+        </section>
+
+        <section class="block" aria-labelledby="weeks-title">
+          <h2 id="weeks-title">Усі відкриті картки за тижнями</h2>
+          <p>Тиждень з понеділка до неділі за київським часом. @(ChangesModel.Drawable(s.Weeks) ? "Світліший стовпчик означає неповний тиждень: історія почалась усередині нього або він ще триває." : "")</p>
+          <partial name="_ChangeCharts" model='new ChangeChartsModel(s.Weeks, PeriodKind.Week, ChangesModel.Measures, p => p.All, "weeks")' />
+          <partial name="_ChangesTable" model='new ChangesTableModel(s.Weeks, PeriodKind.Week, Services: false, Caption: "Усі відкриті картки за тижнями")' />
         </section>
 
         <section class="block" aria-labelledby="fields-title">
           <h2 id="fields-title">Які поля дозаповнили</h2>
           @if (total.All.Fields.Count == 0)
           {
-              <p>За @ChangeText.Title(total, PeriodKind.Total) дозаповнених полів немає.</p>
+              <p>@ChangeText.Span(total) дозаповнених полів немає.</p>
           }
           else
           {
               int most = total.All.Fields[0].Fields;
-              <p>Разом за @ChangeText.Title(total, PeriodKind.Total), від найчастішого. Смужка порівнює поля між собою: найдовша в поля, яке дозаповнювали найчастіше.</p>
+              <p>@ChangeText.Span(total), від найчастішого. Смужка порівнює поля між собою: найдовша в поля, яке дозаповнювали найчастіше.</p>
               <div class="tablewrap">
               <table class="ranked">
+                <caption class="hidden">Дозаповнені поля за типом</caption>
                 <thead><tr><th scope="col">Поле</th><th scope="col" class="num">Дозаповнено</th></tr></thead>
                 <tbody>
                 @foreach (var field in total.All.Fields)
                 {
-                    <tr><td>@field.Title</td><td class="num"><div class="share"><partial name="_Bar" model="new DreamPovnota.Web.Pages.Shared.BarModel((double)field.Fields / most)" /><b>@Format.Number(field.Fields)</b></div></td></tr>
+                    <tr><td>@field.Title</td><td class="num"><div class="share"><partial name="_Bar" model="new BarModel((double)field.Fields / most)" /><b>@Format.Number(field.Fields)</b></div></td></tr>
                 }
                 </tbody>
               </table>
@@ -107,6 +93,7 @@ else
               <h3>Переходи між стадіями</h3>
               <div class="tablewrap">
               <table class="ranked">
+                <caption class="hidden">Переходи між стадіями</caption>
                 <thead><tr><th scope="col">Стадія</th><th scope="col" class="num">Карток</th></tr></thead>
                 <tbody>
                 @foreach (var move in total.All.Stages)
@@ -122,32 +109,30 @@ else
         @if (s.FirstWeekDays.Count > 0)
         {
             var firstDay = s.FirstWeekDays[0];
-            <section class="block" aria-labelledby="days-title">
-              <h2 id="days-title">Перший тиждень за днями</h2>
-              <p>Історія почалась @ChangeText.OnDay(firstDay.From), тож перший тиждень неповний. День теж порівнюється цілим: останній знімок до його півночі з останнім знімком цього дня.</p>
-              <div class="multiples">
-              @foreach (var measure in ChangesModel.Measures)
-              {
-                  <figure>
-                    <figcaption>@measure.Title</figcaption>
-                    @Html.Raw(ChangesModel.Chart("days-" + measure.Key, measure, s.FirstWeekDays, PeriodKind.Day, p => p.All))
-                  </figure>
-              }
-              </div>
-              <partial name="_ChangesTable" model="new DreamPovnota.Web.Pages.Shared.ChangesTableModel(s.FirstWeekDays, PeriodKind.Day, Services: false)" />
+            <section class="block">
+              <details>
+                <summary><h2>Перший тиждень за днями</h2></summary>
+                <p>Історія почалась @ChangeText.OnDay(firstDay.From), тож перший тиждень неповний. День теж порівнюється цілим: останній знімок до його півночі з останнім знімком цього дня.</p>
+                <partial name="_ChangeCharts" model='new ChangeChartsModel(s.FirstWeekDays, PeriodKind.Day, ChangesModel.Measures, p => p.All, "days")' />
+                <partial name="_ChangesTable" model='new ChangesTableModel(s.FirstWeekDays, PeriodKind.Day, Services: false, Caption: "Перший тиждень за днями")' />
+              </details>
             </section>
         }
     }
 
-    <section class="block" aria-labelledby="method-title">
-      <h2 id="method-title">Як рахується</h2>
-      <ul class="plain">
-        <li>Період порівнюється цілим: стан карток в останньому знімку перед його початком і в останньому знімку всередині. Тому картка, яку оновили двічі за тиждень, рахується один раз, а сума днів може не збігатися з тижнем.</li>
-        <li>Оновлена картка: змінилась дата оновлення в DREAM.</li>
-        <li>Дозаповнене поле: на початок періоду воно було доречне на стадії картки й порожнє, а на кінець заповнене. «Оновлювалась за останній рік» тут полем не вважається, це наслідок дати оновлення.</li>
-        <li>Нова картка: її не було в жодному знімку до початку періоду, а на кінець вона серед відкритих.</li>
-        <li>Перехід стадії: на кінець періоду картка на іншій стадії, ніж на початок. Картки, які закрили чи вилучили з DREAM, зникають з відкритих і тут не рахуються.</li>
-        <li>Тижні й дні за київським часом. Показано не більше @ChangeCalendar.MaxWeeks останніх тижнів.</li>
-      </ul>
+    <section class="block">
+      <details>
+        <summary><h2>Як рахується</h2></summary>
+        <ul class="plain">
+          <li>Період порівнюється цілим: стан карток в останньому знімку перед його початком і в останньому знімку всередині. Тому картка, яку оновили двічі за тиждень, рахується один раз, а сума днів може не збігатися з тижнем.</li>
+          <li>Оновлена картка: змінилась дата оновлення в DREAM.</li>
+          <li>Дозаповнене поле: на початок періоду воно було доречне на стадії картки й порожнє, а на кінець заповнене. «Оновлювалась за останній рік» тут полем не вважається, це наслідок дати оновлення.</li>
+          <li>Нова картка: її не було в жодному знімку до початку періоду, а на кінець вона серед відкритих.</li>
+          <li>Перехід стадії: на кінець періоду картка на іншій стадії, ніж на початок. Картки, які закрили чи вилучили з DREAM, зникають з відкритих і тут не рахуються.</li>
+          <li>Тижні й дні за київським часом. Показано не більше @ChangeCalendar.MaxWeeks останніх тижнів.</li>
+        </ul>
+      </details>
     </section>
+
+    <p class="note">Для програм: стрічка <a href="/changes.atom">Atom</a> із записом на кожен тиждень і ті самі числа в <a href="/api/v1/changes/summary">JSON</a>.</p>
 }

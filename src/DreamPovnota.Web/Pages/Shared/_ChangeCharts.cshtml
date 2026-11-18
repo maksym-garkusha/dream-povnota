@@ -1,0 +1,27 @@
+@model DreamPovnota.Web.Pages.Shared.ChangeChartsModel
+@using DreamPovnota.Web.Changes
+@* малі графіки однієї групи; якщо порівнянних періодів менше двох, замість них речення *@
+@if (!ChangesModel.Drawable(Model.Periods))
+{
+    <p class="note">Графіки з'являться, коли порівняти можна буде хоча б два @(Model.Kind == PeriodKind.Day ? "дні" : "тижні"). Поки числа в таблиці нижче.</p>
+}
+else
+{
+    <div class="multiples">
+    @foreach (var measure in Model.Measures)
+    {
+        <figure>
+          @* назву читач екрана бере з title самого графіка, тож підпис над ним для нього прихований *@
+          <figcaption aria-hidden="true">@measure.Title</figcaption>
+          @if (ChangesModel.HasValues(measure, Model.Periods, Model.Slice))
+          {
+              @Html.Raw(ChangesModel.Chart(Model.Prefix + "-" + measure.Key, measure, Model.Periods, Model.Kind, Model.Slice))
+          }
+          else
+          {
+              <p class="empty">За цей час таких змін не було.</p>
+          }
+        </figure>
+    }
+    </div>
+}

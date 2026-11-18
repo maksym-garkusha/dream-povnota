@@ -56,8 +56,9 @@ public partial class ChangesPageTests : IClassFixture<WebFactory>
         Assert.True(paths.TryGetProperty("/api/v1/changes", out _));
     }
 
-    // знімок 1 у вівторок 10.11 з порожнім полем у картці a і старішою датою в картці b,
-    // далі сервіс сам імпортує випуск з фікстур (18.11, 00:00 за Києвом) як знімок 2
+    // знімок 1 у вівторок 03.11, знімок 2 у вівторок 10.11: картка c між ними оновилась; у обох
+    // порожнє поле в картці a і старіша дата в картці b. Далі сервіс сам імпортує випуск
+    // з фікстур (18.11, 00:00 за Києвом) як знімок 3. Порівняти можна два тижні з трьох.
     [PostgresFact]
     public async Task Page_api_and_feed_show_the_weeks_from_the_history()
     {
@@ -69,9 +70,15 @@ public partial class ChangesPageTests : IClassFixture<WebFactory>
         var cards = edition.Cards.ToList();
         cards[a] = cards[a] with { Filled = cards[a].Filled & ~(1 << bit) };
         int b = a == 0 ? 1 : 0;
+        int c = Enumerable.Range(0, cards.Count).First(i => i != a && i != b);
         cards[b] = cards[b] with { Updated = cards[b].Updated.AddDays(-5) };
-        var older = edition with { Generated = new DateTimeOffset(2026, 11, 10, 8, 0, 0, TimeSpan.Zero), Cards = cards };
-        await SnapshotWriter.WriteAsync(database.Db, new LoadedEdition(older, SHA256.HashData(Guid.NewGuid().ToByteArray())), CancellationToken.None);
+        var earliest = cards.ToList();
+        earliest[c] = earliest[c] with { Updated = earliest[c].Updated.AddDays(-9) };
+        foreach (var (generated, list) in new[] { (new DateTimeOffset(2026, 11, 3, 8, 0, 0, TimeSpan.Zero), earliest), (new DateTimeOffset(2026, 11, 10, 8, 0, 0, TimeSpan.Zero), cards) })
+        {
+            var older = edition with { Generated = generated, Cards = list };
+            await SnapshotWriter.WriteAsync(database.Db, new LoadedEdition(older, SHA256.HashData(Guid.NewGuid().ToByteArray())), CancellationToken.None);
+        }
 
         await using var app = new WebFactory { DatabaseUrl = database.Url };
         var client = await app.ReadyClientAsync();
@@ -83,15 +90,16 @@ public partial class ChangesPageTests : IClassFixture<WebFactory>
             if (response.IsSuccessStatusCode)
             {
                 summary = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement;
-                if (summary.GetProperty("snapshots").GetInt32() == 2) break;
+                if (summary.GetProperty("snapshots").GetInt32() == 3) break;
             }
             await Task.Delay(100);
         }
 
-        Assert.Equal(2, summary.GetProperty("snapshots").GetInt32());
+        Assert.Equal(3, summary.GetProperty("snapshots").GetInt32());
         var weeks = summary.GetProperty("weeks");
-        Assert.Equal(["2026-W46", "2026-W47"], weeks.EnumerateArray().Select(w => w.GetProperty("isoWeek").GetString()));
-        var w47 = weeks[1].GetProperty("all");
+        Assert.Equal(["2026-W45", "2026-W46", "2026-W47"], weeks.EnumerateArray().Select(w => w.GetProperty("isoWeek").GetString()));
+        Assert.Equal(1, weeks[1].GetProperty("all").GetProperty("updatedCards").GetInt32());
+        var w47 = weeks[2].GetProperty("all");
         Assert.Equal(1, w47.GetProperty("updatedCards").GetInt32());
         Assert.Equal(1, w47.GetProperty("fieldsFilled").GetInt32());
         Assert.Equal(edition.Checks[bit].Code, w47.GetProperty("fields")[0].GetProperty("check").GetString());
@@ -107,14 +115,19 @@ public partial class ChangesPageTests : IClassFixture<WebFactory>
         Assert.Contains("Тут тільки перший знімок історії, з ним порівнюються наступні.", html);
         var svgs = SvgPattern().Matches(html).Select(m => XElement.Parse(m.Value)).ToList();
         Assert.All(svgs, ColumnChartTests.AssertSelfContained);
-        // чотири графіки за тижнями, два для служб, чотири за днями першого тижня; решта смужки в таблиці полів
-        Assert.Equal(10, svgs.Count(s => (string?)s.Attribute("class") == "chart"));
+        // за тижнями графіки є лише в оновлених картках і дозаповнених полях; нових карток і переходів
+        // не було, у служб змін немає, а в днях першого тижня порівнювати нема з чим
+        Assert.Equal(2, svgs.Count(s => (string?)s.Attribute("class") == "chart"));
+        Assert.Equal(4, Regex.Count(html, "За цей час таких змін не було."));
+        Assert.Contains("Графіки з'являться, коли порівняти можна буде хоча б два дні.", html);
+        Assert.Contains("<summary><h2>Перший тиждень за днями</h2></summary>", html);
         Assert.Contains("<b>1</b><span>дозаповнене поле</span>", html);
+        Assert.True(html.IndexOf("id=\"services-title\"", StringComparison.Ordinal) < html.IndexOf("id=\"weeks-title\"", StringComparison.Ordinal));
 
         var feed = XDocument.Parse(await client.GetStringAsync("/changes.atom"));
         XNamespace atom = "http://www.w3.org/2005/Atom";
         var entries = feed.Root!.Elements(atom + "entry").ToList();
-        Assert.Equal(2, entries.Count);
+        Assert.Equal(3, entries.Count);
         Assert.EndsWith("changes/2026-W47", entries[0].Element(atom + "id")!.Value);
         Assert.Contains("Дозаповнено полів: 1", entries[0].Element(atom + "content")!.Value);
     }

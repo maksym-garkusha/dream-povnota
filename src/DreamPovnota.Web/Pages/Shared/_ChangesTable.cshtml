@@ -1,18 +1,20 @@
 @model DreamPovnota.Web.Pages.Shared.ChangesTableModel
 @using DreamPovnota.Web.Changes
-@* ті самі числа, що на графіках; під рядком періоду, якщо є що сказати, деталі по рядку на тему *@
+@* ті самі числа, що на графіках; під рядком періоду, якщо є що сказати, деталі по рядку на тему.
+   Ролі явно: на телефоні рядки стають блоками, і без них частина читачів екрана губить таблицю *@
 <div class="tablewrap">
-<table class="changes">
-  <thead>
-    <tr>
-      <th scope="col">@(Model.Kind == PeriodKind.Day ? "День" : "Тиждень")</th>
+<table class="changes" role="table">
+  <caption class="hidden">@Model.Caption</caption>
+  <thead role="rowgroup">
+    <tr role="row">
+      <th scope="col" role="columnheader">@(Model.Kind == PeriodKind.Day ? "День" : "Тиждень")</th>
       @foreach (var measure in ChangesModel.Measures)
       {
-          <th scope="col" class="num">@measure.Title</th>
+          <th scope="col" class="num" role="columnheader">@measure.Title</th>
       }
     </tr>
   </thead>
-  <tbody>
+  <tbody role="rowgroup">
   @foreach (var period in Model.Periods)
   {
       var counts = Model.Services ? period.Services : period.All;
@@ -22,16 +24,16 @@
       if (counts.Stages.Count > 0) details.Add("Стадії: " + ChangeText.StageList(counts.Stages) + ".");
       if (Model.Services && period.ServicesWithChanges > 0) details.Add(ChangeText.ServicesChanged(period.ServicesWithChanges));
       details.AddRange(ChangeText.Notes(period, Model.Kind));
-      <tr class="@(details.Count > 0 ? "period has-detail" : "period")">
-        <th scope="row">@ChangeText.Title(period, Model.Kind)</th>
+      <tr class="@(details.Count > 0 ? "period has-detail" : "period")" role="row">
+        <th scope="row" role="rowheader">@ChangeText.Title(period, Model.Kind)</th>
         @foreach (var measure in ChangesModel.Measures)
         {
-            <td class="num" data-label="@measure.Title">@ChangesModel.Cell(period, measure.Value(counts))</td>
+            <td class="num" data-label="@measure.Title" role="cell">@ChangesModel.Cell(period, measure.Value(counts))</td>
         }
       </tr>
       @if (details.Count > 0)
       {
-          <tr class="detail"><td colspan="@(ChangesModel.Measures.Count + 1)">@foreach (string line in details)
+          <tr class="detail" role="row"><td colspan="@(ChangesModel.Measures.Count + 1)" role="cell">@foreach (string line in details)
           {<span>@line</span>}</td></tr>
       }
   }

@@ -47,7 +47,9 @@ public static class ColumnChart
             new XAttribute("viewBox", $"0 0 {Width} {Height}"),
             new XAttribute("role", "img"),
             new XAttribute("aria-labelledby", id),
+            new XAttribute("aria-describedby", id + "-d"),
             new XElement(Svg + "title", new XAttribute("id", id), title),
+            new XElement(Svg + "desc", new XAttribute("id", id + "-d"), "Точні числа в таблиці під графіками."),
             Text("unit", 0, 11, unit, "start"));
 
         for (int tick = 0; tick <= top; tick += step)

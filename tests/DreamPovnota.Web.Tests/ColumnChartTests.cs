@@ -39,6 +39,8 @@ public class ColumnChartTests
         Assert.Equal("img", (string?)svg.Attribute("role"));
         Assert.Equal("c1", (string?)svg.Attribute("aria-labelledby"));
         Assert.Equal("Оновлено карток за тижнями", svg.Element(Svg + "title")!.Value);
+        Assert.Equal("c1-d", (string?)svg.Attribute("aria-describedby"));
+        Assert.Equal("Точні числа в таблиці під графіками.", svg.Element(Svg + "desc")!.Value);
     }
 
     [Fact]

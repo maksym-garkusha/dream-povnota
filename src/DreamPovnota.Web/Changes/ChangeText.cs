@@ -24,6 +24,15 @@ public static class ChangeText
     /// <summary>«у середу 18.11.2026».</summary>
     public static string OnDay(DateOnly day) => OnWeekday[(int)day.DayOfWeek] + " " + Format.Date(day);
 
+    /// <summary>«За 18.11.2026», якщо період в один день, інакше «З 18.11 по 14.12.2026».</summary>
+    public static string Span(PeriodChanges period)
+    {
+        var (from, to) = (period.ObservedFrom, period.To);
+        if (from == to) return "За " + Format.Date(to);
+        string start = from.Year == to.Year ? from.ToString("dd.MM", Ukrainian) : Format.Date(from);
+        return $"З {start} по {Format.Date(to)}";
+    }
+
     /// <summary>Підпис під стовпчиком: перший день періоду.</summary>
     public static string Short(PeriodChanges period) => period.From.ToString("dd.MM", Ukrainian);
 

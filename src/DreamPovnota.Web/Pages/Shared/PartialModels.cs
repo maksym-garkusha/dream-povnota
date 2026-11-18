@@ -11,4 +11,13 @@ public sealed record FillTableModel(LoadedEdition Edition, IReadOnlyList<CheckTa
 public sealed record BarModel(double Share);
 
 /// <param name="Services">Числа агентства й служб відновлення разом замість усіх карток.</param>
-public sealed record ChangesTableModel(IReadOnlyList<Changes.PeriodChanges> Periods, Changes.PeriodKind Kind, bool Services);
+/// <param name="Caption">Прихований підпис: таблиць на сторінці три з однаковими колонками, і на слух їх треба розрізняти.</param>
+public sealed record ChangesTableModel(IReadOnlyList<Changes.PeriodChanges> Periods, Changes.PeriodKind Kind, bool Services, string Caption);
+
+/// <param name="Prefix">Початок id графіків, щоб вони не повторювались на сторінці.</param>
+public sealed record ChangeChartsModel(
+    IReadOnlyList<Changes.PeriodChanges> Periods,
+    Changes.PeriodKind Kind,
+    IReadOnlyList<ChangeMeasure> Measures,
+    Func<Changes.PeriodChanges, Changes.ChangeCounts> Slice,
+    string Prefix);
