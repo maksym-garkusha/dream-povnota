@@ -88,7 +88,7 @@ Placeholders are `NULL`, `-`, `.`, `N/A`, `НЕМАЄ` and `НЕМА` ("none" in
 
 **Why the English fields are kept separate.** About 1.4% of records have an English title, so including the English fields would lower almost every record's score by the same amount and hide the other differences. They still matter for projects that are seeking money from foreign donors, so they are shown as a separate group, with a separate count for projects looking for funding.
 
-**Region** is taken from the KATOTTG codes (the Ukrainian classifier of administrative units): the two digits after `UA`. If a project's codes belong to different regions it is shown under "Several regions"; if there are no codes, under "Not specified". **Organisation** is the party with the `projectAuthor` role, which maintains the record. **Sector** is the first letter of the `WB-ECO` code.
+**Region** is taken from the KATOTTG codes (the Ukrainian classifier of administrative units): the two digits after `UA`. If a project's codes belong to different regions it is shown under "Several regions"; if there are no codes, under "Not specified". **Organisation** is the party with the `projectAuthor` role, which maintains the record. **Sector** is the first letter of the `WB-ECO` code; codes whose letter is not in the World Bank list (`O`, `OB` and `OC` occur) are shown as "Other sector code", since the field is filled in.
 
 ### What the method does not see
 

@@ -95,16 +95,35 @@ public sealed record Summary(
             .ThenBy(s => s.Title, Ukrainian)
             .ToList();
 
-    /// <summary>Літера сектору або "none", якщо сектору немає чи літера невідома.</summary>
-    public static string SectorKey(ProjectCard card) =>
-        card.SectorLetter is { } letter && Cards.Sectors.Letters.Contains(letter) ? letter.ToString() : NoSectorKey;
-
+    public const string OtherSectorKey = "other";
+    public const string OtherSectorTitle = "Інший код сектору";
     private const string NoSectorKey = "none";
 
+    /// <summary>
+    /// Літера сектору; "other", якщо код WB-ECO є, але його літери немає в довіднику
+    /// (у даних трапляються O, OB, OC); "none", якщо коду немає. Так розріз за секторами
+    /// не суперечить перевірці «Сектор»: картка з будь-яким кодом у «Не вказано» не потрапляє.
+    /// </summary>
+    public static string SectorKey(ProjectCard card) => card.SectorLetter switch
+    {
+        null => NoSectorKey,
+        { } letter when Cards.Sectors.Letters.Contains(letter) => letter.ToString(),
+        _ => OtherSectorKey,
+    };
+
+    private static string SectorTitle(string key) => key switch
+    {
+        NoSectorKey => Cards.Sectors.NotSpecified,
+        OtherSectorKey => OtherSectorTitle,
+        _ => Cards.Sectors.Name(key[0]),
+    };
+
+    // сектори за назвою, «інший код» і «не вказано» в кінці
     private static List<Slice> SectorsOf(List<CardResult> open) =>
         open.GroupBy(r => SectorKey(r.Card))
-            .Select(g => Slice.Of(g.Key, Cards.Sectors.Name(g.Key == NoSectorKey ? null : g.Key[0]), g.ToList()))
-            .OrderBy(s => s.Key == NoSectorKey)
+            .Select(g => Slice.Of(g.Key, SectorTitle(g.Key), g.ToList()))
+            .OrderBy(s => s.Key is OtherSectorKey or NoSectorKey)
+            .ThenBy(s => s.Key == NoSectorKey)
             .ThenBy(s => s.Title, Ukrainian)
             .ToList();
 

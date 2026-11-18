@@ -36,7 +36,8 @@ public static class MarkdownReport
         SliceTable(md, "Області", "Область", summary.Regions, KeyChecks,
             "Упорядковано за назвою. «Кілька областей» означає, що коди місця проєкту належать різним областям.");
         SliceTable(md, "Сектори", "Сектор", summary.Sectors, KeyChecks.Where(c => c != "sector").ToArray(),
-            "Сектор це перша літера коду за класифікацією Світового банку (WB-ECO).");
+            "Сектор це перша літера коду за класифікацією Світового банку (WB-ECO). Коди, яких немає в довіднику " +
+            "(у даних це O, OB, OC), зібрано в «Інший код сектору»; «Не вказано» означає, що коду немає зовсім.");
         OrganisationSizes(md, summary);
         Codes(md, summary);
         Other(md, summary);

@@ -69,6 +69,21 @@ public class SummaryTests
         Assert.Equal(Sectors.NotSpecified, summary.Sectors[1].Title);
     }
 
+    [Theory]
+    [InlineData("O")]
+    [InlineData("OB")]
+    [InlineData("oc")]
+    public void Sector_code_outside_the_list_is_another_code_not_missing(string code)
+    {
+        var card = Full(Stage.Idea, "p2") with { SectorCode = code };
+
+        var summary = Build(Full(Stage.Idea, "p1"), card, Full(Stage.Idea, "p3") with { SectorCode = null });
+
+        Assert.Equal(["E", "other", "none"], summary.Sectors.Select(s => s.Key));
+        Assert.Equal(Summary.OtherSectorTitle, summary.Sectors[1].Title);
+        Assert.True(summary.Open.Single(r => r.Card.Id == "p2").IsFilled("sector"));
+    }
+
     [Fact]
     public void Organisation_takes_its_name_from_the_latest_card()
     {
