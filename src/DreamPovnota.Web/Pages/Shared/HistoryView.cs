@@ -26,7 +26,9 @@ public sealed record HistoryView(
     {
         var date = edition.Edition.Synced ?? edition.Edition.Generated;
         var titles = Feeds.AtomFeed.Titles(edition);
-        var status = await history.StatusAsync(ct);
+        // між міграцією і першим знімком таблиці вже є, а знімків ще немає: для сторінки це те саме,
+        // що історія недоступна, бо показати дату її початку ще нема з чого
+        var status = await history.StatusAsync(ct) is { Snapshots: > 0 } found ? found : null;
         var changes = status is null ? null : await history.ChangesAsync(scope, 1, ct, status.LastId);
         var points = changes is null ? null : await trend(ct);
 
