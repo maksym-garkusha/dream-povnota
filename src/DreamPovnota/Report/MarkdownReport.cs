@@ -193,7 +193,7 @@ public static class MarkdownReport
         md.AppendLine("## Інше");
         md.AppendLine();
         md.AppendLine($"- Відкритих карток, де замість опису службове слово (`NULL`, дефіс, крапка): {N(summary.DescriptionStubs)}.");
-        md.AppendLine($"- Відкритих карток, пов'язаних з об'єктами, яких немає в стрічці об'єктів: {N(summary.ProjectsWithMissingObjects)}. " +
+        md.AppendLine($"- Відкритих карток, пов'язаних з об'єктами, яких немає в кеші (немає в стрічці об'єктів або не завантажились): {N(summary.ProjectsWithMissingObjects)}. " +
             "Місце й документи для них рахуються без цих об'єктів.");
         foreach (var (status, count) in summary.UnknownStatuses.OrderBy(s => s.Key, StringComparer.Ordinal))
             md.AppendLine($"- Статус `{status}`, якого немає в переліку стадій: {N(count)}.");
