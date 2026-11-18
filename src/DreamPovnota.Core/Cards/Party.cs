@@ -7,7 +7,7 @@ public enum PartyKind
     /// <summary>Схема UA-EDR і код з 8 цифр.</summary>
     Organisation,
 
-    /// <summary>Схема UA-IPN або UA-EDR з 10 цифрами (це РНОКПП під чужою схемою).</summary>
+    /// <summary>Схема UA-IPN, UA-EDR з 10 цифрами (це РНОКПП під чужою схемою) або назва «ФОП …».</summary>
     SoleProprietor,
 
     /// <summary>Схема UA-EDR, але код не з 8 і не з 10 цифр.</summary>

@@ -229,6 +229,11 @@ public class CardParserTests
     [Theory]
     [InlineData("UA-IPN", "1234567899")]
     [InlineData("UA-EDR", "1234567899")]   // РНОКПП під схемою UA-EDR
+    [InlineData("ua-ipn", "1234567899")]
+    [InlineData(" Ua-Ipn ", "1234567899")]
+    [InlineData("UA-EDR", "123 456 7899")]
+    [InlineData("UA-EDR", "123-456-7899")]
+    [InlineData("ua-edr", " 1234567899 ")]
     public void Sole_proprietor_is_recognised_by_scheme_or_ten_digits(string scheme, string code)
     {
         var party = ParseParty(scheme, code, "ФОП Вигаданий Іван Іванович");
@@ -236,6 +241,29 @@ public class CardParserTests
         Assert.Equal(PartyKind.SoleProprietor, party.Kind);
         Assert.Null(party.Edrpou);
         Assert.Null(party.Name);
+    }
+
+    [Theory]
+    [InlineData("UA-EDR", "123456789", "ФОП Вигаданий Іван Іванович")]
+    [InlineData("XX-UNKNOWN", "1", "фоп Вигаданий І. І.")]
+    [InlineData("UA-EDR", "", "Фізична особа-підприємець Вигаданий Іван")]
+    public void Party_named_as_a_sole_proprietor_keeps_neither_name_nor_code(string scheme, string code, string name)
+    {
+        var party = ParseParty(scheme, code, name);
+
+        Assert.Equal(PartyKind.SoleProprietor, party.Kind);
+        Assert.Null(party.Name);
+        Assert.Null(party.Edrpou);
+    }
+
+    [Fact]
+    public void Edr_code_with_spaces_is_still_an_organisation_code()
+    {
+        var party = ParseParty(" ua-edr", "0441 2567", "РАДА");
+
+        Assert.Equal(PartyKind.Organisation, party.Kind);
+        Assert.Equal("04412567", party.Edrpou);
+        Assert.Equal("UA-EDR", party.Scheme);
     }
 
     [Fact]

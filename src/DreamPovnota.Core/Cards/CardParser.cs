@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace DreamPovnota.Cards;
 
@@ -6,7 +7,7 @@ namespace DreamPovnota.Cards;
 /// Розбір відповідей /ideas/{id} і /objects/{id}. Що в яких полях лежить,
 /// описано в README; тут тільки те, що з опису не видно.
 /// </summary>
-public static class CardParser
+public static partial class CardParser
 {
     public const int MinDescriptionLength = 30;
 
@@ -107,23 +108,33 @@ public static class CardParser
     private static Party ParseParty(JsonElement party)
     {
         var identifier = party.Prop("identifier");
-        string? scheme = identifier.Prop("scheme").Text();
-        string code = identifier.Prop("id").Text()?.Trim() ?? "";
+        // схему й код вводять руками: «ua-ipn», «UA-IPN », «123 456 7899» і «123-456-7899» це те саме
+        string? scheme = identifier.Prop("scheme").Text()?.Trim().ToUpperInvariant();
+        string code = string.Concat((identifier.Prop("id").Text() ?? "").Where(c => !char.IsWhiteSpace(c) && c != '-'));
         string? name = CleanName(identifier.Prop("legalName").Text());
         var roles = party.Prop("roles").Items().Select(r => r.Text()).OfType<string>().ToList();
 
         bool digits = code.Length > 0 && code.All(char.IsAsciiDigit);
+        var soleProprietor = new Party(PartyKind.SoleProprietor, scheme, null, null, roles);
 
         return scheme switch
         {
-            "UA-IPN" => new Party(PartyKind.SoleProprietor, scheme, null, null, roles),
+            "UA-IPN" => soleProprietor,
             "UA-EDR" when digits && code.Length == 8 => new Party(PartyKind.Organisation, scheme, code, name, roles),
             // десять цифр під схемою UA-EDR це РНОКПП підприємця
-            "UA-EDR" when digits && code.Length == 10 => new Party(PartyKind.SoleProprietor, scheme, null, null, roles),
+            "UA-EDR" when digits && code.Length == 10 => soleProprietor,
+            // за назвою «ФОП …» стоїть ім'я людини, хоч би яку схему вказали
+            _ when name is not null && NamesPerson(name) => soleProprietor,
             "UA-EDR" => new Party(PartyKind.OddCode, scheme, null, name, roles),
             _ => new Party(PartyKind.OtherRegistry, scheme, null, name, roles),
         };
     }
+
+    private static bool NamesPerson(string name) =>
+        SoleProprietorPattern().IsMatch(name) || name.Contains("фізична особа", StringComparison.OrdinalIgnoreCase);
+
+    [GeneratedRegex(@"(?<!\p{L})ФОП(?!\p{L})", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex SoleProprietorPattern();
 
     private static List<string> Katottg(IEnumerable<JsonElement> locations) =>
         locations
