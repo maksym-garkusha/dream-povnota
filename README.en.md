@@ -6,6 +6,8 @@ How complete the project records in the DREAM system are: which fields are fille
 
 **Web service: [dream-povnota.onrender.com](https://dream-povnota.onrender.com)** (in Ukrainian). It checks a single record right now, shows organisation and region pages with a change history, exports any selection to CSV or Excel and serves the same data through an API. It runs on a free plan and goes to sleep when nobody uses it, so the first request after a pause can take about a minute. See [Web service](#web-service).
 
+**Telegram bot: [@dream_povnota_bot](https://t.me/dream_povnota_bot)** (in Ukrainian). Send it a DREAM project code or a record link and it replies with the relevant fields that are filled in and those that are missing.
+
 [Українська версія](README.md)
 
 This is an independent learning project built on DREAM open data. It is not affiliated with any government body, and its figures are not official statistics.
@@ -183,7 +185,7 @@ tests/       xUnit; fixtures are real API responses with personal names replaced
 - changes by week: how many records were updated, how many fields filled in, how many records appeared and moved to another stage, with a separate total for the restoration agency and services (see [Changes by week](#changes-by-week));
 - CSV and Excel export of any selection;
 - an open API described with OpenAPI;
-- a Telegram bot with the same record check, when it is switched on (see [Telegram bot](#telegram-bot)).
+- the Telegram bot [@dream_povnota_bot](https://t.me/dream_povnota_bot) with the same record check (see [Telegram bot](#telegram-bot)).
 
 It is the same independent learning project built on open data: it is not affiliated with any government body, and its figures are not official statistics.
 
@@ -286,7 +288,7 @@ The base address stays fixed and the filter goes into `Query`, so scheduled refr
 
 ### Telegram bot
 
-The same check as the `/check` form, in Telegram: send the bot a project code or a record link and it replies in plain text, in Ukrainian. The bot only works in private chats. While no bot token is configured, the service has no webhook address at all.
+[@dream_povnota_bot](https://t.me/dream_povnota_bot) runs the same check as the `/check` form: send it a project code or a record link and it replies in plain text, in Ukrainian. The bot only answers in private chats.
 
 The reply to `DREAM-UA-190424-A10FC799`:
 
@@ -326,10 +328,10 @@ When something is missing, a «Не заповнено» (not filled in) list ap
 
 **What the bot does not keep.** The message text and chat id stay in memory while the reply is prepared and are not written anywhere, neither to the database nor to the log. The log only gets the type of a failure, such as «Telegram відповів 403» (Telegram answered 403). Per-chat limits are counted in memory, keyed not by the chat id but by its HMAC fingerprint under a random key that disappears when the service restarts. Telegram itself sees the messages, as with any bot.
 
-**How to switch it on.**
+**Switching the bot on in your own deployment.** On `dream-povnota.onrender.com` the bot is already running; this is for anyone who deploys the service themselves. Without the `TELEGRAM_BOT_TOKEN` variable the bot is off and the service has no webhook address at all.
 
 1. In Telegram, open [BotFather](https://t.me/BotFather), send `/newbot` and choose the bot's name and username. BotFather gives you a token.
-2. In Render: the `dream-povnota` service, Environment, add `TELEGRAM_BOT_TOKEN` with that token and save. The bot works after the next deploy.
+2. In Render: the service, Environment, add `TELEGRAM_BOT_TOKEN` with that token and save. The bot starts working after the deploy.
 
 The service does the rest. It derives the webhook secret from the token (HMAC-SHA256 with the token as the key, 64 hex characters), so no separate variable is needed: anyone who knows the token can reconfigure the bot anyway. After start the service calls `setWebhook` with `{public address}/telegram/webhook`, that secret and `allowed_updates=["message"]`. Render passes the public address itself in `RENDER_EXTERNAL_URL`; outside Render, `TELEGRAM_WEBHOOK_URL` sets it. If Telegram does not answer or answers 429 or 5xx, the service tries again after 5 s, 30 s, 2 and 5 minutes; on any other 4xx, such as a wrong token, it does not retry. The log shows «Вебхук Telegram зареєстровано» (webhook registered) or the reason as a status code, without the token. A secret of your own can replace the derived one through `TELEGRAM_WEBHOOK_SECRET`: 16 to 256 characters from `A-Z`, `a-z`, `0-9`, `_` and `-`, for example `openssl rand -hex 32`.
 
