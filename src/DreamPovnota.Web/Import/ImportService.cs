@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using DreamPovnota.Web.History;
+using DreamPovnota.Web.Lists;
 using Microsoft.AspNetCore.OutputCaching;
 
 namespace DreamPovnota.Web.Import;
@@ -8,7 +9,8 @@ namespace DreamPovnota.Web.Import;
 /// Забирає data.json одразу після старту і далі щогодини, поки екземпляр не спить.
 /// Після збою пробує частіше (10 с, 30 с, 1, 2, 5 хв, далі кожні 10 хв): поки випуску
 /// немає, усі сторінки відповідають 503, і чекати годину через один обірваний запит не можна.
-/// Новий випуск одразу стає поточним; кеш сторінок, зібраних зі старого, скидається.
+/// Новий випуск одразу стає поточним; кеш сторінок, зібраних зі старого, скидається,
+/// а повні вивантаження нового випуску починають збиратися у фоні.
 /// Потім, якщо є база, випуск записується знімком історії. Збій бази не заважає
 /// поточному стану: знімок допишеться наступного разу.
 /// </summary>
@@ -17,6 +19,7 @@ public sealed class ImportService(
     EditionStore store,
     Db db,
     DbKeyRepository keys,
+    ExportFiles exports,
     IOutputCacheStore outputCache,
     TimeProvider clock,
     ILogger<ImportService> log) : BackgroundService
@@ -74,6 +77,7 @@ public sealed class ImportService(
             {
                 store.Publish(edition, clock.GetUtcNow());
                 await outputCache.EvictByTagAsync(CacheTag, ct);
+                exports.Prepare(edition);
                 log.LogInformation(
                     "Випуск від {Generated:u}: {Cards} карток, завантажено за {Elapsed:0.0} с",
                     edition.Edition.Generated, edition.Edition.Cards.Count, Stopwatch.GetElapsedTime(started).TotalSeconds);

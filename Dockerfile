@@ -15,6 +15,7 @@ RUN dotnet publish src/DreamPovnota.Web/DreamPovnota.Web.csproj -c Release -r li
 FROM mcr.microsoft.com/dotnet/aspnet:11.0-resolute-chiseled-composite-extra
 WORKDIR /app
 COPY --from=build /app .
-ENV ASPNETCORE_HTTP_PORTS=10000 DOTNET_gcServer=0 DOTNET_gcConcurrent=0
+# gen0 до 32 МБ: без цього після збірки xlsx процес тримав понад сотню мегабайтів ще не зібраного сміття
+ENV ASPNETCORE_HTTP_PORTS=10000 DOTNET_gcServer=0 DOTNET_gcConcurrent=0 DOTNET_GCgen0size=0x2000000
 EXPOSE 10000
 ENTRYPOINT ["dotnet", "DreamPovnota.Web.dll"]

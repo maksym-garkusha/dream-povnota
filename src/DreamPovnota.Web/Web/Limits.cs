@@ -6,7 +6,7 @@ namespace DreamPovnota.Web.Web;
 
 /// <summary>
 /// Обмеження частоти. Окрім лімітів на клієнта є спільні: на живі перевірки
-/// (вони йдуть у DREAM) і на xlsx (найважче для 512 МБ). Спільні ліміти тримають
+/// (вони йдуть у DREAM), а на збірку вивантажень у <see cref="SharedLimits"/>. Спільні ліміти тримають
 /// навантаження навіть тоді, коли адресу клієнта за проксі Render визначено неточно.
 /// </summary>
 public static class Limits
@@ -18,8 +18,10 @@ public static class Limits
     public const int ChecksQueued = 10;
     public const int RequestsPerMinute = 120;
     public const int ExportsPerMinute = 10;
+    public const int ExportBuildsPerMinute = 30;
+    public const int ExportBuildsQueued = 4;
 
-    private enum Kind { None, Page, Export, Xlsx, Check }
+    private enum Kind { None, Page, Export, Check }
 
     private static Kind KindOf(HttpRequest request)
     {
@@ -27,8 +29,9 @@ public static class Limits
         if (path.StartsWithSegments("/health") || path.StartsWithSegments("/status") || path.StartsWithSegments("/error"))
             return Kind.None;
         if (HttpMethods.IsPost(request.Method) && path.StartsWithSegments("/check")) return Kind.Check;
-        if (path.Value is { } value && value.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase)) return Kind.Xlsx;
-        if (path.Value is { } csv && csv.EndsWith(".csv", StringComparison.OrdinalIgnoreCase)) return Kind.Export;
+        if (path.Value is { } value
+            && (value.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase) || value.EndsWith(".csv", StringComparison.OrdinalIgnoreCase)))
+            return Kind.Export;
         return Kind.Page;
     }
 
@@ -44,7 +47,7 @@ public static class Limits
         {
             Kind.None => RateLimitPartition.GetNoLimiter("none"),
             Kind.Check => Window("check:" + ClientKey.Of(context), ChecksPerMinute, TimeSpan.FromMinutes(1)),
-            Kind.Export or Kind.Xlsx => Window("export:" + ClientKey.Of(context), ExportsPerMinute, TimeSpan.FromMinutes(1)),
+            Kind.Export => Window("export:" + ClientKey.Of(context), ExportsPerMinute, TimeSpan.FromMinutes(1)),
             _ => Window("page:" + ClientKey.Of(context), RequestsPerMinute, TimeSpan.FromMinutes(1)),
         });
 
@@ -70,12 +73,6 @@ public static class Limits
                 {
                     PermitLimit = ChecksAtOnce,
                     QueueLimit = ChecksQueued,
-                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                }),
-                Kind.Xlsx => RateLimitPartition.GetConcurrencyLimiter("xlsx-at-once", _ => new ConcurrencyLimiterOptions
-                {
-                    PermitLimit = 1,
-                    QueueLimit = 2,
                     QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                 }),
                 _ => RateLimitPartition.GetNoLimiter("none"),

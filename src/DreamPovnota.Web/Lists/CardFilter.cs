@@ -30,7 +30,10 @@ public sealed record CardFilter(
 
     public static readonly CardFilter Empty = new(null, null, null, null, null, null, false, 1, PageSizeOnPages);
 
-    private static readonly string[] Names = ["q", "region", "org", "stage", "sector", "missing", "seeks", "page", "pageSize"];
+    /// <summary>Параметри, від яких залежить вибірка. За ними ж і тільки за ними кешуються вивантаження.</summary>
+    public static readonly string[] FilterNames = ["q", "region", "org", "stage", "sector", "missing", "seeks"];
+
+    private static readonly string[] Names = [.. FilterNames, "page", "pageSize"];
 
     /// <param name="allowPageSize">Розмір сторінки можна задати тільки в API.</param>
     /// <returns>Помилки за назвою параметра; порожньо, якщо фільтр правильний.</returns>
@@ -96,6 +99,18 @@ public sealed record CardFilter(
 
         filter = new CardFilter(q, region, org, stage, sector, missing, seeks, page, pageSize);
         return errors;
+    }
+
+    /// <summary>
+    /// Фільтр для вивантаження. Файл завжди містить усю вибірку, тож page, pageSize і незнайомі
+    /// параметри на нього не впливають: їх пропускаємо, щоб вони не множили записи в кеші.
+    /// </summary>
+    public static Dictionary<string, string[]> TryParseForExport(IQueryCollection query, LoadedEdition edition, out CardFilter filter)
+    {
+        var known = query
+            .Where(p => FilterNames.Contains(p.Key, StringComparer.Ordinal))
+            .ToDictionary(p => p.Key, p => p.Value, StringComparer.Ordinal);
+        return TryParse(new QueryCollection(known), edition, allowPageSize: false, out filter);
     }
 
     private static int Number(string? text, int min, int max, int fallback, string name, string message, Action<string, string> error)

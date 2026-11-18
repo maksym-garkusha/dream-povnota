@@ -1,6 +1,7 @@
 using System.Net;
 using DreamPovnota.Web.History;
 using DreamPovnota.Web.Import;
+using DreamPovnota.Web.Lists;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -36,8 +37,14 @@ public class ImportServiceTests
 
     private static async Task WaitFor(Func<bool> condition)
     {
-        for (int i = 0; i < 200 && !condition(); i++) await Task.Delay(10);
+        for (int i = 0; i < 1000 && !condition(); i++) await Task.Delay(10);
         Assert.True(condition());
+    }
+
+    private static bool Tick(FakeTimeProvider clock)
+    {
+        clock.Advance(TimeSpan.FromSeconds(1));
+        return true;
     }
 
     [Fact]
@@ -47,26 +54,31 @@ public class ImportServiceTests
         var clock = new FakeTimeProvider(DateTimeOffset.Parse("2026-11-18T01:17:00Z"));
         var configuration = new ConfigurationBuilder().AddInMemoryCollection([new("DATA_URL", "https://pages.example/data.json")]).Build();
         var store = new EditionStore();
+        using var exports = new ExportFiles(NullLogger<ExportFiles>.Instance);
         using var service = new ImportService(
             new EditionSource(new HttpClient(pages), configuration),
             store,
             TestDatabase.Open(""),
             new DbKeyRepository(TestDatabase.Open(""), NullLogger<DbKeyRepository>.Instance),
+            exports,
             new NoOutputCache(),
             clock,
             NullLogger<ImportService>.Instance);
 
         await service.StartAsync(CancellationToken.None);
-        await WaitFor(() => pages.Requests == 1);
+        // лічильник запитів росте ще до збою, тож чекаємо саме на записану причину
+        await WaitFor(() => store.Status.LastError is not null);
+        Assert.Equal(1, pages.Requests);
         Assert.Null(store.Current);
         Assert.Equal("Error while copying content to a stream. → The response ended prematurely.", store.Status.LastError);
 
-        clock.Advance(ImportService.RetryDelays[0]);
-        await WaitFor(() => pages.Requests == 2);
-        clock.Advance(ImportService.RetryDelays[1]);
-        await WaitFor(() => store.Current is not null);
+        // годинник крутимо по секунді: так не важливо, чи сервіс уже встиг почати чекати
+        var failedAt = clock.GetUtcNow();
+        await WaitFor(() => Tick(clock) && pages.Requests == 2);
+        await WaitFor(() => Tick(clock) && store.Current is not null);
 
         Assert.Equal(3, pages.Requests);
+        Assert.InRange(clock.GetUtcNow() - failedAt, ImportService.RetryDelays[0] + ImportService.RetryDelays[1], ImportService.Interval / 2);
         Assert.Null(store.Status.LastError);
         await service.StopAsync(CancellationToken.None);
     }

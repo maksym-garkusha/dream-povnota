@@ -15,6 +15,9 @@ public sealed class WebFactory : WebApplicationFactory<Program>
 
     public string DataUrl { get; set; } = Fixtures.EditionPath;
 
+    /// <summary>Заміни сервісів для окремого тесту, наприклад менші спільні ліміти.</summary>
+    public Action<IServiceCollection>? Replace { get; set; }
+
     /// <summary>Порожньо: історія вимкнена, як локально без бази.</summary>
     public string DatabaseUrl { get; set; } = "";
 
@@ -24,7 +27,10 @@ public sealed class WebFactory : WebApplicationFactory<Program>
         builder.UseSetting("DATA_URL", DataUrl);
         builder.UseSetting("DATABASE_URL", DatabaseUrl);
         builder.ConfigureServices(services =>
-            services.AddHttpClient<LiveCheck>().ConfigurePrimaryHttpMessageHandler(() => Dream));
+        {
+            services.AddHttpClient<LiveCheck>().ConfigurePrimaryHttpMessageHandler(() => Dream);
+            Replace?.Invoke(services);
+        });
     }
 
     /// <summary>Клієнт, коли випуск уже завантажено.</summary>

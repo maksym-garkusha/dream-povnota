@@ -85,6 +85,18 @@ public class CardFilterTests
     }
 
     [Fact]
+    public async Task Export_ignores_paging_and_unknown_parameters_but_not_a_wrong_filter()
+    {
+        var edition = await Fixtures.LoadedAsync();
+        var ignored = new QueryCollection(Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery("page=7&pageSize=3&utm_source=mail"));
+        var wrong = new QueryCollection(Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery("region=99&page=7"));
+
+        Assert.Empty(CardFilter.TryParseForExport(ignored, edition, out var filter));
+        Assert.True(filter.IsEmpty);
+        Assert.Equal(["region"], CardFilter.TryParseForExport(wrong, edition, out _).Keys);
+    }
+
+    [Fact]
     public async Task Search_finds_a_card_by_its_full_dream_code()
     {
         var edition = await Fixtures.LoadedAsync();
