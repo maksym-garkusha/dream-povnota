@@ -113,5 +113,12 @@ public static class BotReply
 
     private static string Minutes(TimeSpan wait) => Math.Max(1, (int)Math.Ceiling(wait.TotalMinutes)) + " хв";
 
-    private static string Shorten(string text, int max) => text.Length <= max ? text : text[..(max - 1)].TrimEnd() + "…";
+    private static string Shorten(string text, int max)
+    {
+        if (text.Length <= max) return text;
+        int cut = max - 1;
+        // не розрізати пару сурогатів: половина емодзі в JSON дає знак заміни або відмову Telegram
+        if (char.IsHighSurrogate(text[cut - 1])) cut--;
+        return text[..cut].TrimEnd() + "…";
+    }
 }

@@ -104,6 +104,19 @@ public class BotReplyTests
         Assert.EndsWith("…", firstLine);
     }
 
+    [Fact]
+    public async Task Title_is_not_cut_inside_an_emoji()
+    {
+        var (code, outcome) = await CheckedAsync("project-active.json");
+        string title = new string('я', BotReply.MaxTitle - 2) + "🏫" + new string('я', 10);
+        var changed = outcome with { Result = outcome.Result! with { Title = title } };
+
+        string firstLine = BotReply.Check(code, changed, Site, organisationOnSite: false).Split('\n')[0];
+
+        Assert.Equal(new string('я', BotReply.MaxTitle - 2) + "…", firstLine);
+        Assert.DoesNotContain(firstLine, char.IsSurrogate);
+    }
+
     [Theory]
     [InlineData(LiveStatus.NotFound, "у DREAM немає")]
     [InlineData(LiveStatus.TooManyObjects, "https://dream-povnota.example/check/010101-ABCDEF12")]
