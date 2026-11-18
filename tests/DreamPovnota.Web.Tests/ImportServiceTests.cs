@@ -51,6 +51,7 @@ public class ImportServiceTests
             new EditionSource(new HttpClient(pages), configuration),
             store,
             TestDatabase.Open(""),
+            new DbKeyRepository(TestDatabase.Open(""), NullLogger<DbKeyRepository>.Instance),
             new NoOutputCache(),
             clock,
             NullLogger<ImportService>.Instance);

@@ -16,6 +16,7 @@ public sealed class ImportService(
     EditionSource source,
     EditionStore store,
     Db db,
+    DbKeyRepository keys,
     IOutputCacheStore outputCache,
     TimeProvider clock,
     ILogger<ImportService> log) : BackgroundService
@@ -113,6 +114,7 @@ public sealed class ImportService(
                 int applied = await Migrator.MigrateAsync(db, ct);
                 if (applied > 0) log.LogInformation("Застосовано міграцій бази: {Count}", applied);
                 migrated = true;
+                await keys.SaveUnsavedAsync(ct);
             }
 
             int? snapshot = await SnapshotWriter.WriteAsync(db, current, ct);

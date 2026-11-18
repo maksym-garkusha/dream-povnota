@@ -9,6 +9,8 @@ using DreamPovnota.Web.History;
 using DreamPovnota.Web.Import;
 using DreamPovnota.Web.Live;
 using DreamPovnota.Web.Web;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -79,6 +81,11 @@ builder.Services.AddHttpClient<LiveCheck>(LiveCheck.Configure)
     });
 
 builder.Services.AddSingleton<Db>();
+// ключі токенів форм переживають сон екземпляра в базі; без бази (локально, тести) живуть у пам'яті
+builder.Services.AddDataProtection().SetApplicationName("dream-povnota");
+builder.Services.AddSingleton<DbKeyRepository>();
+builder.Services.AddOptions<KeyManagementOptions>()
+    .Configure<DbKeyRepository>((options, repository) => options.XmlRepository = repository);
 builder.Services.AddSingleton<HistoryReader>();
 builder.Services.AddHostedService<ImportService>();
 
