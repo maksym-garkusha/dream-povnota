@@ -35,9 +35,7 @@ public static class ChangesFeed
     public static string Build(string site, string host, ChangeSummary summary)
     {
         const string atom = "http://www.w3.org/2005/Atom";
-        var settings = new XmlWriterSettings { Indent = true, Encoding = new UTF8Encoding(false) };
-        using var buffer = new StringWriter(CultureInfo.InvariantCulture);
-        using (var xml = XmlWriter.Create(buffer, settings))
+        return AtomFeed.Write(xml =>
         {
             xml.WriteStartElement("feed", atom);
             xml.WriteElementString("id", atom, $"tag:{host},2026:changes");
@@ -63,8 +61,7 @@ public static class ChangesFeed
                 xml.WriteEndElement();
             }
             xml.WriteEndElement();
-        }
-        return buffer.ToString();
+        });
     }
 
     // вміст type="html" XmlWriter екранує сам, тут тільки екрануємо текст для HTML

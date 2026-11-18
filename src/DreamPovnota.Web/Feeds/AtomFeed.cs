@@ -66,9 +66,7 @@ public static class AtomFeed
             .Where(s => s.Id != first && (s.RulesChanged || byShot.ContainsKey(s.Id)))
             .ToList();
 
-        var settings = new XmlWriterSettings { Indent = true, Encoding = new UTF8Encoding(false), Async = false };
-        using var buffer = new StringWriter(CultureInfo.InvariantCulture);
-        using (var xml = XmlWriter.Create(buffer, settings))
+        return Write(xml =>
         {
             const string atom = "http://www.w3.org/2005/Atom";
             xml.WriteStartElement("feed", atom);
@@ -104,8 +102,19 @@ public static class AtomFeed
                 xml.WriteEndElement();
             }
             xml.WriteEndElement();
-        }
-        return buffer.ToString();
+        });
+    }
+
+    /// <summary>
+    /// XML стрічки в UTF-8. Через StringWriter XmlWriter оголосив би encoding="utf-16" (кодування
+    /// самого StringWriter), а віддаємо ми UTF-8, і суворі парсери такий файл відкидають.
+    /// </summary>
+    internal static string Write(Action<XmlWriter> body)
+    {
+        var settings = new XmlWriterSettings { Indent = true, Encoding = new UTF8Encoding(false) };
+        using var buffer = new MemoryStream();
+        using (var xml = XmlWriter.Create(buffer, settings)) body(xml);
+        return Encoding.UTF8.GetString(buffer.ToArray());
     }
 
     internal static void Link(XmlWriter xml, string atom, string href, string rel)
