@@ -1,6 +1,8 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using DreamPovnota.Web.Lists;
+using MiniExcelLibs;
 
 namespace DreamPovnota.Web.Tests;
 
@@ -84,15 +86,26 @@ public class ApiTests : IClassFixture<WebFactory>
     }
 
     [Fact]
-    public async Task Xlsx_export_is_a_zip_workbook()
+    public async Task Xlsx_export_has_the_cards_sheet_with_every_filtered_card()
     {
         var client = await factory.ReadyClientAsync();
+        var edition = await Fixtures.LoadedAsync();
+        int impl = edition.StageIndex["impl"];
+        int expected = edition.Edition.Cards.Count(c => c.Stage == impl);
 
         var response = await client.GetAsync("/export/cards.xlsx?stage=impl");
-        byte[] body = await response.Content.ReadAsByteArrayAsync();
+        using var body = new MemoryStream(await response.Content.ReadAsByteArrayAsync());
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal("PK"u8.ToArray(), body[..2]);
+        Assert.Equal(["Картки"], MiniExcel.GetSheetNames(body));
+        Assert.Equal(ExportRows.Headers(edition), MiniExcel.GetColumns(body, useHeaderRow: true));
+        var rows = MiniExcel.Query(body, useHeaderRow: true).Cast<IDictionary<string, object?>>().ToList();
+        Assert.True(expected > 0);
+        Assert.Equal(expected, rows.Count);
+        Assert.All(rows, row => Assert.Equal("Реалізація", row["Стадія"]));
+        Assert.All(rows, row => Assert.IsType<double>(row["Наповненість, %"]));
+        // перевірка, недоречна на стадії, лишає клітинку порожньою, а не «ні»
+        Assert.Contains(rows, row => edition.Edition.Checks.Any(c => row[c.Title] is null));
     }
 
     [Fact]

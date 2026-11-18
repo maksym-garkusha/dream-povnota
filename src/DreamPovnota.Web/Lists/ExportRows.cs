@@ -8,11 +8,20 @@ namespace DreamPovnota.Web.Lists;
 /// </summary>
 public static class ExportRows
 {
-    public static IReadOnlyList<string> Headers(LoadedEdition edition) =>
+    private static readonly string[] CardColumns =
     [
         "Код DREAM", "Посилання", "Назва", "Організація", "ЄДРПОУ", "Область", "Стадія", "Сектор",
         "Оновлено", "Заповнено", "Доречно", "Наповненість, %", "Шукає фінансування", "Чого бракує",
-        .. edition.Edition.Checks.Select(c => c.Title),
+    ];
+
+    /// <summary>
+    /// Колонки перевірок названі як перевірки. Назва перевірки «Сектор» збігається з колонкою
+    /// сектору, а xlsx будується зі словника за назвою колонки, тож такі назви отримують уточнення.
+    /// </summary>
+    public static IReadOnlyList<string> Headers(LoadedEdition edition) =>
+    [
+        .. CardColumns,
+        .. edition.Edition.Checks.Select(c => CardColumns.Contains(c.Title, StringComparer.Ordinal) ? c.Title + " (заповнено)" : c.Title),
     ];
 
     /// <summary>Значення рядка: string або int, null для порожньої клітинки.</summary>
