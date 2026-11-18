@@ -1,0 +1,102 @@
+@page "/cards"
+@model CardsModel
+@using DreamPovnota.Web.Lists
+@{
+    ViewData["Title"] = "Картки";
+    var e = Model.Edition;
+    var f = Model.Filter;
+    var csv = "/export/cards.csv" + f.QueryString(1);
+    var xlsx = "/export/cards.xlsx" + f.QueryString(1);
+}
+<h1 class="page">Відкриті картки</h1>
+<p class="lead">Картки за назвою. Фільтри можна поєднувати; посилання на сторінку зберігає вибране.</p>
+
+@if (Model.Errors.Count > 0)
+{
+    <div class="notice error" role="alert"><p>Деякі параметри не підходять, їх позначено нижче.</p></div>
+}
+
+<form class="panel" method="get" role="search">
+  @if (Model.OrganisationTitle is { } orgTitle && f.Organisation is { } orgKey)
+  {
+      <input type="hidden" name="org" value="@orgKey">
+      <p class="chip">Організація: @orgTitle <a href="@("/cards" + (f with { Organisation = null }).QueryString(1))">прибрати</a></p>
+  }
+  <div class="field">
+    <label for="q">Назва або код</label>
+    <partial name="_FieldError" model='Model.Error("q")' />
+    <input id="q" name="q" type="search" maxlength="100" value="@f.Query" autocomplete="off" aria-invalid="@Model.Invalid("q")" aria-describedby="@Model.Described("q")">
+  </div>
+  <div class="grid4">
+    <div class="field">
+      <label for="region">Область</label>
+      <partial name="_FieldError" model='Model.Error("region")' />
+      <select id="region" name="region" aria-invalid="@Model.Invalid("region")" aria-describedby="@Model.Described("region")">
+        <option value="">Усі</option>
+        @foreach (var r in e.Edition.Regions)
+        {
+            <option value="@r.Key" selected="@(r.Key == f.Region)">@r.Title</option>
+        }
+      </select>
+    </div>
+    <div class="field">
+      <label for="stage">Стадія</label>
+      <partial name="_FieldError" model='Model.Error("stage")' />
+      <select id="stage" name="stage" aria-invalid="@Model.Invalid("stage")" aria-describedby="@Model.Described("stage")">
+        <option value="">Усі</option>
+        @foreach (var s in e.Edition.Stages)
+        {
+            <option value="@s.Key" selected="@(s.Key == f.Stage)">@s.Title</option>
+        }
+      </select>
+    </div>
+    <div class="field">
+      <label for="sector">Сектор</label>
+      <partial name="_FieldError" model='Model.Error("sector")' />
+      <select id="sector" name="sector" aria-invalid="@Model.Invalid("sector")" aria-describedby="@Model.Described("sector")">
+        <option value="">Усі</option>
+        @foreach (var s in e.Edition.Sectors)
+        {
+            <option value="@s.Key" selected="@(s.Key == f.Sector)">@s.Title</option>
+        }
+      </select>
+    </div>
+    <div class="field">
+      <label for="missing">Не заповнено поле</label>
+      <partial name="_FieldError" model='Model.Error("missing")' />
+      <select id="missing" name="missing" aria-invalid="@Model.Invalid("missing")" aria-describedby="@Model.Described("missing")">
+        <option value="">Будь-яке</option>
+        @foreach (var c in e.Edition.Checks)
+        {
+            <option value="@c.Code" selected="@(c.Code == f.Missing)">@c.Title</option>
+        }
+      </select>
+    </div>
+  </div>
+  <partial name="_FieldError" model='Model.Error("seeks")' />
+  <label class="check-line"><input type="checkbox" name="seeks" value="1" checked="@f.SeeksFunding"> Тільки ті, що шукають фінансування</label>
+  <partial name="_FieldError" model='Model.Error("page")' />
+  <partial name="_FieldError" model='Model.Error("other")' />
+  <div class="actions">
+    <button class="primary" type="submit">Показати</button>
+    <a href="/cards">Скинути фільтри</a>
+  </div>
+</form>
+
+<div class="result-head">
+  <p aria-live="polite">Знайдено @Format.Cards(Model.Found.Count)@(Model.Pages > 1 ? $", сторінка {Format.Number(f.Page)} з {Format.Number(Model.Pages)}" : "")</p>
+  @if (Model.Found.Count > 0)
+  {
+      <ul class="links"><li><a href="@csv">Вивантажити CSV</a></li><li><a href="@xlsx">Вивантажити Excel</a></li></ul>
+  }
+</div>
+
+@if (Model.Found.Count == 0)
+{
+    <p>За цими фільтрами відкритих карток немає.</p>
+}
+else
+{
+    <partial name="_CardTable" model="new DreamPovnota.Web.Pages.Shared.CardTableModel(e, Model.PageCards)" />
+    <partial name="_Pager" model='new PagerModel(f.Page, Model.Pages, p => "/cards" + f.QueryString(p))' />
+}

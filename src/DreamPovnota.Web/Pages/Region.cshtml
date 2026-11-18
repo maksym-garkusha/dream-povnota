@@ -1,0 +1,28 @@
+@page "/region/{key}"
+@model RegionModel
+@{
+    var view = Model.View;
+    ViewData["Title"] = view.Title;
+    ViewData["Description"] = $"Наповненість відкритих карток проєктів у DREAM: {view.Title}.";
+}
+<h1 class="page">@view.Title</h1>
+<p class="lead">Відкриті картки, місце яких за кодом КАТОТТГ у цій області@(Model.Key is "multi" ? " (картки з місцями в кількох областях)" : Model.Key is "none" ? " (картки без коду місця)" : "").</p>
+<partial name="_SliceLinks" model="view" />
+<partial name="_SliceBody" model="view" />
+
+<section class="block" aria-labelledby="orgs-title">
+  <h2 id="orgs-title">Організації</h2>
+  <p>За назвою. Число поруч: відкритих карток цієї організації в області.</p>
+  <ul class="columns">
+  @foreach (var o in Model.Organisations)
+  {
+      <li><a href="@Format.OrganisationPath(o.Organisation.Key)">@o.Organisation.Title</a> <span class="num">@Format.Number(o.Cards)</span></li>
+  }
+  </ul>
+</section>
+
+<section class="block" aria-labelledby="cards-title">
+  <h2 id="cards-title">Картки</h2>
+  <p>Перші @Format.Number(Model.PageCards.Count) за назвою з @Format.Number(view.Cards.Count). Повний перелік з фільтрами: <a href="/cards@(view.Query)">картки області</a>.</p>
+  <partial name="_CardTable" model="new DreamPovnota.Web.Pages.Shared.CardTableModel(view.Edition, Model.PageCards)" />
+</section>

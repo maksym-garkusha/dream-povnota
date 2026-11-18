@@ -1,0 +1,93 @@
+@page "/check/{code?}"
+@model CheckModel
+@using DreamPovnota.Web.Live
+@{
+    ViewData["Title"] = Model.Code is null ? "Перевірити картку" : "Картка DREAM-UA-" + Model.Code;
+    ViewData["NoIndex"] = true;
+    var result = Model.Outcome?.Result;
+}
+<h1 class="page">Перевірити картку зараз</h1>
+
+@if (Model.Message is { } message)
+{
+    <div class="notice error" role="alert"><p>@message</p></div>
+}
+
+@if (result is not null)
+{
+    <section aria-labelledby="result-title">
+      <h2 id="result-title">@result.Title</h2>
+      <p class="summary-line"><span class="code">DREAM-UA-@result.Code</span> · перевірено @Format.DateTime(result.CheckedAt)</p>
+      <dl class="props">
+        <dt>Організація</dt><dd>@result.OrganisationTitle@(result.Edrpou is { } edrpou ? $", ЄДРПОУ {edrpou}" : "")</dd>
+        <dt>Область</dt><dd>@result.RegionTitle</dd>
+        <dt>Стадія</dt><dd>@result.StageTitle</dd>
+        <dt>Картка в DREAM</dt><dd><a href="@Format.PortalUrl(result.Code)">dream.gov.ua</a></dd>
+      </dl>
+      @if (!result.IsOpen)
+      {
+          <div class="notice"><p>Картка закрита (скасована, дублікат або не реалізована), тому поля не перевіряємо.</p></div>
+      }
+      else
+      {
+          <div class="figures">
+            <div class="figure"><b>@result.ScoreFilled з @result.ScoreApplicable</b><span>доречних полів заповнено</span></div>
+            @if (Model.SnapshotCard is { } snapshot)
+            {
+                <div class="figure"><b>@Model.Edition.ScoreFilled(snapshot) з @Model.Edition.ScoreApplicable(snapshot)</b><span>у знімку від @Format.Date(Model.Edition.Edition.Generated)</span></div>
+            }
+          </div>
+          @if (result.MissingObjects > 0)
+          {
+              <p class="note">Пов'язаних об'єктів, яких DREAM не віддав: @result.MissingObjects. Поля з них не враховано.</p>
+          }
+          <h3>Що додати</h3>
+          @if (result.Missing.Count == 0)
+          {
+              <p>Усе, що доречне на цій стадії, заповнено.</p>
+          }
+          else
+          {
+              <ul class="plain">
+              @foreach (var check in result.Missing)
+              {
+                  <li><b>@check.Title.</b> @check.Why</li>
+              }
+              </ul>
+          }
+          <h3>Заповнено</h3>
+          <ul class="links">
+          @foreach (var check in result.Filled)
+          {
+              <li>@check.Title</li>
+          }
+          </ul>
+      }
+    </section>
+}
+else if (Model.Code is not null && Model.Outcome is null)
+{
+    <section aria-labelledby="snapshot-title">
+      @if (Model.SnapshotCard is { } snapshot)
+      {
+          <h2 id="snapshot-title">@snapshot.Title</h2>
+          <p class="summary-line"><span class="code">DREAM-UA-@snapshot.Code</span></p>
+          <p>У знімку від @Format.Date(Model.Edition.Edition.Generated) заповнено @Model.Edition.ScoreFilled(snapshot) з @Model.Edition.ScoreApplicable(snapshot) доречних полів. Щоб побачити стан просто зараз, перевірте картку в DREAM.</p>
+      }
+      else
+      {
+          <h2 id="snapshot-title">DREAM-UA-@Model.Code</h2>
+          <p>Серед відкритих карток останнього знімка цієї немає. Її можна перевірити в DREAM просто зараз.</p>
+      }
+      <form method="post" asp-page="/Check" asp-route-code="">
+        <input type="hidden" name="code" value="@Model.Code">
+        <button class="primary" type="submit">Перевірити картку зараз</button>
+      </form>
+    </section>
+}
+
+<section class="block" aria-labelledby="form-title">
+  <h2 id="form-title">@(Model.Code is null ? "Яку картку перевірити" : "Інша картка")</h2>
+  <p>Сервіс забере картку з DREAM і порахує ті самі поля, що й для статичної сторінки. Результат зберігається на 10 хвилин.</p>
+  <partial name="_CheckForm" model="new CheckFormModel(Model.Input, Model.InputError)" />
+</section>

@@ -1,0 +1,40 @@
+@model DreamPovnota.Web.Pages.Shared.CardTableModel
+@{
+    var e = Model.Edition;
+}
+<div class="tablewrap">
+<table class="cards">
+  <thead>
+    <tr><th scope="col">Проєкт</th><th scope="col">Область</th><th scope="col">Стадія</th><th scope="col">Оновлено</th><th scope="col" class="num">Заповнено</th><th scope="col">Чого бракує</th></tr>
+  </thead>
+  <tbody>
+  @foreach (int i in Model.Cards)
+  {
+      var card = e.Edition.Cards[i];
+      var organisation = e.OrganisationOf(card);
+      var missing = e.Missing(card).ToList();
+      <tr>
+        <td class="title">
+          <a href="@Format.PortalUrl(card.Code)">@card.Title</a>
+          <span class="sub"><span class="code">DREAM-UA-@card.Code</span> · <a href="/check/@card.Code">перевірити зараз</a></span>
+          @if (Model.ShowOrganisation)
+          {
+              <span class="sub">@if (e.OrganisationsByKey.ContainsKey(organisation.Key))
+              {<a href="@Format.OrganisationPath(organisation.Key)">@organisation.Title</a>}
+              else
+              {@organisation.Title}</span>
+          }
+        </td>
+        <td class="meta">@e.Edition.Regions[card.Region].Title</td>
+        <td class="meta">@e.Edition.Stages[card.Stage].Title@(card.SeeksFunding ? ", шукає фінансування" : "")</td>
+        <td class="meta">@Format.Date(card.Updated)</td>
+        <td class="meta num">@e.ScoreFilled(card) з @e.ScoreApplicable(card)</td>
+        <td class="missing">@if (missing.Count == 0)
+        {<span class="sub">усе доречне заповнено</span>}
+        else
+        {foreach (var check in missing) {<span class="tag">@check.Title</span>}}</td>
+      </tr>
+  }
+  </tbody>
+</table>
+</div>

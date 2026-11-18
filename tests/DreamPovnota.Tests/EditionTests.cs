@@ -70,6 +70,26 @@ public class EditionTests
     }
 
     [Fact]
+    public async Task Organisation_titles_are_not_cut_and_may_be_longer_than_card_titles()
+    {
+        var json = ExportJson();
+        json["orgs"]![0]![1] = new string('А', 300);
+
+        var edition = await Read(json);
+
+        Assert.Equal(300, edition.Organisations[0].Title.Length);
+    }
+
+    [Fact]
+    public async Task Card_title_longer_than_two_hundred_characters_is_refused()
+    {
+        var json = ExportJson();
+        json["p"]![0]![1] = new string('А', 201);
+
+        await Assert.ThrowsAsync<InvalidDataException>(() => Read(json));
+    }
+
+    [Fact]
     public async Task Edition_of_another_version_is_refused()
     {
         var json = ExportJson();

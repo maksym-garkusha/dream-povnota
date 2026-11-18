@@ -1,0 +1,14 @@
+@model DreamPovnota.Web.Pages.Shared.SliceView
+<div class="figures">
+  <div class="figure"><b>@Format.Number(Model.Cards.Count)</b><span>відкритих карток</span></div>
+  <div class="figure"><b>@Format.Percent(Model.AverageScore)</b><span>середня наповненість</span></div>
+  <div class="figure"><b>@Format.Number(Model.Complete)</b><span>@Format.Plural(Model.Complete, "картка має", "картки мають", "карток мають") усе доречне</span></div>
+  <div class="figure"><b>@Format.Number(Model.SeekingFunding)</b><span>шукають фінансування</span></div>
+</div>
+<p class="note">Дані станом на @Format.DateTime(Model.Edition.Edition.Synced ?? Model.Edition.Edition.Generated).</p>
+
+<section class="block" aria-labelledby="fill-title">
+  <h2 id="fill-title">Що заповнити</h2>
+  <p>Для кожного поля: у скількох картках воно доречне на їхній стадії і в скількох заповнене. Посилання веде до карток без цього поля.</p>
+  <partial name="_FillTable" model="new DreamPovnota.Web.Pages.Shared.FillTableModel(Model.Edition, Model.Tallies, Model.Filter)" />
+</section>

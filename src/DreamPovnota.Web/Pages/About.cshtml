@@ -1,0 +1,45 @@
+@page "/about"
+@model AboutModel
+@{
+    ViewData["Title"] = "Як рахується";
+    var e = Model.Edition.Edition;
+    var stageTitles = e.Stages.ToDictionary(s => s.Key, s => s.Title);
+}
+<h1 class="page">Як рахується</h1>
+<p class="lead">Незалежний навчальний проєкт на відкритих даних DREAM. Не пов'язаний з державними органами і не є офіційною статистикою.</p>
+
+<section class="block" aria-labelledby="method-title">
+  <h2 id="method-title">Метод</h2>
+  <p>Для кожної відкритої картки беруться перевірки, доречні на її стадії, і рахується, скільки з них заповнено. Наповненість картки це частка заповнених серед доречних. Англійські назва й опис показані окремо і в наповненість не входять. Закриті картки (скасовані, помилкові, дублікати, не реалізовані) не рахуються.</p>
+  <p>Перелік карток щодня збирає GitHub Actions з публічного API DREAM і публікує як data.json. Цей сервіс щогодини перевіряє, чи вийшов новий випуск. Кнопка «Перевірити картку зараз» забирає одну картку з DREAM у момент натискання.</p>
+  <p class="note">Поточний випуск: @Format.DateTime(e.Generated), відкритих карток @Format.Number(e.Cards.Count).</p>
+</section>
+
+<section class="block" aria-labelledby="checks-title">
+  <h2 id="checks-title">Перевірки</h2>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th scope="col">Поле</th><th scope="col">Група</th><th scope="col">Коли доречне</th></tr></thead>
+    <tbody>
+    @foreach (var c in e.Checks)
+    {
+        <tr>
+          <td>@c.Title<div class="why">@c.Why</div></td>
+          <td>@c.Group@(c.CountsInScore ? "" : ", окремо від наповненості")</td>
+          <td>@(stageTitles.GetValueOrDefault(c.From, c.From)) … @(stageTitles.GetValueOrDefault(c.Until, c.Until))@(c.Condition is { } condition ? ", " + condition : "")</td>
+        </tr>
+    }
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section class="block" aria-labelledby="sources-title">
+  <h2 id="sources-title">Джерела і обмеження</h2>
+  <ul class="plain">
+    <li>Публічний API DREAM, ліцензія даних Creative Commons Attribution 4.0 International.</li>
+    <li>Назви в переліку обрізано до 160 знаків, дати оновлення з точністю до дня.</li>
+    <li>Організацію визначаємо за стороною з роллю автора проєкту, інакше за ініціатором. Підприємців (фізичних осіб) не розрізняємо і їхніх імен та кодів не зберігаємо.</li>
+    <li>Повний опис правил: <a href="https://github.com/maksym-garkusha/dream-povnota#як-рахується">README</a>.</li>
+  </ul>
+</section>

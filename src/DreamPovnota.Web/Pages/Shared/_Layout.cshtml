@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>@(ViewData["Title"] is string title ? title + " · dream-povnota" : "dream-povnota: наповненість карток DREAM")</title>
+<meta name="description" content="@(ViewData["Description"] as string ?? "Які поля заповнено в картках проєктів відновлення в DREAM: перевірка картки, організації, області, вивантаження й API. Незалежний проєкт на відкритих даних.")">
+@if (ViewData["NoIndex"] is true)
+{
+<meta name="robots" content="noindex">
+}
+@if (ViewData["Refresh"] is int seconds)
+{
+<meta http-equiv="refresh" content="@seconds">
+}
+@await RenderSectionAsync("Head", required: false)
+<link rel="stylesheet" href="~/site.css" asp-append-version="true">
+<link rel="icon" href="~/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+<a class="skip" href="#main">До змісту</a>
+<div class="wrap">
+
+<header class="top">
+  <a class="mark" href="/">dream-povnota <i>/ відкриті дані DREAM</i></a>
+  <nav aria-label="Розділи">
+    <a href="/check">Перевірити картку</a>
+    <a href="/cards">Картки</a>
+    <a href="/orgs">Організації</a>
+    <a href="/about">Як рахується</a>
+  </nav>
+</header>
+
+<main id="main">
+@RenderBody()
+</main>
+
+<footer>
+  <p>Незалежний навчальний проєкт на відкритих даних DREAM. Не пов'язаний з державними органами і не є офіційною статистикою.</p>
+  <p><b>Дані.</b> Публічний API системи DREAM (<a href="https://dream.gov.ua">dream.gov.ua</a>), ліцензія даних Creative Commons Attribution 4.0 International. Імена людей і податкові номери підприємців сюди не потрапляють.</p>
+  <p><a href="https://maksym-garkusha.github.io/dream-povnota/">Статична сторінка</a> · <a href="/openapi/v1.json">OpenAPI</a> · <a href="https://github.com/maksym-garkusha/dream-povnota">Код на GitHub</a> · Автор: <a href="https://github.com/maksym-garkusha">Максим Гаркуша</a></p>
+</footer>
+
+</div>
+</body>
+</html>

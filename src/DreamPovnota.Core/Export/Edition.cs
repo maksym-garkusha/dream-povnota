@@ -67,7 +67,11 @@ public sealed partial record Edition(
     /// <summary>Маски в int, тому перевірок не більше 31.</summary>
     public const int MaxChecks = 31;
 
+    /// <summary>Назви карток у файлі обрізано до 160 знаків, тож 200 це вже зіпсований файл.</summary>
     public const int MaxTitleLength = 200;
+
+    /// <summary>Назви організацій не обрізаються; у даних найдовша близько 200 знаків.</summary>
+    public const int MaxOrganisationTitleLength = 400;
 
     [GeneratedRegex(@"^\d{6}-[0-9A-F]{8}$")]
     public static partial Regex ShortCodePattern();
@@ -164,7 +168,7 @@ public sealed partial record Edition(
         if (edrpou is not null && !EdrpouPattern().IsMatch(edrpou))
             throw new InvalidDataException($"ЄДРПОУ організації не з 8 цифр: {edrpou}");
 
-        string title = Title(o[1]);
+        string title = Title(o[1], MaxOrganisationTitleLength);
         return new EditionOrganisation(OrganisationKey(edrpou, title), edrpou, title, o[2].GetInt32(), o[3].GetDouble());
     }
 
@@ -201,11 +205,11 @@ public sealed partial record Edition(
         return index;
     }
 
-    private static string Title(JsonElement value)
+    private static string Title(JsonElement value, int maxLength = MaxTitleLength)
     {
         string title = value.GetString() ?? throw new InvalidDataException("Назва порожня");
-        if (title.Length > MaxTitleLength)
-            throw new InvalidDataException($"Назва довша за {MaxTitleLength} знаків");
+        if (title.Length == 0 || title.Length > maxLength)
+            throw new InvalidDataException($"Назва порожня або довша за {maxLength} знаків");
         return title;
     }
 }

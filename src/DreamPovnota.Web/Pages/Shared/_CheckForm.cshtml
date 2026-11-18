@@ -1,0 +1,15 @@
+@model CheckFormModel
+<form class="panel" method="post" asp-page="/Check" asp-route-code="">
+  <div class="field">
+    <label for="code">Код проєкту DREAM або посилання на картку</label>
+    <p class="hint" id="code-hint">Наприклад, DREAM-UA-050923-B400F7B2 або https://dream.gov.ua/ua/project/DREAM-UA-050923-B400F7B2/profile</p>
+    @if (Model.Error is not null)
+    {
+        <p class="error" id="code-error">@Model.Error</p>
+    }
+    <input id="code" name="code" type="text" maxlength="300" autocomplete="off" spellcheck="false" required
+           value="@Model.Value" aria-describedby="@(Model.Error is null ? "code-hint" : "code-hint code-error")"
+           aria-invalid="@(Model.Error is null ? "false" : "true")">
+  </div>
+  <button class="primary" type="submit">Перевірити картку зараз</button>
+</form>

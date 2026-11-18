@@ -1,0 +1,46 @@
+@page
+@model IndexModel
+@{
+    var e = Model.Edition.Edition;
+}
+<h1>Наповненість карток проєктів у&nbsp;DREAM</h1>
+<p class="lead">Громади, області й служби відновлення ведуть у DREAM картки своїх проєктів. Тут можна перевірити одну картку просто зараз, подивитися картки організації чи області, вивантажити перелік у CSV або Excel і забрати ті самі дані через API.</p>
+<p class="note">Дані DREAM станом на @Format.DateTime(e.Synced ?? e.Generated), відкритих карток @Format.Number(e.Cards.Count).</p>
+
+<section class="block" aria-labelledby="check-title">
+  <h2 id="check-title">Перевірити картку зараз</h2>
+  <p>Сервіс забере картку з DREAM і покаже, які поля, доречні на її стадії, заповнено, а яких бракує.</p>
+  <partial name="_CheckForm" model="new CheckFormModel(null, null)" />
+</section>
+
+<section class="block" aria-labelledby="org-title">
+  <h2 id="org-title">Організації</h2>
+  <form class="panel" method="get" action="/orgs" role="search">
+    <div class="field">
+      <label for="org-q">Назва організації або ЄДРПОУ</label>
+      <input id="org-q" name="q" type="search" maxlength="100" autocomplete="off" required minlength="2">
+    </div>
+    <button class="primary" type="submit">Знайти</button>
+  </form>
+</section>
+
+<section class="block" aria-labelledby="regions-title">
+  <h2 id="regions-title">Області</h2>
+  <ul class="columns">
+  @foreach (var region in e.Regions)
+  {
+      <li><a href="@Format.RegionPath(region.Key)">@region.Title</a> <span class="num">@Format.Number(region.Open)</span></li>
+  }
+  </ul>
+</section>
+
+<section class="block" aria-labelledby="data-title">
+  <h2 id="data-title">Дані для таблиць і програм</h2>
+  <ul class="links">
+    <li><a href="/cards">Перелік карток з фільтрами</a></li>
+    <li><a href="/export/cards.csv">Усі картки, CSV</a></li>
+    <li><a href="/export/cards.xlsx">Усі картки, Excel</a></li>
+    <li><a href="/openapi/v1.json">Опис API (OpenAPI)</a></li>
+    <li><a href="/api/v1/meta">/api/v1/meta</a></li>
+  </ul>
+</section>

@@ -1,0 +1,45 @@
+@page "/orgs"
+@model OrgsModel
+@{
+    ViewData["Title"] = "Організації";
+}
+<h1 class="page">Організації</h1>
+<p class="lead">Організації, що ведуть відкриті картки, за назвою. Підприємці (фізичні особи) і картки без вказаної організації сюди не входять.</p>
+
+<form class="panel" method="get" role="search">
+  <div class="field">
+    <label for="q">Назва організації або ЄДРПОУ</label>
+    <partial name="_FieldError" model='Model.Error("q")' />
+    <input id="q" name="q" type="search" maxlength="100" value="@Model.Query" autocomplete="off" aria-invalid="@Model.Invalid("q")" aria-describedby="@Model.Described("q")">
+  </div>
+  <partial name="_FieldError" model='Model.Error("page")' />
+  <button class="primary" type="submit">Знайти</button>
+</form>
+
+<div class="result-head">
+  <p aria-live="polite">@(Model.Query is null ? "Усього" : "Знайдено") @Format.Number(Model.Found.Count) @Format.Plural(Model.Found.Count, "організація", "організації", "організацій")</p>
+</div>
+@if (Model.Found.Count == 0)
+{
+    <p>За цим запитом організацій немає. Пошук шукає частину назви без урахування регістру або точний код ЄДРПОУ з 8 цифр.</p>
+}
+else
+{
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th scope="col">Організація</th><th scope="col">ЄДРПОУ</th><th scope="col" class="num">Відкритих карток</th><th scope="col" class="num">Середня наповненість</th></tr></thead>
+      <tbody>
+      @foreach (var o in Model.PageItems)
+      {
+          <tr>
+            <td><a href="@Format.OrganisationPath(o.Key)">@o.Title</a></td>
+            <td class="code">@o.Edrpou</td>
+            <td class="num">@Format.Number(o.Open)</td>
+            <td class="num">@Format.Percent(o.AverageScore)</td>
+          </tr>
+      }
+      </tbody>
+    </table>
+    </div>
+    <partial name="_Pager" model="new PagerModel(Model.PageNumber, Model.Pages, Model.Link)" />
+}

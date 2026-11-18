@@ -1,0 +1,17 @@
+@model PagerModel
+@if (Model.Pages > 1)
+{
+    <nav class="pager" aria-label="Сторінки переліку">
+      @if (Model.Page > 1)
+      {
+          <a href="@Model.Link(1)">Перша</a>
+          <a href="@Model.Link(Model.Page - 1)" rel="prev">Попередня</a>
+      }
+      <span>Сторінка @Format.Number(Model.Page) з @Format.Number(Model.Pages)</span>
+      @if (Model.Page < Model.Pages)
+      {
+          <a href="@Model.Link(Model.Page + 1)" rel="next">Наступна</a>
+          <a href="@Model.Link(Model.Pages)">Остання</a>
+      }
+    </nav>
+}

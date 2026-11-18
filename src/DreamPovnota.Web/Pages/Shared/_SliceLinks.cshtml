@@ -1,0 +1,7 @@
+@model DreamPovnota.Web.Pages.Shared.SliceView
+<ul class="links">
+  <li><a href="/cards@(Model.Query)">Перелік з фільтрами</a></li>
+  <li><a href="/export/cards.csv@(Model.Query)">CSV</a></li>
+  <li><a href="/export/cards.xlsx@(Model.Query)">Excel</a></li>
+  <li><a href="@Model.ApiPath">API</a></li>
+</ul>

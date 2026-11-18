@@ -1,0 +1,20 @@
+@page "/org/{**key}"
+@model OrgModel
+@{
+    var view = Model.View;
+    ViewData["Title"] = view.Title;
+    ViewData["Description"] = $"Наповненість відкритих карток організації {view.Title} у DREAM.";
+}
+<h1 class="page">@view.Title</h1>
+<p class="lead">@(Model.Organisation.Edrpou is { } edrpou ? $"ЄДРПОУ {edrpou}. " : "")Відкриті картки, які веде ця організація.</p>
+<partial name="_SliceLinks" model="view" />
+<partial name="_SliceBody" model="view" />
+
+<section class="block" aria-labelledby="cards-title">
+  <h2 id="cards-title">Картки</h2>
+  @if (Model.PageCards.Count < view.Cards.Count)
+  {
+      <p>Перші @Format.Number(Model.PageCards.Count) за назвою з @Format.Number(view.Cards.Count). Повний перелік з фільтрами: <a href="/cards@(view.Query)">картки організації</a>.</p>
+  }
+  <partial name="_CardTable" model="new DreamPovnota.Web.Pages.Shared.CardTableModel(view.Edition, Model.PageCards, ShowOrganisation: false)" />
+</section>

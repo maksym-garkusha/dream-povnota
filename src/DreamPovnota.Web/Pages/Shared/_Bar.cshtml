@@ -1,0 +1,3 @@
+@model DreamPovnota.Web.Pages.Shared.BarModel
+@* смужка частки: SVG з атрибутами, бо CSP забороняє вбудовані стилі *@
+<svg class="bar" viewBox="0 0 100 8" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="track" width="100" height="8"/><rect class="fill" width="@((Math.Clamp(Model.Share, 0, 1) * 100).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture))" height="8"/></svg>

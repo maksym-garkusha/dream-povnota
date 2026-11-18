@@ -1,9 +1,11 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/DreamPovnota.Core/DreamPovnota.Core.csproj" />
+    <Project Path="src/DreamPovnota.Web/DreamPovnota.Web.csproj" />
     <Project Path="src/DreamPovnota/DreamPovnota.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/DreamPovnota.Tests/DreamPovnota.Tests.csproj" />
+    <Project Path="tests/DreamPovnota.Web.Tests/DreamPovnota.Web.Tests.csproj" />
   </Folder>
 </Solution>

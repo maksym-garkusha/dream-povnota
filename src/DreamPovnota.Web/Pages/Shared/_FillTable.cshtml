@@ -1,0 +1,28 @@
+@model DreamPovnota.Web.Pages.Shared.FillTableModel
+@{
+    var checks = Model.Edition.Edition.Checks;
+}
+<div class="tablewrap">
+<table class="fill">
+  <thead>
+    <tr><th scope="col">Поле</th><th scope="col" class="num">Заповнено</th><th scope="col">Без цього поля</th></tr>
+  </thead>
+  <tbody>
+  @for (int i = 0; i < checks.Count; i++)
+  {
+      var tally = Model.Tallies[i];
+      if (tally.Applicable == 0) { continue; }
+      int missing = tally.Applicable - tally.Filled;
+      var link = new Dictionary<string, string>(Model.Filter) { ["missing"] = checks[i].Code };
+      <tr>
+        <td>@checks[i].Title<div class="why">@checks[i].Why</div></td>
+        <td class="num"><div class="share"><partial name="_Bar" model="new DreamPovnota.Web.Pages.Shared.BarModel(tally.Share)" /><b>@Format.Percent(tally.Share)</b></div><span class="sub">@Format.Number(tally.Filled) з @Format.Number(tally.Applicable)</span></td>
+        <td>@if (missing == 0)
+        {<span class="sub">у всіх заповнено</span>}
+        else
+        {<a asp-page="/Cards" asp-all-route-data="link">@Format.InCards(missing) не заповнено</a>}</td>
+      </tr>
+  }
+  </tbody>
+</table>
+</div>

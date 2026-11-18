@@ -1,0 +1,5 @@
+@model FieldErrorModel
+@if (Model.Message is not null)
+{
+    <p class="error field-error" id="@(Model.Field)-error">@Model.Message</p>
+}

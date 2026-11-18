@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net11.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RootNamespace>DreamPovnota.Web</RootNamespace>
+    <!-- 0,1 CPU і 512 МБ на Render: один потік збирача сміття і без фонового збирання -->
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <!-- українське впорядкування назв потребує ICU -->
+    <InvariantGlobalization>false</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="11.0.0" />
+    <PackageReference Include="MiniExcel" Version="1.47.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DreamPovnota.Core\DreamPovnota.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="DreamPovnota.Web.Tests" />
+  </ItemGroup>
+
+</Project>
