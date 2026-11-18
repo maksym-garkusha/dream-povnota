@@ -1,10 +1,31 @@
+@{
+    string pageTitle = ViewData["Title"] is string title ? title + " · dream-povnota" : "dream-povnota: наповненість карток DREAM";
+    string description = ViewData["Description"] as string
+        ?? "Які поля заповнено в картках проєктів відновлення в DREAM: перевірка картки, організації, області, історія змін, вивантаження й API. Незалежний проєкт на відкритих даних.";
+    // адреса з запиту: за проксі Render схему й хост відновлює UseForwardedHeaders
+    string origin = $"{Context.Request.Scheme}://{Context.Request.Host}";
+}
 <!doctype html>
 <html lang="uk">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>@(ViewData["Title"] is string title ? title + " · dream-povnota" : "dream-povnota: наповненість карток DREAM")</title>
-<meta name="description" content="@(ViewData["Description"] as string ?? "Які поля заповнено в картках проєктів відновлення в DREAM: перевірка картки, організації, області, вивантаження й API. Незалежний проєкт на відкритих даних.")">
+<title>@pageTitle</title>
+<meta name="description" content="@description">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="uk_UA">
+<meta property="og:site_name" content="dream-povnota">
+<meta property="og:title" content="@pageTitle">
+<meta property="og:description" content="@description">
+<meta property="og:url" content="@(origin + Context.Request.PathBase + Context.Request.Path)">
+<meta property="og:image" content="@(origin)/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Наповненість карток проєктів у DREAM: перевірка картки, організації, області, історія змін">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="@pageTitle">
+<meta name="twitter:description" content="@description">
+<meta name="twitter:image" content="@(origin)/og.png">
 @if (ViewData["NoIndex"] is true)
 {
 <meta name="robots" content="noindex">

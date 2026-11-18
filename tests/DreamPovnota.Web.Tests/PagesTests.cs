@@ -33,6 +33,21 @@ public partial class PagesTests : IClassFixture<WebFactory>
     }
 
     [Fact]
+    public async Task Pages_carry_a_link_preview_with_an_absolute_image()
+    {
+        var client = await factory.ReadyClientAsync();
+
+        string html = await client.GetStringAsync("/cards");
+        var image = await client.GetAsync("/og.png");
+
+        Assert.Contains("<meta property=\"og:image\" content=\"http://localhost/og.png\">", html);
+        Assert.Contains("<meta property=\"og:title\" content=\"Картки · dream-povnota\">", html);
+        Assert.Contains("<meta name=\"twitter:card\" content=\"summary_large_image\">", html);
+        Assert.Equal(HttpStatusCode.OK, image.StatusCode);
+        Assert.Equal("image/png", image.Content.Headers.ContentType!.MediaType);
+    }
+
+    [Fact]
     public async Task Organisation_and_region_pages_open_from_the_edition()
     {
         var client = await factory.ReadyClientAsync();

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<!-- Шаблон картинки для попереднього перегляду посилань (1200×630).
+     Без адреси після # це картинка статичної сторінки, з #web картинка веб-сервісу.
+     Чисел тут немає навмисно: картинка не оновлюється разом з даними. -->
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root { --paper: #f3f5f4; --card: #ffffff; --ink: #14201c; --muted: #5e6b66; --line: #d5dbd8; --amber: #f2b705; --amber-soft: #fdf3cf; }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  width: 1200px; height: 630px; overflow: hidden;
+  background: var(--paper); color: var(--ink);
+  font: 400 28px/1.35 "Golos Text", Inter, system-ui, sans-serif;
+  padding: 46px 72px 0;
+  display: flex; flex-direction: column;
+}
+.mark { font-weight: 700; font-size: 27px; letter-spacing: -.01em; }
+.mark i { font-style: normal; font-weight: 400; color: var(--muted); }
+h1 { font-size: 72px; line-height: 1.04; letter-spacing: -.03em; margin: 40px 0 18px; max-width: 980px; }
+.lead { color: var(--muted); font-size: 29px; margin: 0; max-width: 960px; }
+.fields { display: flex; flex-wrap: wrap; gap: 10px; margin: 30px 0 0; }
+.field { display: inline-flex; align-items: center; gap: 11px; background: var(--card); border: 1px solid var(--line); border-radius: 4px; padding: 8px 15px 8px 12px; font-size: 22px; font-weight: 500; }
+.field i { width: 18px; height: 18px; border-radius: 3px; background: var(--ink); flex: none; }
+.field.missing { background: var(--amber-soft); border-color: var(--amber); }
+.field.missing i { background: var(--card); border: 3px solid var(--amber); }
+footer { margin-top: auto; border-top: 3px solid var(--ink); padding: 18px 0 28px; display: flex; justify-content: space-between; font-size: 22px; color: var(--muted); }
+footer b { color: var(--ink); font-weight: 600; }
+.web { display: none; }
+body.is-web .static { display: none; }
+body.is-web .web { display: block; }
+body.is-web footer .web { display: inline; }
+</style>
+</head>
+<body>
+<div class="mark">dream-povnota <i>/ відкриті дані DREAM</i></div>
+<h1>Наповненість карток проєктів у&nbsp;DREAM</h1>
+<p class="lead static">Які поля заповнено з тих, що доречні на стадії проєкту, і чого бракує: за стадіями, областями, секторами й організаціями.</p>
+<p class="lead web">Перевірка картки просто зараз, сторінки організацій і областей, історія змін, вивантаження в Excel і відкритий API.</p>
+<div class="fields" aria-hidden="true">
+  <span class="field"><i></i>Опис</span>
+  <span class="field"><i></i>Місце</span>
+  <span class="field"><i></i>Сектор</span>
+  <span class="field"><i></i>Документи</span>
+  <span class="field"><i></i>Кошторис</span>
+  <span class="field missing"><i></i>Джерело фінансування</span>
+  <span class="field missing"><i></i>Назва англійською</span>
+</div>
+<footer>
+  <span>Незалежний навчальний проєкт на відкритих даних</span>
+  <b><span class="static">maksym-garkusha.github.io/dream-povnota</span><span class="web">dream-povnota.onrender.com</span></b>
+</footer>
+<script>
+if (location.hash === '#web') document.body.classList.add('is-web');
+</script>
+</body>
+</html>
