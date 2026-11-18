@@ -36,10 +36,10 @@ The gaps are concentrated in a few places, almost all of them at the implementat
 
 Smaller findings:
 
-- in 57 open records the description is just the word `NULL`, which looks like a by-product of data migration;
+- in 60 open records the description is a placeholder, in 57 of them the word `NULL`, which looks like a by-product of data migration;
 - all 5,934 distinct EDRPOU codes in the records pass the check-digit test, so organisation codes in the system are in good order;
-- 14 different ten-digit numbers appear in the EDRPOU field, i.e. the tax number of a sole proprietor rather than a company code. The program does not store these numbers;
-- the feed contains no project created after November 2025, although existing records are still being updated. Newer projects are probably managed under the updated public investment model and are not exposed through this API. If so, the page covers projects registered between September 2023 and November 2025.
+- in 17 open records (14 different numbers) the EDRPOU field holds a ten-digit number, i.e. the tax number of a sole proprietor rather than a company code. The program does not store these numbers;
+- the feed contains no project created after November 2025 (going by the date in the project code), although existing records are still being updated. Newer projects are probably managed under the updated public investment model and are not exposed through this API. If so, the page covers projects registered between September 2023 and November 2025.
 
 The full report with all breakdowns: [report.md](https://maksym-garkusha.github.io/dream-povnota/report.md), regenerated weekly along with the page.
 
