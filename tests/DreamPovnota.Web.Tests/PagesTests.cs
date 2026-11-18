@@ -79,7 +79,7 @@ public partial class PagesTests : IClassFixture<WebFactory>
 
         string html = await client.GetStringAsync("/about");
 
-        Assert.Contains("<td>усі стадії</td>", html);
+        Assert.Contains("<td data-label=\"Коли доречне\">усі стадії</td>", html);
         Assert.Contains("тільки «Реалізація»", html);
         Assert.Contains("з «Визначено»", html);
         Assert.DoesNotContain("…", html);

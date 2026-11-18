@@ -17,15 +17,15 @@
 <section class="block" aria-labelledby="checks-title">
   <h2 id="checks-title">Перевірки</h2>
   <div class="tablewrap">
-  <table>
+  <table class="checks-about">
     <thead><tr><th scope="col">Поле</th><th scope="col">Група</th><th scope="col">Коли доречне</th></tr></thead>
     <tbody>
     @foreach (var c in e.Checks)
     {
         <tr>
           <td>@c.Title<div class="why">@c.Why</div></td>
-          <td>@c.Group@(c.CountsInScore ? "" : ", окремо від наповненості")</td>
-          <td>@Model.StageRange(c)</td>
+          <td data-label="Група">@c.Group@(c.CountsInScore ? "" : ", окремо від наповненості")</td>
+          <td data-label="Коли доречне">@Model.StageRange(c)</td>
         </tr>
     }
     </tbody>
