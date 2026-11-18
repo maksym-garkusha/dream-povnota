@@ -354,7 +354,11 @@ function norm(text) {
 function fullCode(code) { return code.startsWith('DREAM') ? code : 'DREAM-UA-' + code; }
 function shortRegion(title) { return title.replace(/ область$/, '').replace('Автономна Республіка', 'АР'); }
 
-function orgKey(i) { return D.orgs[i][0] || 'i' + i; }
+// в адресі організація за ЄДРПОУ, а без коду за назвою: індекс у data.json міняється щотижня
+function orgKey(i) { return D.orgs[i][0] || 'n:' + D.orgs[i][1]; }
+function orgIndexOf(key) {
+  return key.startsWith('n:') ? D.orgs.findIndex(o => !o[0] && o[1] === key.slice(2)) : D.orgs.findIndex(o => o[0] === key);
+}
 function portalUrl(code) { return PORTAL + encodeURIComponent(code) + '/profile'; }
 // 1 проєкт, 2 проєкти, 5 проєктів
 function plural(n, one, few, many) {
@@ -395,8 +399,7 @@ function filter() {
   const q = norm(state.q);
   let orgIndex = null;
   if (state.org) {
-    orgIndex = state.org.startsWith('i') ? Number(state.org.slice(1)) : D.orgs.findIndex(o => o[0] === state.org);
-    if (!(orgIndex >= 0 && orgIndex < D.orgs.length)) orgIndex = -1;
+    orgIndex = orgIndexOf(state.org);
   }
   return projects.filter(p => matches(p, state, orgIndex) && (!q || p.key.includes(q)));
 }
@@ -444,7 +447,7 @@ function renderList(reset) {
 function renderOrgChip() {
   const chip = $('org-chip');
   if (!state.org) { chip.innerHTML = ''; return; }
-  const i = state.org.startsWith('i') ? Number(state.org.slice(1)) : D.orgs.findIndex(o => o[0] === state.org);
+  const i = orgIndexOf(state.org);
   const name = D.orgs[i] ? D.orgs[i][1] : state.org;
   chip.innerHTML = `<span class="chip">Організація: ${esc(name)} <button type="button" aria-label="Прибрати фільтр за організацією">×</button></span>`;
   chip.querySelector('button').addEventListener('click', () => update({ org: '' }));
