@@ -1,3 +1,4 @@
+using DreamPovnota.Web.History;
 using DreamPovnota.Web.Import;
 using DreamPovnota.Web.Lists;
 using DreamPovnota.Web.Pages.Shared;
@@ -10,7 +11,7 @@ namespace DreamPovnota.Web.Pages;
 public sealed record RegionOrganisation(OrganisationEntry Organisation, int Cards);
 
 [OutputCache(PolicyName = ImportService.CacheTag)]
-public sealed class RegionModel(EditionStore store) : PageModel
+public sealed class RegionModel(EditionStore store, HistoryReader history) : PageModel
 {
     public string Key { get; private set; } = "";
 
@@ -20,7 +21,11 @@ public sealed class RegionModel(EditionStore store) : PageModel
 
     public IReadOnlyList<int> PageCards { get; private set; } = [];
 
-    public IActionResult OnGet(string key)
+    public HistoryView History { get; private set; } = null!;
+
+    public string FeedPath { get; private set; } = "";
+
+    public async Task<IActionResult> OnGetAsync(string key, CancellationToken ct)
     {
         var edition = store.Require();
         if (!edition.RegionIndex.TryGetValue(key, out int index)) return NotFound();
@@ -41,6 +46,10 @@ public sealed class RegionModel(EditionStore store) : PageModel
             .Select(o => new RegionOrganisation(o, perOrganisation[o.Key]))
             .ToList();
         PageCards = cards.Take(CardFilter.PageSizeOnPages).ToList();
+        FeedPath = "/feeds/region/" + key + ".atom";
+        History = await HistoryView.LoadAsync(
+            HttpContext, history, edition, new HistoryScope(Region: key),
+            token => history.SliceTrendAsync('r', key, token), FeedPath, ct);
         return Page();
     }
 }

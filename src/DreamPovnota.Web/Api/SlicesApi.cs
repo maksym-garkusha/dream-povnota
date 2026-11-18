@@ -15,7 +15,7 @@ public static class SlicesApi
 
         api.MapGet("/orgs", Organisations).WithTags("Організації")
             .WithSummary("Пошук організацій за назвою (від 2 знаків) або ЄДРПОУ");
-        api.MapGet("/orgs/{**key}", Organisation).WithTags("Організації")
+        api.MapGet("/orgs/{key}", Organisation).WithTags("Організації")
             .WithSummary("Розріз за організацією: ключ це ЄДРПОУ або n: і назва");
         api.MapGet("/regions", (EditionStore store) =>
             {

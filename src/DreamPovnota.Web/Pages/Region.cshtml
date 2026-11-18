@@ -5,10 +5,14 @@
     ViewData["Title"] = view.Title;
     ViewData["Description"] = $"Наповненість відкритих карток проєктів у DREAM: {view.Title}.";
 }
+@section Head {
+<link rel="alternate" type="application/atom+xml" title="Зміни карток: @view.Title" href="@Model.FeedPath">
+}
 <h1 class="page">@view.Title</h1>
 <p class="lead">Відкриті картки, місце яких за кодом КАТОТТГ у цій області@(Model.Key is "multi" ? " (картки з місцями в кількох областях)" : Model.Key is "none" ? " (картки без коду місця)" : "").</p>
 <partial name="_SliceLinks" model="view" />
 <partial name="_SliceBody" model="view" />
+<partial name="_History" model="Model.History" />
 
 <section class="block" aria-labelledby="orgs-title">
   <h2 id="orgs-title">Організації</h2>

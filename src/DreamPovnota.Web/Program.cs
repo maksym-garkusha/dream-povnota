@@ -4,6 +4,8 @@ using System.Net;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using DreamPovnota.Web.Api;
+using DreamPovnota.Web.Feeds;
+using DreamPovnota.Web.History;
 using DreamPovnota.Web.Import;
 using DreamPovnota.Web.Live;
 using DreamPovnota.Web.Web;
@@ -76,6 +78,8 @@ builder.Services.AddHttpClient<LiveCheck>(LiveCheck.Configure)
         PooledConnectionLifetime = TimeSpan.FromMinutes(10),
     });
 
+builder.Services.AddSingleton<Db>();
+builder.Services.AddSingleton<HistoryReader>();
 builder.Services.AddHostedService<ImportService>();
 
 // кирилицю в HTML і JSON пишемо як є; небезпечні для розмітки знаки кодувальники екранують і далі
@@ -134,5 +138,7 @@ app.MapCardsApi();
 app.MapSlicesApi();
 app.MapMetaApi();
 app.MapExports();
+app.MapHistoryApi();
+app.MapFeeds();
 
 app.Run();

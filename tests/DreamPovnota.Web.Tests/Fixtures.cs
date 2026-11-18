@@ -36,8 +36,8 @@ public static class Fixtures
 
     public static async Task<LoadedEdition> LoadedAsync()
     {
-        await using var file = File.OpenRead(EditionPath);
-        return new LoadedEdition(await Edition.ReadAsync(file), "test");
+        byte[] body = await File.ReadAllBytesAsync(EditionPath);
+        return new LoadedEdition(await Edition.ReadAsync(new MemoryStream(body)), System.Security.Cryptography.SHA256.HashData(body));
     }
 
     private static string WriteEdition()

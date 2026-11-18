@@ -1,14 +1,18 @@
-@page "/org/{**key}"
+@page "/org/{key}"
 @model OrgModel
 @{
     var view = Model.View;
     ViewData["Title"] = view.Title;
     ViewData["Description"] = $"Наповненість відкритих карток організації {view.Title} у DREAM.";
 }
+@section Head {
+<link rel="alternate" type="application/atom+xml" title="Зміни карток: @view.Title" href="@Model.FeedPath">
+}
 <h1 class="page">@view.Title</h1>
 <p class="lead">@(Model.Organisation.Edrpou is { } edrpou ? $"ЄДРПОУ {edrpou}. " : "")Відкриті картки, які веде ця організація.</p>
 <partial name="_SliceLinks" model="view" />
 <partial name="_SliceBody" model="view" />
+<partial name="_History" model="Model.History" />
 
 <section class="block" aria-labelledby="cards-title">
   <h2 id="cards-title">Картки</h2>

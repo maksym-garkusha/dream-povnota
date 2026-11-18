@@ -33,7 +33,7 @@ public sealed class EditionSource(HttpClient http, IConfiguration configuration)
         if (body is null) return null;
 
         var edition = await Edition.ReadAsync(new MemoryStream(body, writable: false), ct);
-        return new LoadedEdition(edition, Convert.ToHexStringLower(SHA256.HashData(body)));
+        return new LoadedEdition(edition, SHA256.HashData(body));
     }
 
     private static bool IsWebAddress(string location) =>

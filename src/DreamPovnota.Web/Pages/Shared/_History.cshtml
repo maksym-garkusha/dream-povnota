@@ -1,0 +1,47 @@
+@model DreamPovnota.Web.Pages.Shared.HistoryView
+@using DreamPovnota.Web.History
+<section class="block" aria-labelledby="history-title">
+  <h2 id="history-title">Зміни</h2>
+  @if (!Model.Available)
+  {
+      <div class="notice"><p>Історія змін тимчасово недоступна. Поточний стан карток нижче актуальний на @Format.DateTime(Model.StateDate).</p></div>
+  }
+  else
+  {
+      var status = Model.Status!;
+      <p>Історію змін збираємо з @Format.Date(status.First!.Value). Раніших змін DREAM не показує, тому їх тут немає. <a href="@Model.FeedPath">Стрічка Atom</a>.</p>
+      @if (status.Snapshots < 2)
+      {
+          <p>Поки є тільки перший знімок, порівнювати ще нема з чим.</p>
+      }
+      else if (Model.Changes.Count == 0)
+      {
+          <p>У знімку від @Format.Date(status.LastGenerated!.Value) порівняно з попереднім змін у цих картках немає.</p>
+      }
+      else
+      {
+          <h3>Знімок від @Format.Date(status.LastGenerated!.Value) порівняно з попереднім</h3>
+          <ul class="plain">
+          @foreach (var change in Model.Changes)
+          {
+              <li><a href="@Format.PortalUrl(change.Code)">@change.Title</a> <span class="code">DREAM-UA-@change.Code</span>: @DreamPovnota.Web.Feeds.AtomFeed.Describe(change, Model.Titles)</li>
+          }
+          </ul>
+      }
+      @if (Model.Trend.Count > 1)
+      {
+          <h3>За знімками</h3>
+          <div class="tablewrap">
+          <table>
+            <thead><tr><th scope="col">Знімок</th><th scope="col" class="num">Відкритих карток</th><th scope="col" class="num">З усім доречним</th><th scope="col" class="num">Середня наповненість</th></tr></thead>
+            <tbody>
+            @foreach (var point in Model.Trend)
+            {
+                <tr><td>@Format.Date(point.Date)</td><td class="num">@Format.Number(point.Open)</td><td class="num">@Format.Number(point.Complete)</td><td class="num">@Format.Percent(point.AvgScore)</td></tr>
+            }
+            </tbody>
+          </table>
+          </div>
+      }
+  }
+</section>

@@ -15,10 +15,14 @@ public sealed class WebFactory : WebApplicationFactory<Program>
 
     public string DataUrl { get; set; } = Fixtures.EditionPath;
 
+    /// <summary>Порожньо: історія вимкнена, як локально без бази.</summary>
+    public string DatabaseUrl { get; set; } = "";
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Production");
         builder.UseSetting("DATA_URL", DataUrl);
+        builder.UseSetting("DATABASE_URL", DatabaseUrl);
         builder.ConfigureServices(services =>
             services.AddHttpClient<LiveCheck>().ConfigurePrimaryHttpMessageHandler(() => Dream));
     }

@@ -24,7 +24,7 @@ public sealed class LoadedEdition
 
     private readonly int scoreMask;
 
-    public LoadedEdition(Edition edition, string contentHash)
+    public LoadedEdition(Edition edition, byte[] contentHash)
     {
         Edition = edition;
         ContentHash = contentHash;
@@ -44,7 +44,7 @@ public sealed class LoadedEdition
 
         OrganisationsByKey = edition.Organisations
             .GroupBy(o => o.Key, StringComparer.Ordinal)
-            .Where(g => !NotOrganisations.Contains(g.Key))
+            .Where(g => !NotOrganisations.Contains(g.Key) && CardsByOrganisation.ContainsKey(g.Key))
             .Select(g => OrganisationOf(g.First(), CardsByOrganisation[g.Key]))
             .ToDictionary(o => o.Key, StringComparer.Ordinal);
         // порядок data.json: за назвою без лапок на початку
@@ -58,8 +58,8 @@ public sealed class LoadedEdition
 
     public Edition Edition { get; }
 
-    /// <summary>SHA-256 тіла файлу в hex.</summary>
-    public string ContentHash { get; }
+    /// <summary>SHA-256 тіла файлу.</summary>
+    public byte[] ContentHash { get; }
 
     public IReadOnlyDictionary<string, int> CardIndexByCode { get; }
 

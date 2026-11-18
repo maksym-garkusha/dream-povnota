@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using DreamPovnota.Web.History;
 using Microsoft.AspNetCore.OutputCaching;
 
 namespace DreamPovnota.Web.Import;
@@ -8,10 +9,13 @@ namespace DreamPovnota.Web.Import;
 /// Після збою пробує частіше (10 с, 30 с, 1, 2, 5 хв, далі кожні 10 хв): поки випуску
 /// немає, усі сторінки відповідають 503, і чекати годину через один обірваний запит не можна.
 /// Новий випуск одразу стає поточним; кеш сторінок, зібраних зі старого, скидається.
+/// Потім, якщо є база, випуск записується знімком історії. Збій бази не заважає
+/// поточному стану: знімок допишеться наступного разу.
 /// </summary>
 public sealed class ImportService(
     EditionSource source,
     EditionStore store,
+    Db db,
     IOutputCacheStore outputCache,
     TimeProvider clock,
     ILogger<ImportService> log) : BackgroundService
@@ -25,6 +29,9 @@ public sealed class ImportService(
         TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(30), TimeSpan.FromMinutes(1),
         TimeSpan.FromMinutes(2), TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10),
     ];
+
+    private bool migrated;
+    private DateTimeOffset? recorded;
 
     /// <summary>Пауза після <paramref name="failures"/> невдалих спроб поспіль; 0 означає успіх.</summary>
     public static TimeSpan DelayAfter(int failures) =>
@@ -82,6 +89,7 @@ public sealed class ImportService(
             fetched = false;
         }
 
+        await RecordAsync(ct);
         return fetched && store.Current is not null;
     }
 
@@ -91,5 +99,34 @@ public sealed class ImportService(
         var inner = ex;
         while (inner.InnerException is not null) inner = inner.InnerException;
         return inner == ex || inner.Message == ex.Message ? ex.Message : $"{ex.Message} → {inner.Message}";
+    }
+
+    private async Task RecordAsync(CancellationToken ct)
+    {
+        if (store.Current is not { } current || current.Edition.Generated == recorded || !db.IsAvailable) return;
+
+        var started = Stopwatch.GetTimestamp();
+        try
+        {
+            if (!migrated)
+            {
+                int applied = await Migrator.MigrateAsync(db, ct);
+                if (applied > 0) log.LogInformation("Застосовано міграцій бази: {Count}", applied);
+                migrated = true;
+            }
+
+            int? snapshot = await SnapshotWriter.WriteAsync(db, current, ct);
+            recorded = current.Edition.Generated;
+            db.MarkUp();
+            if (snapshot is null) return;
+
+            await outputCache.EvictByTagAsync(CacheTag, ct);
+            log.LogInformation("Знімок {Snapshot} записано за {Elapsed:0.0} с", snapshot, Stopwatch.GetElapsedTime(started).TotalSeconds);
+        }
+        catch (Exception ex) when (Db.IsOutage(ex) && !ct.IsCancellationRequested)
+        {
+            db.MarkDown();
+            log.LogWarning(ex, "Знімок не записано, база недоступна");
+        }
     }
 }

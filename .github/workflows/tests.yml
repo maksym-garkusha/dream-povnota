@@ -11,6 +11,18 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    # база для тестів історії; пароль одноразовий і живе тільки в цьому контейнері
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 2s --health-timeout 5s --health-retries 20
+    env:
+      TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/test
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-dotnet@v6

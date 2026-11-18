@@ -1,3 +1,4 @@
+using DreamPovnota.Web.History;
 using DreamPovnota.Web.Import;
 
 namespace DreamPovnota.Web.Api;
@@ -24,10 +25,12 @@ public static class MetaApi
     public static void MapHealth(this IEndpointRouteBuilder app)
     {
         app.MapGet("/health/live", () => TypedResults.Text("ok")).ExcludeFromDescription();
-        app.MapGet("/health/ready", (EditionStore store) =>
+        // база необов'язкова: без неї сервіс готовий, тільки без історії
+        app.MapGet("/health/ready", async (EditionStore store, HistoryReader history, CancellationToken ct) =>
             {
                 var current = store.Current;
                 var status = store.Status;
+                var snapshots = history.IsConfigured ? await history.StatusAsync(ct) : null;
                 var body = new
                 {
                     edition = new
@@ -37,6 +40,8 @@ public static class MetaApi
                         lastChecked = status.LastChecked,
                         lastError = status.LastError,
                     },
+                    database = !history.IsConfigured ? "not-configured" : snapshots is null ? "unavailable" : "ok",
+                    lastSnapshot = snapshots?.LastGenerated,
                 };
                 return current is null
                     ? Results.Json(body, statusCode: StatusCodes.Status503ServiceUnavailable)

@@ -1,4 +1,5 @@
 using System.Net;
+using DreamPovnota.Web.History;
 using DreamPovnota.Web.Import;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.Configuration;
@@ -49,6 +50,7 @@ public class ImportServiceTests
         using var service = new ImportService(
             new EditionSource(new HttpClient(pages), configuration),
             store,
+            TestDatabase.Open(""),
             new NoOutputCache(),
             clock,
             NullLogger<ImportService>.Instance);
