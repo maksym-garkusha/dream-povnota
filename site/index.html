@@ -107,7 +107,7 @@ th[aria-sort="descending"] button::after { content: " ↓"; }
   background: var(--card);
   color: var(--ink);
 }
-.search input::placeholder { color: #8b9692; }
+.search input::placeholder { color: var(--muted); }
 .filters { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px 12px; margin: 14px 0 0; }
 .filters label { display: grid; gap: 4px; font-size: 14px; color: var(--muted); }
 .filters select {
@@ -136,11 +136,64 @@ th[aria-sort="descending"] button::after { content: " ↓"; }
   border: 2px solid var(--ink); border-radius: 4px; padding: 9px 18px; cursor: pointer;
 }
 
+/* «Головне»: короткі висновки з числами, кожен веде до своїх карток */
+#insights-block { margin-top: 56px; }
+.insights { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.insight { background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--amber); border-radius: 4px; padding: 14px 18px 16px; display: flex; flex-direction: column; gap: 4px; }
+.insight b { font-size: 28px; line-height: 1.15; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.insight b small { font-size: 15px; font-weight: 400; color: var(--muted); letter-spacing: 0; margin-left: 6px; }
+.insight h3 { font-size: 16.5px; margin: 2px 0 0; line-height: 1.3; }
+.insight p { margin: 0; color: var(--muted); font-size: 15px; }
+.insight .link { margin-top: auto; padding-top: 8px; font-size: 15.5px; }
+.scope { color: var(--muted); font-size: 15px; margin: 0 0 14px; }
+
+/* картограма: кожна область однаковий квадрат, розміщений приблизно як на мапі */
+.map-controls { display: flex; flex-wrap: wrap; align-items: end; gap: 10px 20px; margin: 0 0 14px; }
+.map-controls label { display: grid; gap: 4px; font-size: 14px; color: var(--muted); }
+.map-controls select {
+  font: inherit; font-size: 15.5px; color: var(--ink); background: var(--card);
+  border: 1px solid var(--off); border-radius: 4px; padding: 9px 10px; min-width: 16em;
+}
+.tilemap { display: grid; grid-template-columns: repeat(9, 1fr); gap: 3px; max-width: 860px; }
+.tile {
+  aspect-ratio: 1; min-width: 0; margin: 0; padding: 5px 6px; border: 0; border-radius: 3px; cursor: pointer;
+  font: inherit; text-align: left; display: flex; flex-direction: column; justify-content: space-between;
+  background: var(--track); color: var(--ink); overflow: hidden;
+}
+.tile .name { font-size: 11.5px; font-weight: 600; line-height: 1.15; overflow-wrap: anywhere; }
+.tile .tiny, .tile .short-share { display: none; }
+.tile .count { font-size: 11.5px; opacity: .85; font-variant-numeric: tabular-nums; }
+.tile .share-val { font-size: 14.5px; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.tile.few { background: var(--card); border: 1px dashed var(--off); color: var(--muted); }
+.tile.few .share-val { font-size: 11.5px; font-weight: 400; line-height: 1.15; }
+.tile.dark { color: #fff; }
+.tile[aria-pressed="true"] { outline: 3px solid var(--amber); outline-offset: 1px; }
+.tile:hover { box-shadow: inset 0 0 0 2px var(--ink); }
+.tile:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.q0 { background: #cde2fb; } .q1 { background: #9ec5f4; } .q2 { background: #5598e7; } .q3 { background: #256abf; } .q4 { background: #104281; }
+.legend { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin: 12px 0 0; padding: 0; list-style: none; font-size: 14px; color: var(--muted); }
+.legend li { display: inline-flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
+.legend .sw { width: 16px; height: 12px; border-radius: 2px; flex: none; }
+.legend .sw.few { background: var(--card); border: 1px dashed var(--off); }
+.map-extra { margin: 12px 0 0; font-size: 15px; color: var(--muted); }
+.map-note { margin: 6px 0 26px; font-size: 14px; color: var(--muted); max-width: 46em; }
+
+.listbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px 16px; margin: 18px 0 8px; }
+.listbar #status { margin: 0; }
+.download {
+  font: inherit; font-size: 15px; background: var(--card); color: var(--ink);
+  border: 1px solid var(--ink); border-radius: 4px; padding: 6px 14px; cursor: pointer; white-space: nowrap;
+}
+.download:disabled { color: var(--muted); border-color: var(--off); cursor: default; }
+
 footer { margin: 80px 0 0; padding: 26px 0 60px; border-top: 2px solid var(--ink); color: var(--muted); font-size: 15px; }
 footer p { margin: 0 0 8px; max-width: 46em; }
 
 @media (max-width: 760px) {
   .figures { grid-template-columns: repeat(2, 1fr); }
+  .insights { grid-template-columns: 1fr; }
+  .tile { padding: 4px 5px; }
+  .tile .count { display: none; }
   .filters { grid-template-columns: repeat(2, 1fr); }
   .meter { width: 64px; }
 }
@@ -161,7 +214,17 @@ footer p { margin: 0 0 8px; max-width: 46em; }
   #list td.meta + td.meta::before { content: " · "; }
   #list td.num { text-align: left; }
   #list td.missing { margin-top: 8px; }
-  #list td.score::before { content: "заповнено "; }
+  #list td.meta + td.meta.score::before { content: " · заповнено "; }
+  .insight b small { display: block; margin: 2px 0 0; }
+  /* картограма на телефоні: квадрати дрібні, тому коротка позначка і ціла частка */
+  .tilemap { gap: 2px; }
+  .tile { padding: 3px; align-items: center; justify-content: center; gap: 1px; text-align: center; }
+  .tile .name, .tile .share-val { display: none; }
+  .tile .tiny { display: block; font-size: 10px; font-weight: 600; line-height: 1.1; }
+  .tile .short-share { display: block; font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .tile.few .short-share { font-size: 9px; font-weight: 400; }
+  .map-controls select { min-width: 0; width: 100%; }
+  .map-controls label { width: 100%; }
   /* таблиця полів: назва з поясненням на всю ширину, числа рядком нижче */
   #checks-table thead { display: none; }
   #checks-table tr:not(.group) { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
@@ -190,6 +253,12 @@ footer p { margin: 0 0 8px; max-width: 46em; }
   <div class="figures" id="figures" aria-live="polite"></div>
   <div class="stages" id="stages"></div>
 
+  <section class="block" id="insights-block">
+    <h2>Головне</h2>
+    <p class="scope" id="insights-scope"></p>
+    <div class="insights" id="insights"></div>
+  </section>
+
   <section class="block" id="checks-block">
     <h2>Що заповнено</h2>
     <p>Кожне поле перевіряється тільки там, де воно доречне: кошторис з'являється на стадії оцінки, закупівля на стадії реалізації. Натисніть на назву поля, щоб побачити картки, де його бракує.</p>
@@ -201,7 +270,14 @@ footer p { margin: 0 0 8px; max-width: 46em; }
 
   <section class="block" id="regions-block">
     <h2>Області</h2>
-    <p>Частки рахуються від карток, де поле доречне. Упорядковано за назвою; натисніть на заголовок колонки, щоб упорядкувати інакше, або на область, щоб побачити її картки.</p>
+    <p>Частки рахуються від карток, де поле доречне. Натисніть на область на схемі чи в таблиці, щоб побачити її картки. Таблиця впорядкована за назвою; натисніть на заголовок колонки, щоб упорядкувати інакше.</p>
+    <div class="map-controls">
+      <label>Показник на схемі <select id="map-metric"><option value="avg">Наповненість карток</option></select></label>
+    </div>
+    <div class="tilemap" id="tilemap" role="group" aria-label="Області на схемі, приблизно як на мапі"></div>
+    <ul class="legend" id="map-legend"></ul>
+    <p class="map-extra" id="map-extra"></p>
+    <p class="map-note">Схема, а не мапа: кожна область однаковим квадратом, у ньому кількість відкритих проєктів і частка. Колір показує частку, а не оцінку: в областях різна кількість проєктів і різні стадії.</p>
     <div class="tablewrap"><table id="regions">
       <thead><tr id="regions-head"></tr></thead>
       <tbody id="regions-body"></tbody>
@@ -212,8 +288,7 @@ footer p { margin: 0 0 8px; max-width: 46em; }
     <h2>Проєкти</h2>
     <p>Назва веде на картку на порталі DREAM. Натисніть на організацію, щоб побачити всі її картки.</p>
     <div class="search">
-      <label for="q" hidden>Пошук</label>
-      <input id="q" type="search" placeholder="Назва, код DREAM, організація або ЄДРПОУ" autocomplete="off" spellcheck="false" disabled>
+      <input id="q" type="search" aria-label="Пошук проєктів" placeholder="Назва, код DREAM, організація або ЄДРПОУ" autocomplete="off" spellcheck="false" disabled>
     </div>
     <div class="filters">
       <label>Область <select id="f-region"><option value="">усі</option></select></label>
@@ -226,7 +301,10 @@ footer p { margin: 0 0 8px; max-width: 46em; }
       <span id="org-chip"></span>
     </div>
 
-    <div id="status" role="status">Завантаження…</div>
+    <div class="listbar">
+      <div id="status" role="status">Завантаження…</div>
+      <button type="button" class="download" id="csv" disabled>Завантажити CSV</button>
+    </div>
     <div class="tablewrap"><table id="list" hidden>
       <thead><tr><th>Проєкт</th><th>Область</th><th>Стадія</th><th class="num">Заповнено</th><th>Бракує</th></tr></thead>
       <tbody id="rows"></tbody>
@@ -277,6 +355,12 @@ function fullCode(code) { return code.startsWith('DREAM') ? code : 'DREAM-UA-' +
 function shortRegion(title) { return title.replace(/ область$/, '').replace('Автономна Республіка', 'АР'); }
 
 function orgKey(i) { return D.orgs[i][0] || 'i' + i; }
+function portalUrl(code) { return PORTAL + encodeURIComponent(code) + '/profile'; }
+// 1 проєкт, 2 проєкти, 5 проєктів
+function plural(n, one, few, many) {
+  const d = n % 10, h = n % 100;
+  return d === 1 && h !== 11 ? one : d >= 2 && d <= 4 && (h < 12 || h > 14) ? few : many;
+}
 
 // ---- стан у адресі: #q=...&region=74&stage=impl&sector=E&miss=cost&org=04412567&seek=1
 const KEYS = ['q', 'region', 'stage', 'sector', 'miss', 'org', 'seek'];
@@ -332,7 +416,7 @@ function missingTags(p) {
 function row(p) {
   const org = D.orgs[p.org];
   const code = fullCode(p.code);
-  return `<tr><td class="title"><a href="${PORTAL}${esc(code)}/profile" target="_blank" rel="noopener">${esc(p.title || code)}</a>` +
+  return `<tr><td class="title"><a href="${esc(portalUrl(code))}" target="_blank" rel="noopener">${esc(p.title || code)}</a>` +
     `<span class="org"><button type="button" class="link" data-org="${esc(orgKey(p.org))}">${esc(org[1])}</button>` +
     `${org[0] ? ` <span class="code">${esc(org[0])}</span>` : ''}</span></td>` +
     `<td class="meta">${esc(shortRegion(D.regions[p.region].t))}</td>` +
@@ -348,6 +432,8 @@ function renderList(reset) {
   shown += next.length;
   $('list').hidden = found.length === 0;
   $('more').hidden = shown >= found.length;
+  $('csv').disabled = found.length === 0;
+  $('csv').textContent = found.length ? `Завантажити CSV (${num(found.length)})` : 'Завантажити CSV';
   statusLine.textContent = found.length === 0
     ? 'Нічого не знайдено. Спробуйте частину назви або приберіть якийсь фільтр.'
     : found.length === projects.length
@@ -371,11 +457,17 @@ function syncControls() {
   renderOrgChip();
 }
 
+function refresh() {
+  syncControls();
+  renderList(true);
+  renderInsights();
+  renderMap();
+}
+
 function update(change, { scroll } = {}) {
   Object.assign(state, change);
-  syncControls();
+  refresh();
   writeHash();
-  renderList(true);
   if (scroll) $('projects').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -394,6 +486,164 @@ function renderFigures() {
     `<div class="strip" aria-hidden="true">${D.stages.map((s, i) => `<i class="s${i}" style="flex:${s.n / total}"></i>`).join('')}</div>` +
     `<ul class="stage-legend">${D.stages.map((s, i) =>
       `<li><span class="dot s${i}"></span><button type="button" class="link" data-stage="${esc(s.k)}">${esc(s.t)}</button> <span class="num">${num(s.n)}</span></li>`).join('')}</ul>`;
+}
+
+// ---- «Головне»: кожен висновок це фільтр переліку, і число рахується тим самим фільтром,
+// тож після «Показати ці картки» у переліку рівно стільки карток
+const INSIGHTS = [
+  {
+    title: 'Рік без оновлень',
+    text: 'Проєкти в реалізації, де вже є фінансування або закупівля, а картку не змінювали понад рік.',
+    show: { miss: 'fresh' }, base: { applies: 'fresh' },
+    of: n => `з ${num(n)} ${plural(n, 'такого проєкту', 'таких проєктів', 'таких проєктів')} у реалізації`
+  },
+  {
+    title: 'Закупівля є, джерела фінансування немає',
+    text: 'У картці заведено закупівлю чи договір, але не вказано жодного джерела фінансування.',
+    show: { miss: 'funding' }, base: { applies: 'funding' },
+    of: n => `з ${num(n)} ${plural(n, 'проєкту', 'проєктів', 'проєктів')} із закупівлею`
+  },
+  {
+    title: 'Без сектору',
+    text: 'У картці немає коду сектору, тож проєкт не потрапляє в розрізи на зразок «скільки в освіті».',
+    show: { miss: 'sector' }, base: {},
+    of: n => `з ${num(n)} ${plural(n, 'відкритої картки', 'відкритих карток', 'відкритих карток')}`
+  },
+  {
+    title: 'Шукають фінансування, назви англійською немає',
+    text: 'Схвалені проєкти без грошей і закупівель. Англійську назву бачать іноземні донори.',
+    show: { seek: '1', miss: 'title-en' }, base: { seek: '1' },
+    of: n => `з ${num(n)}, що шукають фінансування`
+  }
+];
+const NO_FILTERS = { q: '', stage: '', sector: '', miss: '', org: '', seek: '' };
+
+function renderInsights() {
+  const region = state.region;
+  const inRegion = region ? projects.filter(p => D.regions[p.region].k === region) : projects;
+  $('insights').innerHTML = INSIGHTS.map((insight, i) => {
+    const s = { ...NO_FILTERS, ...insight.show };
+    const count = inRegion.filter(p => matches(p, s, null)).length;
+    const base = inRegion.filter(p =>
+      (!insight.base.applies || p.app >> checkIndex[insight.base.applies] & 1) && (!insight.base.seek || p.seek)).length;
+    return `<div class="insight"><b>${num(count)}<small>${esc(insight.of(base))}</small></b>` +
+      `<h3>${esc(insight.title)}</h3><p>${esc(insight.text)}</p>` +
+      (count ? `<button type="button" class="link" data-insight="${i}">Показати ці картки</button>` : '') + '</div>';
+  }).join('');
+  const r = region && D.regions.find(x => x.k === region);
+  $('insights-scope').innerHTML = r
+    ? `Область: ${esc(r.t)}. <button type="button" class="link" data-region="">Показати по всіх областях</button>`
+    : 'По всіх відкритих картках. Кнопка під числом показує ці картки в переліку нижче; область можна вибрати на схемі.';
+}
+
+// ---- картограма областей: [код КАТОТТГ, рядок, колонка, назва на плитці, позначка для телефона]
+const TILES = [
+  ['07', 0, 1, 'Волинська', 'Вол'], ['56', 0, 2, 'Рівнен\u00adська', 'Рів'], ['18', 0, 3, 'Жито\u00adмирська', 'Жит'],
+  ['32', 0, 4, 'Київська', 'Кщ'], ['74', 0, 5, 'Черні\u00adгівська', 'Чнг'], ['59', 0, 6, 'Сумська', 'Сум'],
+  ['46', 1, 1, 'Львівська', 'Льв'], ['61', 1, 2, 'Терно\u00adпільська', 'Тер'], ['68', 1, 3, 'Хмель\u00adницька', 'Хм'],
+  ['80', 1, 4, 'Київ', 'Київ'], ['71', 1, 5, 'Черка\u00adська', 'Чрк'], ['53', 1, 6, 'Полтав\u00adська', 'Пол'],
+  ['63', 1, 7, 'Харків\u00adська', 'Хар'], ['44', 1, 8, 'Луган\u00adська', 'Луг'],
+  ['21', 2, 0, 'Закар\u00adпатська', 'Зак'], ['26', 2, 1, 'Івано-Фран\u00adківська', 'І-Ф'], ['73', 2, 2, 'Черні\u00adвецька', 'Чнв'],
+  ['05', 2, 3, 'Вінниць\u00adка', 'Він'], ['35', 2, 4, 'Кірово\u00adградська', 'Кір'], ['12', 2, 6, 'Дніпро\u00adпетров\u00adська', 'Дні'],
+  ['14', 2, 7, 'Донецька', 'Дон'],
+  ['51', 3, 3, 'Одеська', 'Од'], ['48', 3, 4, 'Микола\u00adївська', 'Мик'], ['65', 3, 5, 'Херсон\u00adська', 'Хер'], ['23', 3, 6, 'Запо\u00adрізька', 'Зап'],
+  ['85', 4, 4, 'Севасто\u00adполь', 'Сев'], ['01', 4, 5, 'Крим', 'Крим']
+];
+// менше карток, де показник доречний, і частка нічого не каже
+const MAP_MIN = 20;
+let mapMetric = 'avg';
+
+// [частка або null, від скількох карток вона рахується]
+function regionMetric(r) {
+  if (!r) return [null, 0];
+  if (mapMetric === 'avg') return [r.n ? r.avg : null, r.n];
+  const t = r.c[checkIndex[mapMetric]];
+  return [t[0] ? t[1] / t[0] : null, t[0]];
+}
+
+function renderMap() {
+  const byKey = Object.fromEntries(D.regions.map(r => [r.k, r]));
+  const metricTitle = mapMetric === 'avg' ? 'наповненість' : D.checks[checkIndex[mapMetric]].t.toLowerCase();
+  const values = TILES.map(([k]) => regionMetric(byKey[k])).filter(([v, n]) => v !== null && n >= MAP_MIN).map(([v]) => v);
+  const min = Math.min(...values), max = Math.max(...values);
+  const bin = v => max - min < 1e-9 ? 2 : Math.min(4, Math.floor((v - min) / (max - min) * 5));
+
+  $('tilemap').innerHTML = TILES.map(([k, row, col, name, tiny]) => {
+    const r = byKey[k], n = r ? r.n : 0;
+    const [v, base] = regionMetric(r);
+    const few = v === null || base < MAP_MIN;
+    const title = r ? r.t : (k === '85' ? 'місто Севастополь' : k);
+    const projectsText = `${num(n)} ${plural(n, 'відкритий проєкт', 'відкриті проєкти', 'відкритих проєктів')}`;
+    const label = `${title}: ${projectsText}; ${few ? 'замало проєктів, щоб рахувати частку' : `${metricTitle} ${pct(v)}`}.` +
+      (n ? ' Показати картки області.' : '');
+    const cls = few ? 'few' : `q${bin(v)}${bin(v) >= 3 ? ' dark' : ''}`;
+    return `<button type="button" class="tile ${cls}" style="grid-row:${row + 1};grid-column:${col + 1}"` +
+      ` data-region="${n ? esc(k) : ''}" aria-pressed="${state.region === k}" aria-label="${esc(label)}" title="${esc(label)}"${n ? '' : ' disabled'}>` +
+      `<span class="name">${esc(name)}</span><span class="tiny">${esc(tiny)}</span>` +
+      `<span class="count">${num(n)}</span>` +
+      `<span class="share-val">${few ? 'замало проєктів' : pct(v)}</span>` +
+      `<span class="short-share">${few ? 'мало' : Math.round(v * 100) + '%'}</span></button>`;
+  }).join('');
+
+  const legend = [];
+  if (values.length) {
+    const step = (max - min) / 5;
+    for (let i = 0; i < 5; i++) {
+      if (max - min < 1e-9 && i !== 2) continue;
+      const from = max - min < 1e-9 ? min : min + step * i, to = max - min < 1e-9 ? max : min + step * (i + 1);
+      legend.push(`<li><span class="sw q${i}"></span>${pct(from)}–${pct(to)}</li>`);
+    }
+  }
+  legend.push(`<li><span class="sw few"></span>замало проєктів (менше ${MAP_MIN})</li>`);
+  $('map-legend').innerHTML = `<li>${esc(metricTitle[0].toUpperCase() + metricTitle.slice(1))}:</li>` + legend.join('');
+
+  $('map-extra').innerHTML = ['multi', 'none'].map(k => byKey[k]).filter(Boolean).map(r => {
+    const [v, base] = regionMetric(r);
+    return `<button type="button" class="link" data-region="${esc(r.k)}">${esc(r.t)}</button>: ` +
+      `${num(r.n)} ${plural(r.n, 'проєкт', 'проєкти', 'проєктів')}, ` +
+      (v === null || base < MAP_MIN ? 'замало, щоб рахувати частку' : `${esc(metricTitle)} ${pct(v)}`);
+  }).join('. ') + '.';
+}
+
+// ---- CSV з поточної вибірки: UTF-8 з BOM і крапка з комою, щоб Excel відкрив кирилицю як є
+function csvCell(value) {
+  let text = String(value ?? '');
+  // назва, що починається з = + - @, у Excel стала б формулою
+  if (/^[=+\-@\t\r]/.test(text)) text = "'" + text;
+  return '"' + text.replace(/"/g, '""') + '"';
+}
+
+function missingText(p) {
+  const main = [], english = [];
+  D.checks.forEach((c, i) => {
+    if (!(p.app >> i & 1) || (p.fil >> i & 1)) return;
+    if (c.score) main.push(c.t); else english.push(SHORT[c.c] || c.t);
+  });
+  if (english.length) main.push('англійською: ' + english.join(', '));
+  return main.join('; ');
+}
+
+function downloadCsv() {
+  const head = ['Код DREAM', 'Назва', 'Організація', 'ЄДРПОУ', 'Область', 'Стадія', 'Заповнено', 'Не заповнено', 'Картка на порталі DREAM'];
+  const lines = [head.map(csvCell).join(';')];
+  found.forEach(p => {
+    const org = D.orgs[p.org], code = fullCode(p.code);
+    // ="04412567": інакше Excel прочитає код як число і з'їсть нулі на початку
+    const edrpou = org[0] ? `"=""${org[0]}"""` : '""';
+    lines.push([
+      csvCell(code), csvCell(p.title), csvCell(org[1]), edrpou, csvCell(D.regions[p.region].t), csvCell(D.stages[p.stage].t),
+      csvCell(`${bits(p.fil & scoreMask)} з ${bits(p.app & scoreMask)}`), csvCell(missingText(p)), csvCell(portalUrl(code))
+    ].join(';'));
+  });
+  const r = state.region && D.regions.find(x => x.k === state.region);
+  const name = `dream-povnota_${(r ? r.t : 'усі області').replace(/\s+/g, '-')}_${D.generated.slice(0, 10)}.csv`;
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(new Blob(['\ufeff' + lines.join('\r\n') + '\r\n'], { type: 'text/csv;charset=utf-8' }));
+  link.download = name;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
 }
 
 function shareCell(tally) {
@@ -458,6 +708,7 @@ function fillFilters() {
   filters.stage.insertAdjacentHTML('beforeend', options(D.stages, s => s.k, s => s.t));
   filters.sector.insertAdjacentHTML('beforeend', options(D.sectors, s => s.k, s => s.t));
   filters.miss.insertAdjacentHTML('beforeend', options(D.checks, c => c.c, c => c.t));
+  $('map-metric').insertAdjacentHTML('beforeend', options(D.checks, c => c.c, c => c.t));
 }
 
 function load(data) {
@@ -480,8 +731,7 @@ function load(data) {
   fillFilters();
   input.disabled = false;
   state = readHash();
-  syncControls();
-  renderList(true);
+  refresh();
 }
 
 // ---- події
@@ -493,8 +743,10 @@ input.addEventListener('input', () => {
 Object.entries(filters).forEach(([k, el]) => el.addEventListener('change', () => update({ [k]: el.value })));
 $('f-seek').addEventListener('change', e => update({ seek: e.target.checked ? '1' : '' }));
 $('more').querySelector('button').addEventListener('click', () => renderList(false));
+$('csv').addEventListener('click', downloadCsv);
+$('map-metric').addEventListener('change', e => { mapMetric = e.target.value; renderMap(); });
 document.addEventListener('click', e => {
-  const b = e.target.closest('button[data-miss], button[data-region], button[data-stage], button[data-org], button[data-sort]');
+  const b = e.target.closest('button[data-miss], button[data-region], button[data-stage], button[data-org], button[data-sort], button[data-insight]');
   if (!b) return;
   if (b.dataset.sort) {
     const key = b.dataset.sort;
@@ -503,18 +755,21 @@ document.addEventListener('click', e => {
     $('regions-head').querySelector(`[data-sort="${key}"]`).focus();
     return;
   }
-  if (b.dataset.miss) update({ miss: b.dataset.miss }, { scroll: true });
-  else if (b.dataset.region) update({ region: b.dataset.region }, { scroll: true });
+  if (b.dataset.insight) update({ ...NO_FILTERS, ...INSIGHTS[b.dataset.insight].show }, { scroll: true });
+  else if (b.dataset.miss) update({ miss: b.dataset.miss }, { scroll: true });
+  else if ('region' in b.dataset) update({ region: b.dataset.region }, { scroll: !!b.dataset.region });
   else if (b.dataset.stage) update({ stage: b.dataset.stage }, { scroll: true });
   else if (b.dataset.org) update({ org: b.dataset.org }, { scroll: true });
 });
-window.addEventListener('hashchange', () => { if (D) { state = readHash(); syncControls(); renderList(true); } });
+window.addEventListener('hashchange', () => { if (D) { state = readHash(); refresh(); } });
 
 fetch('data.json')
   .then(response => { if (!response.ok) throw new Error(response.status); return response.json(); })
   .then(load)
-  .catch(() => {
-    statusLine.textContent = 'Не вдалося завантажити дані. Локально спершу виконайте: dotnet run -- sync, потім dotnet run -- export ../../site';
+  .catch(error => {
+    statusLine.textContent = 'Не вдалося завантажити дані. Спробуйте оновити сторінку трохи згодом.';
+    // підказка для того, хто запускає сторінку локально
+    console.error('data.json:', error, 'Локально: dotnet run -- sync, потім dotnet run -- export ../../site');
   });
 </script>
 </body>
