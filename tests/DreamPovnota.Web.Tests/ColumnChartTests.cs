@@ -54,6 +54,18 @@ public class ColumnChartTests
     }
 
     [Fact]
+    public void Period_without_a_comparison_draws_neither_a_bar_nor_a_zero()
+    {
+        var svg = XElement.Parse(ColumnChart.Render("c3", "Дні", "карток",
+            [new ChartColumn("21.10", null, true, "середа: порівнювати не було з чим"), new ChartColumn("22.10", 4, false, "четвер: 4")]));
+        var columns = svg.Elements(Svg + "g").ToList();
+
+        Assert.Empty(columns[0].Elements(Svg + "path"));
+        Assert.Empty(columns[0].Elements(Svg + "text"));
+        Assert.Equal("4", columns[1].Element(Svg + "text")!.Value);
+    }
+
+    [Fact]
     public void Axis_has_round_ticks_and_the_unit()
     {
         var svg = Render(3, 0, 12);

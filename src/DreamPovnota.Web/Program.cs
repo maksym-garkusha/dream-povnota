@@ -167,6 +167,7 @@ app.MapExports();
 app.MapDigest();
 app.MapHistoryApi();
 app.MapFeeds();
+app.MapChangesFeed();
 app.MapTelegramBot();
 
 app.Run();

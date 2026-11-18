@@ -108,7 +108,7 @@ public static class AtomFeed
         return buffer.ToString();
     }
 
-    private static void Link(XmlWriter xml, string atom, string href, string rel)
+    internal static void Link(XmlWriter xml, string atom, string href, string rel)
     {
         xml.WriteStartElement("link", atom);
         xml.WriteAttributeString("rel", rel);
@@ -153,5 +153,5 @@ public static class AtomFeed
         if (change.NewlyApplicable.Count > 0) yield return "стали доречними: " + List(change.NewlyApplicable);
     }
 
-    private static string Stamp(DateTimeOffset moment) => moment.UtcDateTime.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
+    internal static string Stamp(DateTimeOffset moment) => moment.UtcDateTime.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
 }

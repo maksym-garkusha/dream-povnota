@@ -34,6 +34,10 @@ public static class ChangeSummaryBuilder
         .Select((o, i) => (o.Edrpou, i))
         .ToDictionary(x => x.Edrpou, x => x.i, StringComparer.Ordinal);
 
+    /// <summary>Стадії поточного випуску в його порядку: ключ і назва для переходів між стадіями.</summary>
+    public static IReadOnlyList<(string Key, string Title)> StagesOf(Import.LoadedEdition edition) =>
+        edition.Edition.Stages.Select(s => (s.Key, s.Title)).ToList();
+
     public static async Task<ChangeSummary?> LoadAsync(
         HistoryReader history, IReadOnlyList<(string Key, string Title)> stages, DateTimeOffset now, CancellationToken ct)
     {

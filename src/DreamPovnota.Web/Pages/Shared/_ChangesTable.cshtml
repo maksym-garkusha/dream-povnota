@@ -1,0 +1,40 @@
+@model DreamPovnota.Web.Pages.Shared.ChangesTableModel
+@using DreamPovnota.Web.Changes
+@* ті самі числа, що на графіках; під рядком періоду, якщо є що сказати, деталі по рядку на тему *@
+<div class="tablewrap">
+<table class="changes">
+  <thead>
+    <tr>
+      <th scope="col">@(Model.Kind == PeriodKind.Day ? "День" : "Тиждень")</th>
+      @foreach (var measure in ChangesModel.Measures)
+      {
+          <th scope="col" class="num">@measure.Title</th>
+      }
+    </tr>
+  </thead>
+  <tbody>
+  @foreach (var period in Model.Periods)
+  {
+      var counts = Model.Services ? period.Services : period.All;
+      var details = new List<string>();
+      if (ChangeText.Nothing(period, counts, Model.Kind) is { } nothing) details.Add(nothing);
+      if (counts.Fields.Count > 0) details.Add("Дозаповнені поля: " + ChangeText.FieldList(counts.Fields) + ".");
+      if (counts.Stages.Count > 0) details.Add("Стадії: " + ChangeText.StageList(counts.Stages) + ".");
+      if (Model.Services && period.Fastest.Count > 0) details.Add("Де пішло найшвидше: " + ChangeText.FastestList(period.Fastest) + ".");
+      details.AddRange(ChangeText.Notes(period, Model.Kind));
+      <tr class="@(details.Count > 0 ? "period has-detail" : "period")">
+        <th scope="row">@ChangeText.Title(period, Model.Kind)</th>
+        @foreach (var measure in ChangesModel.Measures)
+        {
+            <td class="num" data-label="@measure.Title">@ChangesModel.Cell(period, measure.Value(counts))</td>
+        }
+      </tr>
+      @if (details.Count > 0)
+      {
+          <tr class="detail"><td colspan="@(ChangesModel.Measures.Count + 1)">@foreach (string line in details)
+          {<span>@line</span>}</td></tr>
+      }
+  }
+  </tbody>
+</table>
+</div>

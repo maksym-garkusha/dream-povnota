@@ -5,7 +5,8 @@ using DreamPovnota.Web.Web;
 namespace DreamPovnota.Web.Changes;
 
 /// <summary>Стовпчик: підпис під віссю, значення, неповний період і текст підказки.</summary>
-public sealed record ChartColumn(string Label, int Value, bool Partial, string Tooltip);
+/// <param name="Value">Null, якщо за період порівнювати не було з чим: тоді ні стовпчика, ні нуля над ним.</param>
+public sealed record ChartColumn(string Label, int? Value, bool Partial, string Tooltip);
 
 /// <summary>
 /// Стовпчикова діаграма SVG, зібрана на сервері. Без скриптів, посилань і атрибута style:
@@ -34,7 +35,7 @@ public static class ColumnChart
     /// <param name="unit">Одиниця осі значень: «карток», «полів».</param>
     public static string Render(string id, string title, string unit, IReadOnlyList<ChartColumn> columns)
     {
-        int max = columns.Count == 0 ? 0 : columns.Max(c => c.Value);
+        int max = columns.Count == 0 ? 0 : columns.Max(c => c.Value ?? 0);
         var (top, step) = Scale(max);
         double plotHeight = Bottom - Top;
         double slot = (Right - Left) / Math.Max(columns.Count, 1);
@@ -61,7 +62,7 @@ public static class ColumnChart
         {
             var column = columns[i];
             double centre = Left + slot * (i + 0.5);
-            double height = plotHeight * column.Value / top;
+            double height = plotHeight * (column.Value ?? 0) / top;
             var group = new XElement(Svg + "g",
                 new XAttribute("class", "column"),
                 new XElement(Svg + "title", column.Tooltip),
@@ -73,8 +74,8 @@ public static class ColumnChart
                 group.Add(new XElement(Svg + "path",
                     new XAttribute("class", column.Partial ? "col partial" : "col"),
                     new XAttribute("d", Bar(centre - bar / 2, Bottom - height, bar, height))));
-            if (columns.Count <= MaxValueLabels)
-                group.Add(Text("val", centre, Bottom - height - 5, Format.Number(column.Value), "middle"));
+            if (columns.Count <= MaxValueLabels && column.Value is { } value)
+                group.Add(Text("val", centre, Bottom - height - 5, Format.Number(value), "middle"));
             root.Add(group);
 
             // підписуємо від останнього стовпчика назад, щоб найсвіжіший період мав підпис завжди

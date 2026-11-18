@@ -1,3 +1,4 @@
+using DreamPovnota.Web.Changes;
 using DreamPovnota.Web.History;
 using DreamPovnota.Web.Import;
 using DreamPovnota.Web.Lists;
@@ -20,6 +21,17 @@ public static class HistoryApi
 
         api.MapGet("/changes", Changes)
             .WithSummary("Зміни карток у знімку порівняно з попереднім: snapshot (типово останній), org або region");
+
+        api.MapGet("/changes/summary", async (EditionStore store, HistoryReader history, TimeProvider clock, CancellationToken ct) =>
+                await ChangeSummaryBuilder.LoadAsync(history, ChangeSummaryBuilder.StagesOf(store.Require()), clock.GetUtcNow(), ct) is { } summary
+                    ? Results.Ok(summary)
+                    : Unavailable())
+            .WithSummary("Рух у картках за тижнями і за днями першого тижня, як на сторінці /changes")
+            .WithDescription(
+                "Для кожного тижня (ISO, за київським часом), дня першого тижня історії і всього показаного часу: оновлені картки " +
+                "(змінилась дата оновлення в DREAM), дозаповнені поля за типами перевірок, нові картки, переходи між стадіями. " +
+                "services: те саме для агентства й служб відновлення разом, fastest: до трьох із них, де дозаповнили найбільше полів. " +
+                $"Не більше {ChangeCalendar.MaxWeeks} останніх тижнів.");
 
         api.MapGet("/orgs/{key}/trend", async (string key, EditionStore store, HistoryReader history, CancellationToken ct) =>
             {
