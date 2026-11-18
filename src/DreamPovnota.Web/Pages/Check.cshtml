@@ -26,7 +26,7 @@
       </dl>
       @if (!result.IsOpen)
       {
-          <div class="notice"><p>Картка закрита (скасована, дублікат або не реалізована), тому поля не перевіряємо.</p></div>
+          <div class="notice"><p>Картка закрита (скасована, помилкова, дублікат або не реалізована), тому поля не перевіряємо.</p></div>
       }
       else
       {
@@ -72,12 +72,12 @@ else if (Model.Code is not null && Model.Outcome is null)
       {
           <h2 id="snapshot-title">@snapshot.Title</h2>
           <p class="summary-line"><span class="code">DREAM-UA-@snapshot.Code</span></p>
-          <p>У знімку від @Format.Date(Model.Edition.Edition.Generated) заповнено @Model.Edition.ScoreFilled(snapshot) з @Model.Edition.ScoreApplicable(snapshot) доречних полів. Щоб побачити стан просто зараз, перевірте картку в DREAM.</p>
+          <p>У знімку від @Format.Date(Model.Edition.Edition.Generated) заповнено @Model.Edition.ScoreFilled(snapshot) з @Model.Edition.ScoreApplicable(snapshot) доречних полів. Щоб побачити поточний стан, перевірте картку в DREAM.</p>
       }
       else
       {
           <h2 id="snapshot-title">DREAM-UA-@Model.Code</h2>
-          <p>Серед відкритих карток останнього знімка цієї немає. Її можна перевірити в DREAM просто зараз.</p>
+          <p>Серед відкритих карток останнього знімка цієї немає. Її можна перевірити в DREAM кнопкою нижче.</p>
       }
       <form method="post" asp-page="/Check" asp-route-code="">
         <input type="hidden" name="code" value="@Model.Code">

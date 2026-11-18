@@ -33,6 +33,19 @@ public partial class PagesTests : IClassFixture<WebFactory>
     }
 
     [Fact]
+    public async Task About_names_the_stages_where_each_check_applies_in_words()
+    {
+        var client = await factory.ReadyClientAsync();
+
+        string html = await client.GetStringAsync("/about");
+
+        Assert.Contains("<td>усі стадії</td>", html);
+        Assert.Contains("тільки «Реалізація»", html);
+        Assert.Contains("з «Визначено»", html);
+        Assert.DoesNotContain("…", html);
+    }
+
+    [Fact]
     public async Task Pages_carry_a_link_preview_with_an_absolute_image()
     {
         var client = await factory.ReadyClientAsync();

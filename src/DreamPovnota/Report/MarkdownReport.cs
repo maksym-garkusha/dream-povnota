@@ -163,7 +163,7 @@ public static class MarkdownReport
     {
         md.AppendLine("## Організації");
         md.AppendLine();
-        md.AppendLine("Організація це сторона з роллю projectAuthor, вона веде картку. Перелік організацій з їхніми " +
+        md.AppendLine("Організація це сторона з роллю projectAuthor або, якщо її немає, initiator: вона веде картку. Перелік організацій з їхніми " +
             "картками є на сторінці; тут тільки скільки в кого карток.");
         md.AppendLine();
         md.AppendLine("| Відкритих карток в організації | Організацій |");

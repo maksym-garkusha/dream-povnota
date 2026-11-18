@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Як рахується";
     var e = Model.Edition.Edition;
-    var stageTitles = e.Stages.ToDictionary(s => s.Key, s => s.Title);
 }
 <h1 class="page">Як рахується</h1>
 <p class="lead">Незалежний навчальний проєкт на відкритих даних DREAM. Не пов'язаний з державними органами і не є офіційною статистикою.</p>
@@ -26,7 +25,7 @@
         <tr>
           <td>@c.Title<div class="why">@c.Why</div></td>
           <td>@c.Group@(c.CountsInScore ? "" : ", окремо від наповненості")</td>
-          <td>@(stageTitles.GetValueOrDefault(c.From, c.From)) … @(stageTitles.GetValueOrDefault(c.Until, c.Until))@(c.Condition is { } condition ? ", " + condition : "")</td>
+          <td>@Model.StageRange(c)</td>
         </tr>
     }
     </tbody>
