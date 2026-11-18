@@ -1,0 +1,24 @@
+name: keep-warm
+
+# Безкоштовний екземпляр Render засинає після 15 хвилин без запитів і прокидається
+# близько хвилини. У робочі години будні раз на 10 хвилин торкаємось /health/live:
+# він не чіпає ні базу, ні DREAM. 12 годин на 22 робочі дні це близько 265 годин
+# на місяць із 750 безкоштовних. Узимку це 07:00-18:59 за Києвом, улітку на годину пізніше.
+on:
+  schedule:
+    - cron: '*/10 5-16 * * 1-5'
+  workflow_dispatch:
+
+permissions: {}
+
+env:
+  # адреса веб-сервісу на Render; змінюється тут, якщо сервіс переїде
+  SERVICE_URL: https://dream-povnota.onrender.com
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Wake the service
+        run: curl -fsS --max-time 100 --retry 2 --retry-delay 10 -o /dev/null -w '%{http_code} %{time_total}s\n' "$SERVICE_URL/health/live"
