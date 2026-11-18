@@ -319,26 +319,28 @@ DREAM-UA-190424-A10FC799
 
 When something is missing, a «Не заповнено» (not filled in) list appears, and the line saying that everything relevant is filled in is replaced by «Дописати першим» (add first): the first missing field and why it matters. The English title and description are listed apart, because they do not count towards completeness, as on the page. The organisation link is there when the service has a page for it. `/start` and `/help` explain what the bot does, `/check <code>` works too, and a message without a code gets an example of the format.
 
-**How it works.** Telegram sends every message as a POST to `/telegram/<secret>` and puts the same secret in the `X-Telegram-Bot-Api-Secret-Token` header. The service compares both with `TELEGRAM_WEBHOOK_SECRET` in constant time: a different path gets 404, a different header 401. A genuine update is answered with 200 straight away and the record is checked in the background from a queue of 20 messages, so Telegram does not wait for DREAM and does not send the same update again. The code is taken from the text by the same parser the form uses, and the service builds the request to DREAM itself. The service-wide limit of 120 live checks an hour is shared by the form and the bot and, as before, is spent only on a real request to DREAM. The bot answers one chat at most 6 times a minute and 30 times an hour, and says so once every 10 minutes when the limit is reached. Replies are sent without `parse_mode`, so a record title from DREAM cannot turn into markup.
+**How it works.** Telegram sends every message as a POST to `/telegram/webhook` and puts the secret in the `X-Telegram-Bot-Api-Secret-Token` header. The secret is only in the header, not in the address, because addresses end up in proxy logs. The service compares the header with `TELEGRAM_WEBHOOK_SECRET` in constant time, and a request without it or with a different value gets 401. A genuine update is answered with 200 straight away and the record is checked in the background from a queue of 20 messages, so Telegram does not wait for DREAM and does not send the same update again. The code is taken from the text by the same parser the form uses, and the service builds the request to DREAM itself. The service-wide limit of 120 live checks an hour is shared by the form and the bot and, as before, is spent only on a real request to DREAM. The bot answers one chat at most 6 times a minute and 30 times an hour, and says so once every 10 minutes when the limit is reached. This limit is checked before the queue, so one chat sending a burst of messages cannot take the places of others. `/telegram` accepts up to 300 requests a minute from one IP address: updates come from a few Telegram addresses, and the usual page limit would stop all users at once. Replies are sent without `parse_mode`, so a record title from DREAM cannot turn into markup.
 
 **What the bot does not keep.** The message text and chat id stay in memory while the reply is prepared and are not written anywhere, neither to the database nor to the log. The log only gets the type of a failure, such as «Telegram відповів 403» (Telegram answered 403). Per-chat limits are counted in memory, keyed not by the chat id but by its HMAC fingerprint under a random key that disappears when the service restarts. Telegram itself sees the messages, as with any bot.
 
 **How to switch it on.**
 
 1. In Telegram, open [BotFather](https://t.me/BotFather), send `/newbot` and choose the bot's name and username. BotFather gives you a token.
-2. Make up a webhook secret: 16 to 256 characters from `A-Z`, `a-z`, `0-9`, `_` and `-`, for example the output of `openssl rand -hex 32`.
+2. Generate a webhook secret: `openssl rand -hex 32`. Any other string of 16 to 256 characters from `A-Z`, `a-z`, `0-9`, `_` and `-` also works.
 3. In Render: the `dream-povnota` service, Environment, add `TELEGRAM_BOT_TOKEN` and `TELEGRAM_WEBHOOK_SECRET`, save and deploy. `render.yaml` declares both with `sync: false`, without values: the values live only in the Render settings.
-4. Tell Telegram where to send messages (put the same values in place of `<TOKEN>` and `<SECRET>`):
+4. Tell Telegram where to send messages. `read -rs` asks for a value without echoing it, so neither the token nor the secret stays in the shell history:
 
 ```bash
-curl -sS "https://api.telegram.org/bot<TOKEN>/setWebhook" \
-  --data-urlencode "url=https://dream-povnota.onrender.com/telegram/<SECRET>" \
-  --data-urlencode "secret_token=<SECRET>" \
+read -rs TOKEN    # paste the token from BotFather, Enter
+read -rs SECRET   # paste the same secret as in Render, Enter
+curl -sS "https://api.telegram.org/bot$TOKEN/setWebhook" \
+  --data-urlencode "url=https://dream-povnota.onrender.com/telegram/webhook" \
+  --data-urlencode "secret_token=$SECRET" \
   --data-urlencode 'allowed_updates=["message"]' \
   --data-urlencode "drop_pending_updates=true"
 ```
 
-`https://api.telegram.org/bot<TOKEN>/getWebhookInfo` shows the webhook state: `pending_update_count` is the queue on Telegram's side and `last_error_message` the latest delivery error, if there was one. Links in replies point to `https://dream-povnota.onrender.com`; the `PUBLIC_URL` variable sets a different address. While the free instance is asleep, the first message waits about a minute for the service to wake up.
+`curl -sS "https://api.telegram.org/bot$TOKEN/getWebhookInfo"` in the same shell shows the webhook state: `pending_update_count` is the queue on Telegram's side and `last_error_message` the latest delivery error, if there was one. Links in replies point to `https://dream-povnota.onrender.com`; the `PUBLIC_URL` variable sets a different address. While the free instance is asleep, the first message waits about a minute for the service to wake up.
 
 ### Deployment and free plan limits
 
