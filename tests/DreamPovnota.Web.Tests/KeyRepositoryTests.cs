@@ -45,6 +45,7 @@ public class KeyRepositoryTests
             token = System.Text.RegularExpressions.Regex.Match(await page.Content.ReadAsStringAsync(),
                 "name=\"__RequestVerificationToken\" type=\"hidden\" value=\"([^\"]+)\"").Groups[1].Value;
         }
+        Assert.Equal(1L, await database.ScalarAsync<long>("select count(*) from data_protection_key"));
 
         await using var after = new WebFactory { DatabaseUrl = database.Url };
         var restarted = after.CreateClient(new() { HandleCookies = false, AllowAutoRedirect = false });

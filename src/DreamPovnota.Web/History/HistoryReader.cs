@@ -131,6 +131,12 @@ public sealed class HistoryReader(Db db, ILogger<HistoryReader> log)
             await transaction.CommitAsync(ct);
             return result;
         }
+        // до першої міграції таблиць ще немає: історії поки нема, але база справна,
+        // і позначати її недоступною не можна, бо тоді імпорт не перенесе ключі форм
+        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UndefinedTable)
+        {
+            return null;
+        }
         catch (Exception ex) when (Db.IsOutage(ex) && !ct.IsCancellationRequested)
         {
             db.MarkDown();

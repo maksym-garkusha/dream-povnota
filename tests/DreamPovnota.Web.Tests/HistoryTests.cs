@@ -20,6 +20,17 @@ public class HistoryTests
     }
 
     [PostgresFact]
+    public async Task Reading_history_before_the_first_migration_does_not_mark_the_database_down()
+    {
+        await using var database = await TestDatabase.CreateAsync();
+
+        var status = await database.Reader.StatusAsync(CancellationToken.None);
+
+        Assert.Null(status);
+        Assert.True(database.Db.IsAvailable);
+    }
+
+    [PostgresFact]
     public async Task Migrations_apply_twice_without_error()
     {
         await using var database = await TestDatabase.CreateAsync();

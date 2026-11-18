@@ -73,7 +73,8 @@ public sealed class DbKeyRepository(Db db, ILogger<DbKeyRepository> log) : IXmlR
     {
         XElement[] pending;
         lock (unsaved) pending = [.. unsaved];
-        if (pending.Length == 0 || !db.IsAvailable) return;
+        // викликається одразу після вдалої міграції, тож на позначку недоступності не зважаємо
+        if (pending.Length == 0 || db.Source is null) return;
 
         await using var connection = await db.Source!.OpenConnectionAsync(ct);
         foreach (var element in pending)
