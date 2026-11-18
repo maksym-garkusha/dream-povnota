@@ -1,0 +1,43 @@
+name: digest
+
+# Щопонеділка збирає зріз для агентства й обласних служб відновлення: xlsx і PDF
+# на кожну організацію з переліку. Файли лишаються артефактом запуску на 30 днів
+# і на Pages не публікуються: зріз адресний, а не для всіх.
+on:
+  schedule:
+    # 06:43 UTC у понеділок: після щоденного site.yml (03:17) і щогодинного імпорту на сервісі
+    - cron: '43 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  DATA_URL: https://maksym-garkusha.github.io/dream-povnota/data.json
+  # звідси береться стан карток на початок тижня (історія живе в базі сервісу)
+  SERVICE_URL: https://dream-povnota.onrender.com
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          dotnet-version: '11.0.x'
+      - name: Download data.json
+        run: curl -fsS --retry 3 -o data.json "$DATA_URL"
+      # безкоштовний екземпляр спить і прокидається близько хвилини; якщо не прокинувся,
+      # зріз однаково збирається, а у файлах сказано, що історії немає
+      - name: Wake the service
+        run: curl -fsS --max-time 100 --retry 2 --retry-delay 10 -o /dev/null "$SERVICE_URL/health/live" || echo "Сервіс не відповів"
+      - name: Build the digest
+        working-directory: src/DreamPovnota
+        run: dotnet run -c Release -- digest --edition ../../data.json --history "$SERVICE_URL" ../../digest
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: digest-${{ github.run_number }}
+          path: digest
+          retention-days: 30
+          if-no-files-found: error
