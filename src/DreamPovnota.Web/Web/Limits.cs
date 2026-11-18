@@ -18,11 +18,17 @@ public static class Limits
     public const int ChecksAtOnce = 2;
     public const int ChecksQueued = 10;
     public const int RequestsPerMinute = 120;
+
+    /// <summary>
+    /// Усі оновлення бота приходять з кількох адрес Telegram, тож звичайний ліміт сторінок
+    /// зупинив би всіх користувачів разом. Цей вищий; у бота ще свої ліміти на чат.
+    /// </summary>
+    public const int TelegramPerMinute = 300;
     public const int ExportsPerMinute = 10;
     public const int ExportBuildsPerMinute = 30;
     public const int ExportBuildsQueued = 4;
 
-    private enum Kind { None, Page, Export, Check }
+    private enum Kind { None, Page, Export, Check, Telegram }
 
     private static Kind KindOf(HttpRequest request)
     {
@@ -30,9 +36,7 @@ public static class Limits
         // /health/ready ходить у базу, тож його ліміт як у сторінки; без ліміту лише перевірка Render
         if (path.StartsWithSegments("/health/live") || path.StartsWithSegments("/status") || path.StartsWithSegments("/error"))
             return Kind.None;
-        // усі оновлення бота приходять з кількох адрес Telegram, і ліміт на адресу зупинив би всіх
-        // користувачів разом; у бота свої ліміти на чат, а запит без секрету відхиляється одразу
-        if (path.StartsWithSegments(Telegram.TelegramBot.Path)) return Kind.None;
+        if (path.StartsWithSegments(Telegram.TelegramBot.Path)) return Kind.Telegram;
         if (HttpMethods.IsPost(request.Method) && path.StartsWithSegments("/check")) return Kind.Check;
         if (path.Value is { } value
             && (value.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase) || value.EndsWith(".csv", StringComparison.OrdinalIgnoreCase)))
@@ -53,6 +57,7 @@ public static class Limits
             Kind.None => RateLimitPartition.GetNoLimiter("none"),
             Kind.Check => Window("check:" + ClientKey.Of(context), ChecksPerMinute, TimeSpan.FromMinutes(1)),
             Kind.Export => Window("export:" + ClientKey.Of(context), ExportsPerMinute, TimeSpan.FromMinutes(1)),
+            Kind.Telegram => Window("telegram:" + ClientKey.Of(context), TelegramPerMinute, TimeSpan.FromMinutes(1)),
             _ => Window("page:" + ClientKey.Of(context), RequestsPerMinute, TimeSpan.FromMinutes(1)),
         });
 
