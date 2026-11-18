@@ -1,5 +1,6 @@
 # Щотижневі оновлення залежностей. Мажорні версії пакетів ASP.NET і образів .NET
-# ідуть разом із новим .NET, тож їх переводимо вручну, а не окремими PR.
+# ідуть разом із новим .NET, тож їх переводимо вручну, а не окремими PR. Так само xunit:
+# runner 4 потребує xunit v3, а це окремий перехід для обох тестових проєктів.
 version: 2
 updates:
   - package-ecosystem: nuget
@@ -11,6 +12,8 @@ updates:
         update-types: [minor, patch]
     ignore:
       - dependency-name: "Microsoft.*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "xunit*"
         update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
