@@ -2,7 +2,7 @@
 
 How complete the project records in the DREAM system are: which fields are filled in out of those that are relevant at a project's stage, and what is still missing. Broken down by stage, region, sector and organisation.
 
-**Live page: [maksym-garkusha.github.io/dream-povnota](https://maksym-garkusha.github.io/dream-povnota/)** (in Ukrainian). The data is refreshed every week.
+**Live page: [maksym-garkusha.github.io/dream-povnota](https://maksym-garkusha.github.io/dream-povnota/)** (in Ukrainian). The data is refreshed every week. The top of the page has a few key findings, each with a button that shows the records behind it; below are a tile map of the regions and the list of records, which can be filtered to one region and downloaded as CSV to pass on to communities.
 
 [Українська версія](README.md)
 
@@ -38,7 +38,7 @@ Smaller findings:
 
 - in 60 open records the description is a placeholder, in 57 of them the word `NULL`, which looks like a by-product of data migration;
 - all 5,934 distinct EDRPOU codes in the records pass the check-digit test, so organisation codes in the system are in good order;
-- in 17 open records (14 different numbers) the EDRPOU field holds a ten-digit number, i.e. the tax number of a sole proprietor rather than a company code. The program does not store these numbers;
+- in 17 open records the EDRPOU field holds a ten-digit number, i.e. the tax number of a sole proprietor rather than a company code. The program does not store these numbers;
 - the feed contains no project created after November 2025 (going by the date in the project code), although existing records are still being updated. Newer projects are probably managed under the updated public investment model and are not exposed through this API. If so, the page covers projects registered between September 2023 and November 2025.
 
 The full report with all breakdowns: [report.md](https://maksym-garkusha.github.io/dream-povnota/report.md), regenerated weekly along with the page.
@@ -159,7 +159,7 @@ A few decisions worth explaining.
 
 **Personal data.** The API returns the names of managers (`parties[].persons`) and lists sole proprietors as parties with the `UA-IPN` scheme, where the code is a personal tax number and the name is a person's name. The parser does not read `persons` at all, and for a sole proprietor it keeps only the role and a flag saying it is a sole proprietor. The same applies to a ten-digit number recorded under the `UA-EDR` scheme. Tests make sure that the test numbers and fictitious names from the fixtures do not appear in the cache, `data.json` or the report.
 
-**A page without a server.** Every Monday GitHub Actions restores the cache from the previous run, downloads the changed records, builds `data.json` (4.7 MB, about 0.9 MB compressed) and the report, and publishes them with the page on GitHub Pages. Search and filters run in the browser: 15,000 rows are filtered in a few milliseconds, and only the first 50 are drawn. The filter state is kept in the page address, so a selection can be shared as a link.
+**A page without a server.** Every Monday GitHub Actions restores the cache from the previous run, downloads the changed records, builds `data.json` (4.8 MB, about 0.9 MB compressed) and the report, and publishes them with the page on GitHub Pages. Search and filters run in the browser: 15,000 rows are filtered in a few milliseconds, and only the first 50 are drawn. The filter state is kept in the page address, so a selection can be shared as a link.
 
 **The `data.json` format.** To keep the file small, projects are stored as arrays, and organisations, regions, stages and sectors are kept in lookup lists that projects refer to by index. A project row is `[code without "DREAM-UA-", title, organisation, region, stage, sector, last change date, relevant checks, filled checks, looking for funding]`. Checks are stored as bit masks in the order of the `checks` array. Titles are cut to 160 characters.
 
