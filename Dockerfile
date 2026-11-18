@@ -4,7 +4,7 @@ WORKDIR /src
 COPY global.json DreamPovnota.slnx ./
 COPY src/DreamPovnota.Core/DreamPovnota.Core.csproj src/DreamPovnota.Core/
 COPY src/DreamPovnota.Web/DreamPovnota.Web.csproj src/DreamPovnota.Web/
-RUN dotnet restore src/DreamPovnota.Web/DreamPovnota.Web.csproj -r linux-x64
+RUN dotnet restore src/DreamPovnota.Web/DreamPovnota.Web.csproj -r linux-x64 -p:PublishReadyToRun=true
 COPY src/DreamPovnota.Core/ src/DreamPovnota.Core/
 COPY src/DreamPovnota.Web/ src/DreamPovnota.Web/
 RUN dotnet publish src/DreamPovnota.Web/DreamPovnota.Web.csproj -c Release -r linux-x64 \
