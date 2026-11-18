@@ -78,7 +78,19 @@ public class DreamClientTests
         var error = await Assert.ThrowsAsync<HttpRequestException>(() => api.Client().GetProjectAsync("a"));
 
         Assert.Equal(HttpStatusCode.ServiceUnavailable, error.StatusCode);
-        Assert.Equal(DreamClient.MaxAttempts, api.Requests.Count);
+        Assert.Equal(4, api.Requests.Count);
+    }
+
+    [Fact]
+    public async Task Gives_up_after_the_configured_number_of_attempts()
+    {
+        var api = new FakeDream().Status("ideas/a", HttpStatusCode.ServiceUnavailable);
+
+        await Assert.ThrowsAsync<HttpRequestException>(
+            () => new DreamClient(DreamClient.CreateHttpClient(api)) { MaxAttempts = 2, FirstRetryDelay = TimeSpan.Zero, Pause = TimeSpan.Zero }
+                .GetProjectAsync("a"));
+
+        Assert.Equal(2, api.Requests.Count);
     }
 
     [Fact]

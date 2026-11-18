@@ -18,7 +18,9 @@ public sealed class DreamClient(HttpClient http)
 {
     public const string BaseAddress = "https://public-api.dream.gov.ua/marketplace/public/dream/";
     public const string UserAgent = "dream-povnota/1.0 (+https://github.com/maksym-garkusha/dream-povnota)";
-    public const int MaxAttempts = 4;
+
+    /// <summary>Скільки разів пробуємо один запит, разом з першим.</summary>
+    public int MaxAttempts { get; init; } = 4;
 
     /// <summary>Сторінка, коротша за цю, означає кінець стрічки.</summary>
     public int PageSize { get; init; } = 1000;
