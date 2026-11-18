@@ -1,12 +1,15 @@
 name: site
 
-# Раз на тиждень забирає свіжі картки з API DREAM і перезбирає сторінку та звіт.
+# Щодня забирає змінені картки з API DREAM і перезбирає сторінку, data.json та звіт.
+# Веб-сервіс сам підтягує опублікований data.json, тому тут немає ні бази, ні секретів.
 on:
   schedule:
-    - cron: '23 4 * * 1'
+    # 03:17 UTC: 05:17 за Києвом узимку, 06:17 улітку
+    - cron: '17 3 * * *'
   push:
     branches: [main]
-    paths: ['src/**', 'site/**', '.github/workflows/site.yml']
+    # зміни тільки веб-сервісу сторінку не перезбирають
+    paths: ['src/**', '!src/DreamPovnota.Web/**', 'site/**', '.github/workflows/site.yml']
   workflow_dispatch:
 
 permissions:
@@ -26,14 +29,17 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
+      # ключ має збігатися з ключем до перенесення коду в бібліотеку: hashFiles рахує вміст, а не шляхи
+      - name: Show the cache key
+        run: echo "dream-cards-${{ hashFiles('src/DreamPovnota.Core/Cards/**') }}"
       # кожен запуск бере кеш попереднього і зберігає свій: тоді качаються тільки змінені картки.
       # У кеші розібрані картки, тому ключ залежить від коду розбору: після його зміни
       # старий кеш не підходить і всі картки завантажуються заново
       - uses: actions/cache/restore@v6
         with:
           path: data
-          key: dream-cards-${{ hashFiles('src/DreamPovnota/Cards/**') }}-${{ github.run_number }}-${{ github.run_attempt }}
-          restore-keys: dream-cards-${{ hashFiles('src/DreamPovnota/Cards/**') }}-
+          key: dream-cards-${{ hashFiles('src/DreamPovnota.Core/Cards/**') }}-${{ github.run_number }}-${{ github.run_attempt }}
+          restore-keys: dream-cards-${{ hashFiles('src/DreamPovnota.Core/Cards/**') }}-
       # 2 потоки з паузою між запитами (див. DreamClient.Pause): API державний і публічний
       - name: Sync cards with the API
         working-directory: src/DreamPovnota
@@ -44,7 +50,7 @@ jobs:
         if: always() && hashFiles('data/projects.jsonl') != ''
         with:
           path: data
-          key: dream-cards-${{ hashFiles('src/DreamPovnota/Cards/**') }}-${{ github.run_number }}-${{ github.run_attempt }}
+          key: dream-cards-${{ hashFiles('src/DreamPovnota.Core/Cards/**') }}-${{ github.run_number }}-${{ github.run_attempt }}
       - name: Export data for the page
         working-directory: src/DreamPovnota
         run: dotnet run -c Release --no-build -- export --cache ../../data ../../site

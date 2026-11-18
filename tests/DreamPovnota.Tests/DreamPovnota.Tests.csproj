@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\DreamPovnota.Core\DreamPovnota.Core.csproj" />
     <ProjectReference Include="..\..\src\DreamPovnota\DreamPovnota.csproj" />
   </ItemGroup>
 
