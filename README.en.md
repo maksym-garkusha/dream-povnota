@@ -124,13 +124,13 @@ dotnet test                                   # from the repository root
 
 The page is a plain HTML file, but it loads `data.json` with `fetch`, so it has to be served over HTTP: `python3 -m http.server` in the `site` folder is enough.
 
-The first `sync` downloads every record; a full pass with 4 parallel requests took us about 14 minutes. Later runs fetch only the records that changed since the previous run. Other options:
+The API is a public government service, so the client takes it slowly: 2 parallel requests by default and a 100 ms pause before each request; at the speed the API answers, that is about 10 requests per second instead of 36 with 4 parallel requests and no pause. The first `sync` downloads every record (16,172 projects and 14,199 objects) and takes about an hour. The weekly run fetches only the records that changed since the previous run: over the last eight weeks that was 17 to 33 projects a week, not thousands. A full pass is needed only the first time or after the parsing changes. Other options:
 
 - `--limit 300` takes only the first 300 projects in the feed, for a quick test;
-- `--parallel 4` sets how many records are downloaded at once;
+- `--parallel 2` sets how many records are downloaded at once;
 - `--as-of 2026-11-17T22:00:00Z` sets the snapshot date for `export` and `report` (now by default). "Updated in the past year" is measured from it, so the same cache and the same date always give the same figures.
 
-If download errors exceed 2% of the feed, `sync` exits with a non-zero code so that the workflow does not publish incomplete data.
+If download errors exceed 2% of the feed, `sync` exits with a non-zero code so that the workflow does not publish incomplete data. The same happens if the feed suddenly lists 10% fewer projects than the cache (and at least a hundred fewer); the cache is then left as it was.
 
 ## How it works
 

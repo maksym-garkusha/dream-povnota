@@ -9,7 +9,7 @@ using DreamPovnota.Stats;
 using DreamPovnota.Store;
 using DreamPovnota.Sync;
 
-// dotnet run -- sync   [--cache data] [--parallel 4] [--limit N]   забрати картки з API в кеш
+// dotnet run -- sync   [--cache data] [--parallel 2] [--limit N]   забрати картки з API в кеш
 // dotnet run -- export [--cache data] [--as-of дата] <тека сайту>  data.json для сторінки
 // dotnet run -- report [--cache data] [--as-of дата] <файл.md>     звіт
 
@@ -50,11 +50,16 @@ static async Task<int> RunSync(Options options, CancellationToken ct)
     {
         result = await sync.RunAsync(new SyncOptions(options.Parallel, options.Limit), ct);
     }
-    catch (Exception ex) when (ex is HttpRequestException or JsonException)
+    catch (Exception ex) when (ex is HttpRequestException or JsonException or InvalidDataException)
     {
         // сюди потрапляє тільки збій стрічки: без неї не знаємо, що оновлювати
         Console.Error.WriteLine($"Не вдалося прочитати стрічку: {ex.Message}");
         return 1;
+    }
+    catch (OperationCanceledException) when (ct.IsCancellationRequested)
+    {
+        Console.Error.WriteLine("Зупинено, кеш не змінено");
+        return 130;
     }
 
     Console.WriteLine();
@@ -126,7 +131,7 @@ static int Usage()
 {
     Console.Error.WriteLine("""
         Використання:
-          sync   [--cache data] [--parallel 4] [--limit N]   забрати картки з API в кеш
+          sync   [--cache data] [--parallel 2] [--limit N]   забрати картки з API в кеш
           export [--cache data] [--as-of дата] <тека сайту>  записати data.json для сторінки
           report [--cache data] [--as-of дата] <файл.md>     записати звіт у Markdown
 
@@ -143,7 +148,7 @@ internal record Options(string Cache, int Parallel, int? Limit, DateTimeOffset? 
     /// <summary>null, якщо параметр невідомий або без значення.</summary>
     public static Options? Parse(IReadOnlyList<string> args)
     {
-        var options = new Options("data", 4, null, null, []);
+        var options = new Options("data", 2, null, null, []);
         var rest = new List<string>();
 
         for (int i = 0; i < args.Count; i++)

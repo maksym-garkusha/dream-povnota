@@ -26,6 +26,12 @@ public sealed class DreamClient(HttpClient http)
     /// <summary>Пауза перед другою спробою; далі подвоюється: 2, 4, 8 с.</summary>
     public TimeSpan FirstRetryDelay { get; init; } = TimeSpan.FromSeconds(2);
 
+    /// <summary>
+    /// Пауза перед кожним запитом. Кожен потік синхронізації просить картки по одній,
+    /// тож це пауза між його запитами: API державний і публічний, поспішати нам нікуди.
+    /// </summary>
+    public TimeSpan Pause { get; init; } = TimeSpan.FromMilliseconds(100);
+
     // сервер може попросити зачекати довше, але годину ми не чекатимемо
     private static readonly TimeSpan MaxRetryAfter = TimeSpan.FromMinutes(2);
 
@@ -101,6 +107,8 @@ public sealed class DreamClient(HttpClient http)
     /// </summary>
     private async Task<string?> GetAsync(string uri, CancellationToken ct)
     {
+        if (Pause > TimeSpan.Zero) await Task.Delay(Pause, ct);
+
         for (int attempt = 1; ; attempt++)
         {
             TimeSpan? wait = null;

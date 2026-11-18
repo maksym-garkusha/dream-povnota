@@ -8,7 +8,7 @@ namespace DreamPovnota.Sync;
 
 /// <param name="Parallel">Скільки карток вантажимо одночасно.</param>
 /// <param name="Limit">Взяти тільки перші N проєктів стрічки, для швидкої перевірки.</param>
-public record SyncOptions(int Parallel = 4, int? Limit = null);
+public record SyncOptions(int Parallel = 2, int? Limit = null);
 
 /// <param name="InFeed">Скільки записів у стрічці (для об'єктів: потрібних і наявних у стрічці).</param>
 /// <param name="Downloaded">Завантажено нових або змінених.</param>
@@ -51,6 +51,15 @@ public record SyncResult(
 /// </summary>
 public sealed class CardSync(DreamClient client, CardStore store)
 {
+    /// <summary>
+    /// Якщо в стрічці помітно менше проєктів, ніж у кеші (на 10% і щонайменше на сотню),
+    /// найімовірніше вона обірвалась на короткій сторінці. Тоді кеш не чіпаємо,
+    /// інакше на сторінку потрапила б тільки частина проєктів.
+    /// </summary>
+    public const double MaxFeedDropShare = 0.1;
+
+    public const int MaxFeedDropCount = 100;
+
     public TextWriter Log { get; init; } = TextWriter.Null;
 
     public TimeProvider Clock { get; init; } = TimeProvider.System;
@@ -63,6 +72,11 @@ public sealed class CardSync(DreamClient client, CardStore store)
 
         var projectFeed = await ReadFeedAsync(client.ProjectFeedAsync(ct), options.Limit);
         Log.WriteLine($"У стрічці проєктів {projectFeed.Count}, у кеші {cachedProjects.Count}");
+        int drop = cachedProjects.Count - projectFeed.Count;
+        if (options.Limit is null && drop >= MaxFeedDropCount && drop > cachedProjects.Count * MaxFeedDropShare)
+            throw new InvalidDataException(
+                $"У стрічці {projectFeed.Count} проєктів, а в кеші {cachedProjects.Count}: схоже, стрічка обірвалась. " +
+                "Кеш не змінено. Якщо проєкти справді зникли, запустіть sync з порожньою текою кешу.");
 
         var (projects, projectCounts) = await RefreshAsync(
             projectFeed, cachedProjects, p => p.Updated,

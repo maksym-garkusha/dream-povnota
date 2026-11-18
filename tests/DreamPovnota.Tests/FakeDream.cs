@@ -28,7 +28,7 @@ public sealed class FakeDream : HttpMessageHandler
     }
 
     public DreamClient Client(int pageSize = 1000) =>
-        new(DreamClient.CreateHttpClient(this)) { PageSize = pageSize, FirstRetryDelay = TimeSpan.Zero };
+        new(DreamClient.CreateHttpClient(this)) { PageSize = pageSize, FirstRetryDelay = TimeSpan.Zero, Pause = TimeSpan.Zero };
 
     public FakeDream Json(string path, string json, bool once = false) =>
         Add(path, once, () => new HttpResponseMessage(HttpStatusCode.OK)

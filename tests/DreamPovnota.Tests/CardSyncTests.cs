@@ -92,6 +92,21 @@ public sealed class CardSyncTests : IDisposable
     }
 
     [Fact]
+    public async Task Feed_much_shorter_than_the_cache_leaves_the_cache_untouched()
+    {
+        var ids = Enumerable.Range(1, 150).Select(i => $"p{i}").ToArray();
+        var full = new FakeDream().Feed("ideas", ids.Select(id => (id, Day1)).ToArray()).Feed("objects");
+        foreach (string id in ids) full.Json($"ideas/{id}", FakeDream.Card("project-idea.json", id, Day1));
+        await Run(full);
+        var cut = new FakeDream().Feed("ideas", ids.Take(40).Select(id => (id, Day1)).ToArray());
+
+        await Assert.ThrowsAsync<InvalidDataException>(() => Run(cut));
+
+        Assert.Equal(150, (await Store.ReadProjectsAsync()).Cards.Count);
+        Assert.Equal(["ideas"], cut.Requests);
+    }
+
+    [Fact]
     public async Task Card_answering_404_is_counted_as_gone_not_as_error()
     {
         var api = Api().Status("ideas/p3", HttpStatusCode.NotFound);
