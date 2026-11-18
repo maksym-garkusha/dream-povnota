@@ -414,7 +414,7 @@ gh attestation verify zriz-37641918-2026-11-23.pdf -R maksym-garkusha/dream-povn
 
 A file changed after the build fails the check, since the attestation is bound to the SHA-256 of its content. The attestation shows where a file came from, not that the code it was built from is right: it does not protect against a malicious commit on `main`.
 
-Every job in `site.yml`, `digest.yml`, `tests.yml` and `history-backup.yml` starts with `step-security/harden-runner` in `audit` mode: it records where the runner connects and which processes it starts. That log will become the list of allowed endpoints, and the mode will then change to `block`.
+Every job in every workflow (`site.yml`, `digest.yml`, `tests.yml`, `history-backup.yml`, `codeql.yml` and `keep-warm.yml`) starts with `step-security/harden-runner` in `audit` mode: it records where the runner connects and which processes it starts. That log will become the list of allowed endpoints, and the mode will then change to `block`.
 
 #### History backup
 
