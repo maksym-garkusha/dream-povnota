@@ -121,7 +121,7 @@ public class BotReplyTests
     {
         string text = BotReply.Help(Site);
 
-        Assert.Contains("DREAM-UA-050923-B400F7B2", text);
+        Assert.Contains(BotReply.ExampleCode, text);
         Assert.Contains(BotReply.Disclaimer, text);
         Assert.Contains(Site.ToString(), text);
     }
