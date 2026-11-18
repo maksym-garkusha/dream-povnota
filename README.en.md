@@ -43,7 +43,7 @@ Smaller findings:
 - in 60 open records the description is a placeholder word: `NULL`, a hyphen or a full stop;
 - all 5,934 distinct EDRPOU codes in the records pass the check-digit test;
 - in 17 open records the EDRPOU field holds a ten-digit number, i.e. the tax number of a sole proprietor rather than a company code. The program does not store these numbers;
-- the feed contains no project created after November 2025 (going by the date in the project code), although existing records are still being updated. The page therefore covers projects registered between September 2023 and November 2025. Whether newer projects are managed in another module cannot be seen from the open data.
+- the records in the feed were registered between September 2023 and November 2025 (going by the date in the project code), and existing records are still being updated. The page covers exactly these.
 
 The full report with all breakdowns: [report.md](https://maksym-garkusha.github.io/dream-povnota/report.md), regenerated daily along with the page.
 
@@ -101,7 +101,7 @@ Placeholders are `NULL`, `-`, `.`, `N/A`, `НЕМАЄ` and `НЕМА` ("none" in
 - The program sees only what the public API returns. If some projects are managed in another module (see the last point under "What the data shows"), they are not included here.
 - Sole proprietors who maintain records are deliberately not told apart: their codes and names are not stored, so on the page they are grouped together.
 
-## What would help in the system itself
+## Ideas for DREAM forms suggested by the data
 
 These points are not about the people who maintain the records but about where the system could prompt them. None of them requires changing the data model.
 
@@ -110,7 +110,6 @@ These points are not about the people who maintain the records but about where t
 3. **Sector as a required field** at the very first step. It is currently missing in one record in ten.
 4. **An automatic draft of the English title.** The project title can be machine-translated and offered to the initiator for one-click confirmation. For projects looking for funding, this is the cheapest way to become visible to donors.
 5. **Not accepting placeholder words instead of text.** `NULL`, a dash or a full stop in the description field is an empty field, and the form can say so.
-6. **New projects in the open API.** If projects created after November 2025 are indeed managed in another module, it would help to publish them through the same public interface, so that the open data does not stop in 2025.
 
 ## Running it
 
