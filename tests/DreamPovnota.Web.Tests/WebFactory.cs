@@ -1,4 +1,5 @@
 using DreamPovnota.Web.Live;
+using DreamPovnota.Web.Telegram;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +14,11 @@ public sealed class WebFactory : WebApplicationFactory<Program>
 {
     public FakeDream Dream { get; } = new();
 
+    public FakeTelegram Telegram { get; } = new();
+
+    /// <summary>Додаткові змінні середовища, наприклад токен і секрет бота.</summary>
+    public Dictionary<string, string> Settings { get; } = [];
+
     public string DataUrl { get; set; } = Fixtures.EditionPath;
 
     /// <summary>Заміни сервісів для окремого тесту, наприклад менші спільні ліміти.</summary>
@@ -26,9 +32,11 @@ public sealed class WebFactory : WebApplicationFactory<Program>
         builder.UseEnvironment("Production");
         builder.UseSetting("DATA_URL", DataUrl);
         builder.UseSetting("DATABASE_URL", DatabaseUrl);
+        foreach (var (name, value) in Settings) builder.UseSetting(name, value);
         builder.ConfigureServices(services =>
         {
             services.AddHttpClient<LiveCheck>().ConfigurePrimaryHttpMessageHandler(() => Dream);
+            services.AddHttpClient<TelegramClient>().ConfigurePrimaryHttpMessageHandler(() => Telegram);
             Replace?.Invoke(services);
         });
     }

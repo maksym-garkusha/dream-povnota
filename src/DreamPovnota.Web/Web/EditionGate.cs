@@ -35,5 +35,6 @@ public static class EditionGate
         !(path.StartsWithSegments("/health") || path.StartsWithSegments("/status") || path.StartsWithSegments("/error")
           || path.StartsWithSegments("/openapi") || path.StartsWithSegments("/site.css")
           || path.StartsWithSegments("/favicon.svg") || path.StartsWithSegments("/favicon.ico")
-          || path.StartsWithSegments("/robots.txt") || path.StartsWithSegments("/og.png"));
+          || path.StartsWithSegments("/robots.txt") || path.StartsWithSegments("/og.png")
+          || path.StartsWithSegments(Telegram.TelegramBot.Path));
 }

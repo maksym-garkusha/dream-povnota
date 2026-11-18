@@ -30,6 +30,9 @@ public static class Limits
         // /health/ready ходить у базу, тож його ліміт як у сторінки; без ліміту лише перевірка Render
         if (path.StartsWithSegments("/health/live") || path.StartsWithSegments("/status") || path.StartsWithSegments("/error"))
             return Kind.None;
+        // усі оновлення бота приходять з кількох адрес Telegram, і ліміт на адресу зупинив би всіх
+        // користувачів разом; у бота свої ліміти на чат, а запит без секрету відхиляється одразу
+        if (path.StartsWithSegments(Telegram.TelegramBot.Path)) return Kind.None;
         if (HttpMethods.IsPost(request.Method) && path.StartsWithSegments("/check")) return Kind.Check;
         if (path.Value is { } value
             && (value.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase) || value.EndsWith(".csv", StringComparison.OrdinalIgnoreCase)))

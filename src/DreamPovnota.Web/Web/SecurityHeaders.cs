@@ -58,5 +58,6 @@ public static class SecurityHeaders
 
     private static bool IsPrivate(PathString path) =>
         path.StartsWithSegments("/check") || path.StartsWithSegments("/health")
-        || path.StartsWithSegments("/status") || path.StartsWithSegments("/error");
+        || path.StartsWithSegments("/status") || path.StartsWithSegments("/error")
+        || path.StartsWithSegments(Telegram.TelegramBot.Path);
 }

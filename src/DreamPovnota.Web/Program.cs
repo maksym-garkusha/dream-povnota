@@ -9,6 +9,7 @@ using DreamPovnota.Web.History;
 using DreamPovnota.Web.Import;
 using DreamPovnota.Web.Lists;
 using DreamPovnota.Web.Live;
+using DreamPovnota.Web.Telegram;
 using DreamPovnota.Web.Web;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
@@ -91,6 +92,7 @@ builder.Services.AddSingleton<HistoryReader>();
 builder.Services.AddSingleton<ExportFiles>();
 builder.Services.AddSingleton(_ => new SharedLimits());
 builder.Services.AddHostedService<ImportService>();
+builder.Services.AddTelegramBot();
 
 // кирилицю в HTML і JSON пишемо як є; небезпечні для розмітки знаки кодувальники екранують і далі
 builder.Services.Configure<WebEncoderOptions>(o => o.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All));
@@ -176,5 +178,6 @@ app.MapMetaApi();
 app.MapExports();
 app.MapHistoryApi();
 app.MapFeeds();
+app.MapTelegramBot();
 
 app.Run();
