@@ -152,7 +152,7 @@ src/DreamPovnota.Core/   shared by the console program and the web service
 src/DreamPovnota/        console program: sync, export, report, digest
   Report/    Markdown report and digest files
 src/DreamPovnota.Web/    web service (ASP.NET Core, Razor Pages and minimal APIs)
-  Import/    loading data.json from Pages, retries after a failure
+  Import/    loading data.json from Pages, retries after a failure, the guard, freshness
   Live/      checking a single record in DREAM
   History/   snapshots in PostgreSQL, migrations, form keys
   Lists/     record filter, CSV and Excel
@@ -387,7 +387,7 @@ The service does not accept a new `data.json` in which far more changed at once 
 - the number of organisations with open records changed by more than 5%;
 - more than 20% of records changed: new ones, removed ones, and those whose applicable or filled fields differ. Fields are compared by check code, so a new check on its own does not mark records as changed.
 
-The previous edition then stays current. `/health/ready` shows the type of the reason in `lastError` (`EditionGuard: open-cards`, `EditionGuard: organisations` or `EditionGuard: changed-cards`), and the figures go to the log at Warning level. The reason stays until the next edition is accepted.
+The previous edition then stays current. `/health/ready` shows the type of the reason in `lastError` (`EditionGuard: open-cards`, `EditionGuard: organisations` or `EditionGuard: changed-cards`), and the figures go to the log at Warning level. The reason stays until the next edition is accepted, and all that time `/health/fresh` answers 503 with the reason `guard-held` (see [Deployment](#deployment-and-free-plan-limits)).
 
 Where the limits come from. The `data.json` of 18 November 2026 has 14,610 open records and 2,834 organisations. Over the last 12 months the busiest day saw 116 records (0.8%) last updated on 25 March 2026; no other day had more than 33 (0.2%). The update date in `data.json` is the latest one, so these are lower bounds. By the date in the project code, the most records created in one day was 355 on 11 September 2023, 2.4% of today's open records. Only two weeks went above 5%: 1,051 records (7.2%) on 19 to 25 August 2024 and 743 (5.1%) on 20 to 26 January 2025. On the service, neighbouring snapshots of 18 November 2026 all had 14,610 open records, with 0 to 2 records changed. So 5% and 20% leave ample room for an ordinary day and for almost any week without a published edition; in those two weeks the limit on the number of records would have tripped. DREAM has had mass updates too: 3,746 records, 25.6% of today's open ones, were last updated on 23 January 2025. If such an update changes fields, the guard will stop it, and the edition will have to be accepted by hand.
 
@@ -436,6 +436,17 @@ Free plan limits according to the Render documentation as of November 2026:
 The keys that sign the live check form tokens are stored in the same database without encryption: they only protect against a forged form and have nothing to do with personal data. The Data Protection warning about a missing key encryptor in the log is therefore expected.
 
 `/health/live` answers `ok` without touching the database or DREAM. `/health/ready` shows whether an edition is loaded, when Pages was last checked and the type of the last failure (without the error text), the database state and the date of the latest snapshot. It asks the database at most once every 10 seconds.
+
+`/health/fresh` is for a monitor that looks only at the status code. `/health/ready` answers 200 as long as any edition is in memory, so its code shows neither an edition rejected by the guard nor a new edition that has not appeared for a long time. `/health/fresh` answers 503 in those cases and puts the reason in `reason`. The reasons are checked in this order, and the first one is given:
+
+- `guard-held`: the guard holds a rejected edition (see [Data integrity](#data-integrity));
+- `no-edition`: there is no edition yet, the same case as a 503 from `/health/ready`;
+- `import-failing`: the source has not answered for longer than `Freshness__ImportFailingHours`, 3 hours by default;
+- `stale`: the current edition was built more than `Freshness__EditionAgeHours` ago, 36 hours by default.
+
+Apart from `fresh` and `reason`, the body holds only the time of the last successful check of the source (`lastSuccessfulCheck`; a 304 counts as successful) and the age of the edition in hours (`editionAgeHours`), with no error text. Everything comes from memory; `/health/fresh` does not ask the database. The rate limit and headers are the same as for `/health/ready`, and every `/health` address is kept away from search engines with the `X-Robots-Tag` header.
+
+Where the limits come from. The service asks Pages every hour, and after a failure it retries after 10 and 30 seconds, 1, 2 and 5 minutes, then every 10 minutes. Three hours without an answer means about 17 failed attempts in a row, so a dropped connection or a short Pages outage does not lead to a 503. `site.yml` builds `data.json` once a day at 03:17 UTC: with the cache a run takes about two minutes, without it up to an hour and a half. GitHub warns that scheduled runs are delayed under load and sometimes do not start at all: on 18 November 2026 the run due at 03:17 started at 11:46 UTC. With such a delay and up to an hour until the next check, the edition on the service can be up to 34 hours old, hence the limit of 36 hours: a day plus a margin. If a run does not happen at all, `stale` appears 36 hours after the previous edition was built, that is, half a day after the missed run when the previous one was on time. `site.yml` can then be started by hand. `stale` also shows when GitHub has disabled the schedule, which in a public repository happens after 60 days without activity.
 
 ## What is not here
 
