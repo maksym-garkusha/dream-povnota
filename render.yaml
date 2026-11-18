@@ -34,9 +34,8 @@ services:
           property: connectionString
       - key: DATA_URL
         value: https://maksym-garkusha.github.io/dream-povnota/data.json
-      # Telegram-бот: значення вписуються вручну в панелі Render і в репозиторій не потрапляють;
-      # без токена бот вимкнений
+      # Telegram-бот: токен вписується вручну в панелі Render і в репозиторій не потрапляє;
+      # без токена бот вимкнений. Секрет вебхука сервіс виводить з токена, а адресу бере
+      # з RENDER_EXTERNAL_URL, яку Render задає сам
       - key: TELEGRAM_BOT_TOKEN
-        sync: false
-      - key: TELEGRAM_WEBHOOK_SECRET
         sync: false

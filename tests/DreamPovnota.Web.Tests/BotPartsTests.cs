@@ -63,6 +63,13 @@ public class BotPartsTests
         Assert.DoesNotContain("test-token", first);
     }
 
+    // те саме значення дає команда openssl з README для ручного setWebhook
+    [Fact]
+    public void Derived_secret_matches_the_openssl_command_in_readme()
+    {
+        Assert.Equal("e91c6bd2e3332c884421fe8bd886da3180ece592ce4368464dd1335aecdba163", BotSettings.DeriveSecret(TelegramBotTests.Token));
+    }
+
     [Fact]
     public void Explicit_secret_wins_over_the_derived_one()
     {
