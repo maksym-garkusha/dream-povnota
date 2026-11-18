@@ -44,7 +44,7 @@ public class TelegramBotTests
             },
         });
 
-    private static Task<HttpResponseMessage> PostAsync(HttpClient client, string body, string? header = Secret, string path = "/telegram/" + Secret)
+    private static Task<HttpResponseMessage> PostAsync(HttpClient client, string body, string? header = Secret, string path = TelegramBot.WebhookPath)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, path) { Content = new StringContent(body, Encoding.UTF8, "application/json") };
         if (header is not null) request.Headers.Add(TelegramBot.SecretHeader, header);
@@ -75,13 +75,16 @@ public class TelegramBotTests
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
-    [Fact]
-    public async Task Wrong_secret_in_the_path_is_not_found_and_sends_nothing()
+    [Theory]
+    [InlineData("/telegram/" + Secret)]
+    [InlineData("/telegram/hook")]
+    [InlineData("/telegram")]
+    public async Task Other_paths_are_not_found_even_with_the_right_header(string path)
     {
         using var factory = Bot();
         var client = await factory.ReadyClientAsync();
 
-        var response = await PostAsync(client, Update("/start"), path: "/telegram/" + Secret + "x");
+        var response = await PostAsync(client, Update("/start"), path: path);
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         Assert.False(factory.Telegram.TryNext(out _));
@@ -161,6 +164,25 @@ public class TelegramBotTests
 
         Assert.Contains("доречних полів", first.Text);
         Assert.Contains("Живих перевірок за останню годину забагато", second.Text);
+    }
+
+    [Fact]
+    public async Task Chat_over_its_limit_does_not_take_queue_places_from_others()
+    {
+        using var factory = Bot(s => s.AddSingleton(new BotQueue(capacity: ChatLimits.PerMinute + 2)));
+        var client = await factory.ReadyClientAsync();
+
+        for (int i = 0; i < 3 * ChatLimits.PerMinute; i++)
+            Assert.Equal(HttpStatusCode.OK, (await PostAsync(client, Update("/help"))).StatusCode);
+        await PostAsync(client, Update("/help", chatId: 42));
+        var sent = new List<SentMessage>();
+        for (int i = 0; i < ChatLimits.PerMinute + 2; i++) sent.Add(await factory.Telegram.NextAsync());
+        await Task.Delay(300);
+
+        Assert.False(factory.Telegram.TryNext(out _));
+        Assert.Equal(ChatLimits.PerMinute, sent.Count(m => m.ChatId == ChatId && m.Text.Contains(BotReply.Disclaimer, StringComparison.Ordinal)));
+        Assert.Single(sent, m => m.ChatId == ChatId && m.Text.StartsWith("Забагато повідомлень", StringComparison.Ordinal));
+        Assert.Single(sent, m => m.ChatId == 42);
     }
 
     [Fact]

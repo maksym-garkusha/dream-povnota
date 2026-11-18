@@ -5,7 +5,8 @@ using DreamPovnota.Web.Live;
 namespace DreamPovnota.Web.Telegram;
 
 /// <summary>Повідомлення з приватного чату: куди відповідати і що написали.</summary>
-public sealed record BotJob(long ChatId, string Text);
+/// <param name="Reply">Готова відповідь без перевірки, наприклад про вичерпаний ліміт чату.</param>
+public sealed record BotJob(long ChatId, string Text, string? Reply = null);
 
 /// <summary>
 /// Черга між вебхуком і перевірками. Обмежена: коли вона повна, нове повідомлення
@@ -32,7 +33,6 @@ public sealed class BotQueue(int capacity = BotQueue.Capacity)
 /// </summary>
 public sealed class BotWorker(
     BotQueue queue,
-    ChatLimits limits,
     BotSettings settings,
     EditionStore store,
     IServiceScopeFactory scopes,
@@ -64,13 +64,8 @@ public sealed class BotWorker(
 
     private async Task HandleAsync(BotJob job, CancellationToken ct)
     {
-        var (verdict, wait) = limits.Check(job.ChatId);
-        if (verdict == ChatVerdict.Drop) return;
-
         using var scope = scopes.CreateScope();
-        string reply = verdict == ChatVerdict.Notify
-            ? BotReply.Limited(wait)
-            : await ReplyAsync(BotMessage.Parse(job.Text), scope.ServiceProvider, ct);
+        string reply = job.Reply ?? await ReplyAsync(BotMessage.Parse(job.Text), scope.ServiceProvider, ct);
         await scope.ServiceProvider.GetRequiredService<TelegramClient>().SendMessageAsync(job.ChatId, reply, ct);
     }
 

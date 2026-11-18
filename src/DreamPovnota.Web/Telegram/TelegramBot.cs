@@ -7,14 +7,16 @@ using Microsoft.AspNetCore.Http.Features;
 namespace DreamPovnota.Web.Telegram;
 
 /// <summary>
-/// Вебхук Telegram-бота. Telegram надсилає оновлення POST-запитом на /telegram/{секрет}
-/// і кладе той самий секрет у заголовок X-Telegram-Bot-Api-Secret-Token (його задає setWebhook).
+/// Вебхук Telegram-бота. Telegram надсилає оновлення POST-запитом на /telegram/webhook
+/// із секретом у заголовку X-Telegram-Bot-Api-Secret-Token (його задає setWebhook).
+/// Секрет тільки в заголовку: шлях потрапляє в журнали проксі й історію оболонки, заголовок ні.
 /// Відповідаємо одразу 200, а перевірку робить <see cref="BotWorker"/> у фоні: інакше Telegram
 /// чекав би на DREAM і після тайм-ауту надсилав би те саме оновлення знову.
 /// </summary>
 public static class TelegramBot
 {
     public const string Path = "/telegram";
+    public const string WebhookPath = Path + "/webhook";
     public const string SecretHeader = "X-Telegram-Bot-Api-Secret-Token";
 
     // загальна межа тіла запиту 16 КБ; оновлення з текстом на 4096 знаків і цитатою буває більшим
@@ -45,15 +47,14 @@ public static class TelegramBot
         if (settings.Problem is { } problem) app.Logger.LogWarning("Telegram-бот: {Problem}", problem);
         if (!settings.Enabled) return app;
 
-        app.MapPost(Path + "/{secret}", ReceiveAsync).ExcludeFromDescription();
+        app.MapPost(WebhookPath, ReceiveAsync).ExcludeFromDescription();
         app.Logger.LogInformation("Telegram-бот увімкнено");
         return app;
     }
 
     private static async Task<IResult> ReceiveAsync(
-        string secret, HttpContext context, BotSettings settings, BotQueue queue, ILoggerFactory logs, CancellationToken ct)
+        HttpContext context, BotSettings settings, BotQueue queue, ChatLimits limits, ILoggerFactory logs, CancellationToken ct)
     {
-        if (!SameSecret(secret, settings.Secret)) return Results.NotFound();
         if (!SameSecret(context.Request.Headers[SecretHeader].ToString(), settings.Secret)) return Results.Unauthorized();
 
         if (context.Features.Get<IHttpMaxRequestBodySizeFeature>() is { IsReadOnly: false } size)
@@ -71,7 +72,15 @@ public static class TelegramBot
             return Results.Ok();
         }
 
-        if (job is not null && !queue.TryAdd(job))
+        if (job is null) return Results.Ok();
+
+        // ліміт чату до черги: інакше один чат пачкою повідомлень зайняв би всю чергу,
+        // і повідомлення інших пропадали б
+        var (verdict, wait) = limits.Check(job.ChatId);
+        if (verdict == ChatVerdict.Drop) return Results.Ok();
+        if (verdict == ChatVerdict.Notify) job = job with { Reply = BotReply.Limited(wait) };
+
+        if (!queue.TryAdd(job))
             logs.CreateLogger(typeof(TelegramBot)).LogWarning("Черга бота повна, повідомлення пропущено");
         return Results.Ok();
     }
