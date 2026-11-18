@@ -147,8 +147,9 @@ src/DreamPovnota.Core/   shared by the console program and the web service
   Codes/     EDRPOU check digit
   Stats/     breakdowns by stage, region, sector and organisation
   Export/    data.json for the page, and reading it back
-src/DreamPovnota/        console program: sync, export, report
-  Report/    Markdown report
+  Digest/    digest for the restoration services: xlsx, PDF, the font and its licence
+src/DreamPovnota/        console program: sync, export, report, digest
+  Report/    Markdown report and digest files
 src/DreamPovnota.Web/    web service (ASP.NET Core, Razor Pages and minimal APIs)
   Import/    loading data.json from Pages, retries after a failure
   Live/      checking a single record in DREAM
@@ -342,6 +343,29 @@ curl -sS "https://api.telegram.org/bot$TOKEN/setWebhook" \
 ```
 
 If Render has its own `TELEGRAM_WEBHOOK_SECRET`, use `read -rs SECRET` instead of the second line. `curl -sS "https://api.telegram.org/bot$TOKEN/getWebhookInfo"` in the same shell shows the webhook state: `pending_update_count` is the queue on Telegram's side and `last_error_message` the latest delivery error, if there was one. Links in replies point to `https://dream-povnota.onrender.com`; the `PUBLIC_URL` variable sets a different address. While the free instance is asleep, the first message waits about a minute for the service to wake up.
+
+### Digest for the restoration services
+
+A weekly digest for the State Agency for Restoration and Infrastructure Development of Ukraine and 21 regional restoration and infrastructure development services. The list is fixed by EDRPOU codes in `DigestOrganisations`: every organisation in the `data.json` of 18 November 2026 whose name contains "агентство відновлення" or "служба відновлення". On that date no service in the Volyn, Donetsk or Luhansk regions maintains open records. If a new service appears in the data, the `digest` command reports it; adding it to the list is a manual step.
+
+Each organisation gets two files:
+
+- an xlsx workbook with the sheets "Зріз" (summary), "Картки" (stage, fields not filled, what to add first, link to the DREAM record) and "Що змінилось за тиждень" (which records were updated and which fields were filled in during the week);
+- a one-page A4 PDF: open records, how many have every applicable field filled, how many were updated during the week, up to five fields that are easiest to add, and a link to the organisation page.
+
+The week is the seven days up to and including the edition date. "Updated this week" uses the record's update date in DREAM. Newly filled fields come from the history in the service database: the state of the records at the start of the week is compared with the current edition, by check code rather than by bit. History starts on 18 November 2026, and until it covers a full week the files say so. "What to add first" follows the order in `DigestEase`: fields picked from a list or written in one line come first (sector, English title, duration), then texts, files and the cost estimate. As on the pages, English fields do not count towards "every applicable field filled", so for a record they come first only once everything else is filled.
+
+The service has `/digest` (a fixed order: the agency, then the services by region name) and `/digest/{EDRPOU}` with the same figures and xlsx and PDF buttons. Pages and files are excluded from search engines (`noindex`, `X-Robots-Tag`), the files share the export rate limit, and they are built once per data edition.
+
+The same without the service:
+
+```bash
+dotnet run -- digest --edition ../../site/data.json --history https://dream-povnota.onrender.com ../../digest
+```
+
+`--history` points to where the start-of-week state comes from (`/api/v1/digest/baseline`). Without it, or if the service does not answer, the digest is built without newly filled fields and the files say so. Every Monday the `digest.yml` workflow does the same: the files stay as a workflow artifact for 30 days and are not published on Pages.
+
+The PDF is written with PdfPig 0.1.16 and the xlsx with MiniExcel 1.47.1, both under the Apache 2.0 licence. The PDF embeds IBM Plex Sans 3.004; its SIL Open Font License 1.1 sits next to the font in `src/DreamPovnota.Core/Digest/Fonts/OFL.txt`. The author property of the files is "Максим Гаркуша"; Creator and Producer carry the project name.
 
 ### Deployment and free plan limits
 
