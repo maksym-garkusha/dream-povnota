@@ -30,18 +30,7 @@ public static class Format
     /// <summary>«у 1 картці», «у 12 картках».</summary>
     public static string InCards(int count) => "у " + Number(count) + " " + Plural(count, "картці", "картках", "картках");
 
-    public static string Plural(int count, string one, string few, string many)
-    {
-        int lastTwo = Math.Abs(count) % 100;
-        int last = lastTwo % 10;
-        if (lastTwo is >= 11 and <= 14) return many;
-        return last switch
-        {
-            1 => one,
-            >= 2 and <= 4 => few,
-            _ => many,
-        };
-    }
+    public static string Plural(int count, string one, string few, string many) => DreamPovnota.Digest.DigestText.Plural(count, one, few, many);
 
     public static string OrganisationPath(string key) => "/org/" + Uri.EscapeDataString(key);
 

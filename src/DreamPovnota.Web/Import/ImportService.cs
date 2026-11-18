@@ -11,7 +11,8 @@ namespace DreamPovnota.Web.Import;
 /// немає, усі сторінки відповідають 503, і чекати годину через один обірваний запит не можна.
 /// Новий випуск одразу стає поточним; кеш сторінок, зібраних зі старого, скидається,
 /// а повні вивантаження нового випуску починають збиратися у фоні.
-/// Потім, якщо є база, випуск записується знімком історії. Збій бази не заважає
+/// Потім, якщо є база, випуск записується знімком історії, і після нього збирається зріз
+/// для служб відновлення. Збій бази не заважає
 /// поточному стану: знімок допишеться наступного разу.
 /// </summary>
 public sealed class ImportService(
@@ -20,6 +21,7 @@ public sealed class ImportService(
     Db db,
     DbKeyRepository keys,
     ExportFiles exports,
+    DigestFiles digests,
     IOutputCacheStore outputCache,
     TimeProvider clock,
     ILogger<ImportService> log) : BackgroundService
@@ -95,6 +97,8 @@ public sealed class ImportService(
         }
 
         await RecordAsync(ct);
+        // зріз читає історію, тож збирається вже після знімка; якщо його вже зібрано, нічого не робить
+        if (store.Current is { } current) digests.Prepare(current);
         return fetched && store.Current is not null;
     }
 

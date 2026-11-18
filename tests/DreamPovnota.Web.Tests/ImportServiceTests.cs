@@ -42,6 +42,9 @@ public class ImportServiceTests
         Assert.True(condition());
     }
 
+    private static DigestFiles Digests(Db db, TimeProvider clock) =>
+        new(new HistoryReader(db, NullLogger<HistoryReader>.Instance), clock, NullLogger<DigestFiles>.Instance);
+
     private static bool Tick(FakeTimeProvider clock)
     {
         clock.Advance(TimeSpan.FromSeconds(1));
@@ -62,6 +65,7 @@ public class ImportServiceTests
             TestDatabase.Open(""),
             new DbKeyRepository(TestDatabase.Open(""), NullLogger<DbKeyRepository>.Instance),
             exports,
+            Digests(TestDatabase.Open(""), clock),
             new NoOutputCache(),
             clock,
             NullLogger<ImportService>.Instance);
@@ -97,6 +101,7 @@ public class ImportServiceTests
             database.Db,
             new DbKeyRepository(database.Db, NullLogger<DbKeyRepository>.Instance),
             exports,
+            Digests(database.Db, TimeProvider.System),
             new NoOutputCache(),
             TimeProvider.System,
             NullLogger<ImportService>.Instance);
@@ -120,6 +125,7 @@ public class ImportServiceTests
             database.Db,
             keys,
             exports,
+            Digests(database.Db, TimeProvider.System),
             new NoOutputCache(),
             TimeProvider.System,
             NullLogger<ImportService>.Instance);

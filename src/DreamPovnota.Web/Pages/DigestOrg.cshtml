@@ -1,0 +1,55 @@
+@page "/digest/{code:regex(^[0-9]{{8}}$)}"
+@model DigestOrgModel
+@using DreamPovnota.Digest
+@{
+    var d = Model.Digest;
+    ViewData["Title"] = "Зріз: " + d.Organisation.Title;
+    ViewData["Description"] = $"Щотижневий зріз відкритих карток DREAM: {d.Organisation.Title}.";
+    ViewData["NoIndex"] = true;
+}
+<h1 class="page">@d.Organisation.Title</h1>
+<p class="lead">ЄДРПОУ @d.Organisation.Edrpou. Зріз відкритих карток у DREAM за тиждень @d.WeekTitle.</p>
+<ul class="links">
+  <li><a href="/digest/@(d.Organisation.Edrpou).xlsx" rel="nofollow" download>Таблиця xlsx</a></li>
+  <li><a href="/digest/@(d.Organisation.Edrpou).pdf" rel="nofollow" download>Сторінка PDF</a></li>
+  @if (Model.HasOrganisationPage)
+  {
+      <li><a href="@Format.OrganisationPath(d.Organisation.Edrpou)">Усі картки організації</a></li>
+  }
+  <li><a href="/digest">Інші організації</a></li>
+</ul>
+
+<div class="figures">
+  <div class="figure"><b>@Format.Number(d.Open)</b><span>@Format.Plural(d.Open, "відкрита картка", "відкриті картки", "відкритих карток")</span></div>
+  <div class="figure"><b>@Format.Number(d.Complete)</b><span>заповнено все доречне</span></div>
+  <div class="figure"><b>@Format.Number(d.UpdatedThisWeek)</b><span>оновлено за тиждень</span></div>
+</div>
+<p class="note">Дані станом на @DigestText.DateTime(d.Generated). «Заповнено все доречне» рахується без англійських полів.</p>
+
+<section class="block" aria-labelledby="easy-title">
+  <h2 id="easy-title">Що найпростіше підтягнути</h2>
+  @if (d.Open == 0)
+  {
+      <p>Відкритих карток організації в цьому випуску немає.</p>
+  }
+  else if (d.Easiest.Count == 0)
+  {
+      <p>У всіх відкритих картках заповнено все доречне, разом з англійськими полями.</p>
+  }
+  else
+  {
+      <ol>
+      @foreach (var item in d.Easiest)
+      {
+          <li><b>@item.Title.</b> @DigestEase.Gap(item.Check, item.Cards, d.Open) Що потрібно: @item.Hint.</li>
+      }
+      </ol>
+      <p class="note">Спершу поля, які вибираються зі списку чи вміщаються в рядок, потім тексти, файли й кошторис. Яке поле дописати першим у кожній картці, є в таблиці xlsx.</p>
+  }
+</section>
+
+<section class="block" aria-labelledby="week-title">
+  <h2 id="week-title">За тиждень</h2>
+  <p>Оновлено в DREAM: @Format.Cards(d.UpdatedThisWeek).@if (d.History != HistoryCoverage.Unavailable) {<text> Дозаповнено полів: @Format.Number(d.FieldsFilledThisWeek).</text>}</p>
+  <p class="note">@d.HistoryNote Перелік змін по картках на аркуші «@DigestWorkbook.WeekSheet» у таблиці xlsx.</p>
+</section>

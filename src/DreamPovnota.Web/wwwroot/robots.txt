@@ -2,3 +2,4 @@ User-agent: *
 Disallow: /export/
 Disallow: /api/
 Disallow: /check
+Disallow: /digest

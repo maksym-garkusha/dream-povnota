@@ -1,6 +1,7 @@
 using System.Data;
 using System.Text.Json;
 using Dapper;
+using DreamPovnota.Digest;
 using Npgsql;
 
 namespace DreamPovnota.Web.History;
@@ -126,7 +127,46 @@ public sealed class HistoryReader(Db db, ILogger<HistoryReader> log)
             return rows.Select(r => new CardHistoryPoint(r.Snapshot, Utc(r.Generated), r.Stage, r.Filled, r.Applicable)).ToList();
         }, ct);
 
-    private async Task<T?> ReadAsync<T>(Func<NpgsqlConnection, NpgsqlTransaction, Task<T>> read, CancellationToken ct)
+    /// <summary>
+    /// Картки організацій з <paramref name="edrpou"/> у знімку, з яким порівнюється тиждень:
+    /// останньому не пізніше <paramref name="at"/>, а якщо історія почалась пізніше, у першому.
+    /// Версії беруться ті, що були чинні в цьому знімку, тож і картки, які потім закрили.
+    /// </summary>
+    public Task<DigestBaseline?> DigestBaselineAsync(IReadOnlyCollection<string> edrpou, DateTimeOffset at, CancellationToken ct) =>
+        ReadAsync<DigestBaseline>(async (c, t) =>
+        {
+            var snapshots = (await c.QueryAsync<(int Id, DateTime Generated, string Checks)>(new CommandDefinition(
+                """
+                select s.id, s.generated, r.checks::text
+                from snapshot s join rules r on r.id = s.rules_id
+                where s.id = (select min(id) from snapshot)
+                   or s.id = (select max(id) from snapshot where generated <= @at)
+                order by s.id
+                """, new { at }, t, cancellationToken: ct))).ToList();
+            // знімків ще немає: історії немає, як і без бази
+            if (snapshots.Count == 0) return null;
+
+            var first = snapshots[0];
+            var taken = snapshots[^1];
+            var rows = await c.QueryAsync<BaselineRow>(new CommandDefinition(
+                """
+                select c.code as Code, c.title as Title, o.edrpou::text as Edrpou, v.stage as Stage,
+                       v.updated as Updated, v.applicable as Applicable, v.filled as Filled
+                from organisation o
+                join card_version v on v.org_id = o.id and v.valid_during @> @snapshot
+                join card c on c.id = v.card_id
+                where o.key = any(@edrpou)
+                order by c.code
+                """, new { snapshot = taken.Id, edrpou = edrpou.ToArray() }, t, cancellationToken: ct));
+
+            return new DigestBaseline(
+                Utc(first.Generated),
+                Utc(taken.Generated),
+                Codes(taken.Checks),
+                rows.Select(r => new BaselineCard(r.Code, r.Title, r.Edrpou, r.Stage, r.Updated, r.Applicable, r.Filled)).ToList());
+        }, ct);
+
+    private async Task<T?> ReadAsync<T>(Func<NpgsqlConnection, NpgsqlTransaction, Task<T?>> read, CancellationToken ct)
         where T : class
     {
         if (!db.IsAvailable) return null;
@@ -165,6 +205,8 @@ public sealed class HistoryReader(Db db, ILogger<HistoryReader> log)
     private static DateTimeOffset Utc(DateTime value) => new(DateTime.SpecifyKind(value, DateTimeKind.Utc));
 
     private static DateTimeOffset? Utc(DateTime? value) => value is { } v ? Utc(v) : null;
+
+    private sealed record BaselineRow(string Code, string Title, string? Edrpou, string Stage, DateOnly Updated, int Applicable, int Filled);
 
     private sealed record TrendRow(int Snapshot, DateTime Generated, int Open, int Complete, double AvgScore);
 

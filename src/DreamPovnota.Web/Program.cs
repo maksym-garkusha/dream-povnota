@@ -90,6 +90,7 @@ builder.Services.AddOptions<KeyManagementOptions>()
     .Configure<DbKeyRepository>((options, repository) => options.XmlRepository = repository);
 builder.Services.AddSingleton<HistoryReader>();
 builder.Services.AddSingleton<ExportFiles>();
+builder.Services.AddSingleton<DigestFiles>();
 builder.Services.AddSingleton(_ => new SharedLimits());
 builder.Services.AddHostedService<ImportService>();
 builder.Services.AddTelegramBot();
@@ -161,6 +162,7 @@ app.MapCardsApi();
 app.MapSlicesApi();
 app.MapMetaApi();
 app.MapExports();
+app.MapDigest();
 app.MapHistoryApi();
 app.MapFeeds();
 app.MapTelegramBot();

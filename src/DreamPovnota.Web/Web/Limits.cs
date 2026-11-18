@@ -39,7 +39,8 @@ public static class Limits
         if (path.StartsWithSegments(Telegram.TelegramBot.Path)) return Kind.Telegram;
         if (HttpMethods.IsPost(request.Method) && path.StartsWithSegments("/check")) return Kind.Check;
         if (path.Value is { } value
-            && (value.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase) || value.EndsWith(".csv", StringComparison.OrdinalIgnoreCase)))
+            && (value.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase) || value.EndsWith(".csv", StringComparison.OrdinalIgnoreCase)
+                || value.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)))
             return Kind.Export;
         return Kind.Page;
     }
