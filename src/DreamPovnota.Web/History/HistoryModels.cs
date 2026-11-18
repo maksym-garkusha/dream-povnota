@@ -3,6 +3,9 @@ namespace DreamPovnota.Web.History;
 /// <param name="First">Дата випуску першого знімка: з нього почалась історія.</param>
 public sealed record HistoryStatus(int Snapshots, DateTimeOffset? First, int? LastId, DateTimeOffset? LastGenerated);
 
+/// <param name="Generated">Дата випуску останнього знімка; null, поки знімків немає.</param>
+public sealed record LastSnapshot(DateTimeOffset? Generated);
+
 public sealed record SnapshotInfo(int Id, DateTimeOffset Generated, DateTimeOffset? Synced, int Open, int Added, int Removed, int Changed, bool RulesChanged);
 
 public enum ChangeKind

@@ -65,11 +65,16 @@ public class KeyRepositoryTests
 
     private static async Task WaitForSnapshot(HttpClient client)
     {
+        // не /health/ready: той відповідає з кешу на 10 с
         for (int i = 0; i < 100; i++)
         {
-            using var ready = JsonDocument.Parse(await client.GetStringAsync("/health/ready"));
-            if (ready.RootElement.GetProperty("lastSnapshot").ValueKind == JsonValueKind.String) return;
-            await Task.Delay(50);
+            var response = await client.GetAsync("/api/v1/snapshots");
+            if (response.IsSuccessStatusCode)
+            {
+                using var list = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+                if (list.RootElement.GetArrayLength() > 0) return;
+            }
+            await Task.Delay(100);
         }
         throw new TimeoutException("Знімок не записався");
     }

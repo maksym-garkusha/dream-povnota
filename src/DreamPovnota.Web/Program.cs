@@ -96,7 +96,20 @@ builder.Services.AddHostedService<ImportService>();
 builder.Services.Configure<WebEncoderOptions>(o => o.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All));
 builder.Services.ConfigureHttpJsonOptions(o => o.SerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All));
 builder.Services.AddRazorPages();
-builder.Services.AddAntiforgery(o => o.Cookie.Name = "dp-af");
+builder.Services.AddAntiforgery(o =>
+{
+    o.Cookie.Name = "dp-af";
+    // на Render запит приходить по https (схему дає X-Forwarded-Proto), і cookie отримує Secure;
+    // Always тут не годиться: на http, як локально, антифорджері тоді кидає виняток замість сторінки
+    o.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+});
+// рік без includeSubDomains і preload: ім'я на onrender.com належить хостингу, а не проєкту
+builder.Services.AddHsts(o =>
+{
+    o.MaxAge = TimeSpan.FromDays(365);
+    o.IncludeSubDomains = false;
+    o.Preload = false;
+});
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi(o => o.AddDocumentTransformer((document, _, _) =>
 {
@@ -142,6 +155,12 @@ app.UseSecurityHeaders();
 app.UseWhen(context => !context.Request.Path.StartsWithSegments("/check"), branch => branch.UseResponseCompression());
 app.UseExceptionHandler("/error");
 app.UseStatusCodePagesWithReExecute("/status/{0}");
+// API відповідає Problem Details і на невідому адресу, і на збій, а не HTML-сторінкою
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/api"), api =>
+{
+    api.UseExceptionHandler(new ExceptionHandlerOptions { ExceptionHandler = ApiProblems.WriteErrorAsync });
+    api.UseStatusCodePages(ApiProblems.WriteStatusAsync);
+});
 app.UseStaticFiles();
 app.UseRouting();
 app.UseRateLimiter();

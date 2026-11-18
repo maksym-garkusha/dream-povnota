@@ -87,7 +87,7 @@
   <p aria-live="polite">Знайдено @Format.Cards(Model.Found.Count)@(Model.Pages > 1 ? $", сторінка {Format.Number(f.Page)} з {Format.Number(Model.Pages)}" : "")</p>
   @if (Model.Found.Count > 0)
   {
-      <ul class="links"><li><a href="@csv">Вивантажити CSV</a></li><li><a href="@xlsx">Вивантажити Excel</a></li></ul>
+      <ul class="links"><li><a href="@csv" rel="nofollow">Вивантажити CSV</a></li><li><a href="@xlsx" rel="nofollow">Вивантажити Excel</a></li></ul>
   }
 </div>
 

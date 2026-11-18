@@ -1,5 +1,6 @@
 using DreamPovnota.Web.History;
 using DreamPovnota.Web.Import;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace DreamPovnota.Web.Api;
 
@@ -22,15 +23,24 @@ public static class MetaApi
             .CacheOutput(ImportService.CacheTag);
     }
 
+    /// <summary>Як довго /health/ready не питає базу вдруге.</summary>
+    public static readonly TimeSpan ReadyCacheFor = TimeSpan.FromSeconds(10);
+
     public static void MapHealth(this IEndpointRouteBuilder app)
     {
         app.MapGet("/health/live", () => TypedResults.Text("ok")).ExcludeFromDescription();
         // база необов'язкова: без неї сервіс готовий, тільки без історії
-        app.MapGet("/health/ready", async (EditionStore store, HistoryReader history, CancellationToken ct) =>
+        app.MapGet("/health/ready", async (EditionStore store, HistoryReader history, IMemoryCache cache, CancellationToken ct) =>
             {
                 var current = store.Current;
                 var status = store.Status;
-                var snapshots = history.IsConfigured ? await history.StatusAsync(ct) : null;
+                // базу питаємо не частіше ніж раз на 10 с: часте опитування не займе пул на 5 з'єднань
+                var snapshot = !history.IsConfigured ? null : await cache.GetOrCreateAsync("health:snapshot", entry =>
+                {
+                    entry.Size = 1;
+                    entry.AbsoluteExpirationRelativeToNow = ReadyCacheFor;
+                    return history.LastSnapshotAsync(ct);
+                });
                 var body = new
                 {
                     edition = new
@@ -40,8 +50,8 @@ public static class MetaApi
                         lastChecked = status.LastChecked,
                         lastError = status.LastError,
                     },
-                    database = !history.IsConfigured ? "not-configured" : snapshots is null ? "unavailable" : "ok",
-                    lastSnapshot = snapshots?.LastGenerated,
+                    database = !history.IsConfigured ? "not-configured" : snapshot is null ? "unavailable" : "ok",
+                    lastSnapshot = snapshot?.Generated,
                 };
                 return current is null
                     ? Results.Json(body, statusCode: StatusCodes.Status503ServiceUnavailable)

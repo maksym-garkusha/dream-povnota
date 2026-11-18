@@ -27,7 +27,8 @@ public static class Limits
     private static Kind KindOf(HttpRequest request)
     {
         var path = request.Path;
-        if (path.StartsWithSegments("/health") || path.StartsWithSegments("/status") || path.StartsWithSegments("/error"))
+        // /health/ready ходить у базу, тож його ліміт як у сторінки; без ліміту лише перевірка Render
+        if (path.StartsWithSegments("/health/live") || path.StartsWithSegments("/status") || path.StartsWithSegments("/error"))
             return Kind.None;
         if (HttpMethods.IsPost(request.Method) && path.StartsWithSegments("/check")) return Kind.Check;
         if (path.Value is { } value

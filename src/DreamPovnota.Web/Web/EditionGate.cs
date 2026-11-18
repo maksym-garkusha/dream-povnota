@@ -34,5 +34,6 @@ public static class EditionGate
     private static bool NeedsEdition(PathString path) =>
         !(path.StartsWithSegments("/health") || path.StartsWithSegments("/status") || path.StartsWithSegments("/error")
           || path.StartsWithSegments("/openapi") || path.StartsWithSegments("/site.css")
-          || path.StartsWithSegments("/favicon.svg") || path.StartsWithSegments("/og.png"));
+          || path.StartsWithSegments("/favicon.svg") || path.StartsWithSegments("/favicon.ico")
+          || path.StartsWithSegments("/robots.txt") || path.StartsWithSegments("/og.png"));
 }

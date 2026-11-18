@@ -23,6 +23,14 @@ public sealed class HistoryReader(Db db, ILogger<HistoryReader> log)
         return new HistoryStatus((int)row.Count, Utc(row.First), row.LastId, Utc(row.Last));
     }, ct);
 
+    /// <summary>Тільки останній знімок, за первинним ключем: для /health/ready, без count(*).</summary>
+    public Task<LastSnapshot?> LastSnapshotAsync(CancellationToken ct) => ReadAsync(async (c, t) =>
+    {
+        var generated = await c.QuerySingleOrDefaultAsync<DateTime?>(new CommandDefinition(
+            "select generated from snapshot order by id desc limit 1", transaction: t, cancellationToken: ct));
+        return new LastSnapshot(Utc(generated));
+    }, ct);
+
     public Task<IReadOnlyList<SnapshotInfo>?> SnapshotsAsync(int limit, CancellationToken ct) => ReadAsync<IReadOnlyList<SnapshotInfo>>(async (c, t) =>
     {
         var rows = await c.QueryAsync<(int Id, DateTime Generated, DateTime? Synced, int Open, int Added, int Removed, int Changed, bool RulesChanged)>(

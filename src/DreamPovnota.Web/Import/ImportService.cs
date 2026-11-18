@@ -98,12 +98,16 @@ public sealed class ImportService(
         return fetched && store.Current is not null;
     }
 
-    /// <summary>Повідомлення винятку і найглибшої причини: «Error while copying… → The response ended prematurely.»</summary>
+    /// <summary>
+    /// Тип збою без тексту, для /health/ready: «HttpRequestException: 404», «HttpRequestException → IOException».
+    /// Текст винятку назовні не віддаємо, бо в ньому бувають адреси; повністю він є в журналі.
+    /// </summary>
     public static string ShortReason(Exception ex)
     {
         var inner = ex;
         while (inner.InnerException is not null) inner = inner.InnerException;
-        return inner == ex || inner.Message == ex.Message ? ex.Message : $"{ex.Message} → {inner.Message}";
+        string kind = ex is HttpRequestException { StatusCode: { } code } ? $"{ex.GetType().Name}: {(int)code}" : ex.GetType().Name;
+        return inner == ex ? kind : $"{kind} → {inner.GetType().Name}";
     }
 
     private async Task RecordAsync(CancellationToken ct)

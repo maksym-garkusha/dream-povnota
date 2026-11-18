@@ -70,7 +70,7 @@ public class ImportServiceTests
         await WaitFor(() => store.Status.LastError is not null);
         Assert.Equal(1, pages.Requests);
         Assert.Null(store.Current);
-        Assert.Equal("Error while copying content to a stream. → The response ended prematurely.", store.Status.LastError);
+        Assert.Equal("HttpRequestException → IOException", store.Status.LastError);
 
         // годинник крутимо по секунді: так не важливо, чи сервіс уже встиг почати чекати
         var failedAt = clock.GetUtcNow();
