@@ -1,5 +1,7 @@
-# Збірка на повному SDK, запуск на мінімальному образі без shell і пакетного менеджера
-FROM mcr.microsoft.com/dotnet/sdk:11.0-resolute AS build
+# Збірка на повному SDK, запуск на мінімальному образі без shell і пакетного менеджера.
+# Образи закріплено за digest списку платформ: тег можна переписати, digest ні.
+# Dependabot (docker) оновлює тег і digest разом
+FROM mcr.microsoft.com/dotnet/sdk:11.0-resolute@sha256:65f3c7c6a25a239ab3e6719f2896147e7b68242ff2d8818dd70498bde6ef8bea AS build
 WORKDIR /src
 COPY global.json DreamPovnota.slnx ./
 COPY src/DreamPovnota.Core/DreamPovnota.Core.csproj src/DreamPovnota.Core/
@@ -12,7 +14,7 @@ RUN dotnet publish src/DreamPovnota.Web/DreamPovnota.Web.csproj -c Release -r li
 
 # composite: фреймворк уже скомпільований наперед, швидший старт на 0,1 CPU;
 # extra: ICU і часові пояси для українського впорядкування і часу за Києвом
-FROM mcr.microsoft.com/dotnet/aspnet:11.0-resolute-chiseled-composite-extra
+FROM mcr.microsoft.com/dotnet/aspnet:11.0-resolute-chiseled-composite-extra@sha256:d7ce3896765dd02661041a8ca8db6ed8f0c59e1a65f64862dfc691ae2d295708
 WORKDIR /app
 COPY --from=build /app .
 # gen0 до 32 МБ: без цього після збірки xlsx процес тримав понад сотню мегабайтів ще не зібраного сміття
