@@ -1,5 +1,4 @@
 using System.Net;
-using System.Text.Json;
 using System.Xml.Linq;
 using DreamPovnota.Web.History;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -39,7 +38,7 @@ public class KeyRepositoryTests
         await using (var before = new WebFactory { DatabaseUrl = database.Url })
         {
             var client = await before.ReadyClientAsync();
-            await WaitForSnapshot(client);
+            await WaitForSnapshot(database);
             var page = await client.GetAsync("/check");
             cookie = page.Headers.GetValues("Set-Cookie").First().Split(';')[0];
             token = System.Text.RegularExpressions.Regex.Match(await page.Content.ReadAsStringAsync(),
@@ -63,18 +62,15 @@ public class KeyRepositoryTests
         Assert.Contains("Не схоже на код DREAM", html);
     }
 
-    private static async Task WaitForSnapshot(HttpClient client)
+    private static async Task WaitForSnapshot(TestDatabase database)
     {
-        // не /health/ready: той відповідає з кешу на 10 с. До 30 с, бо на завантаженому раннері CI,
-        // поки паралельно стартують інші тестові застосунки, перший знімок раз не встиг за 10 с
+        // прямо в базі, а не через /api/v1/snapshots: та відповідь кешується, і порожній перелік,
+        // прочитаний за мить до запису знімка, міг лягти в кеш уже після його очищення
         for (int i = 0; i < 300; i++)
         {
-            var response = await client.GetAsync("/api/v1/snapshots");
-            if (response.IsSuccessStatusCode)
-            {
-                using var list = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
-                if (list.RootElement.GetArrayLength() > 0) return;
-            }
+            if (await database.ScalarAsync<bool>("select to_regclass('snapshot') is not null")
+                && await database.ScalarAsync<long>("select count(*) from snapshot") > 0)
+                return;
             await Task.Delay(100);
         }
         throw new TimeoutException("Знімок не записався");
