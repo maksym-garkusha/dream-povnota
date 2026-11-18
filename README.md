@@ -381,9 +381,26 @@ PDF пише PdfPig 0.1.16, xlsx MiniExcel 1.47.1, обидві бібліоте
 
 SHA-256 прийнятого випуску віддає `/api/v1/meta` у полі `edition.sha256`, так само, як його друкує `sha256sum data.json`. Зріз сервіс збирає одразу після імпорту і лише з прийнятого випуску, а перші 16 знаків хешу разом з датою випуску стоять у колонтитулі PDF і на аркуші «Зріз» у xlsx. Отримувач може звірити, з якого саме файлу зібрано зріз.
 
-Справжній стрибок приймають так: перевіряють, що файл зібрав `site.yml` з коду цього репозиторію, і вписують його SHA-256 у змінну `ImportGuard__AcceptSha256` на Render. Це діє лише на файл з таким хешем. Пороги задаються змінними `ImportGuard__OpenCardsPercent`, `ImportGuard__OrganisationsPercent` і `ImportGuard__ChangedCardsPercent`.
+Справжній стрибок приймають так: перевіряють атестацію файлу (нижче) і вписують його SHA-256 у змінну `ImportGuard__AcceptSha256` на Render. Це діє лише на файл з таким хешем. Пороги задаються змінними `ImportGuard__OpenCardsPercent`, `ImportGuard__OrganisationsPercent` і `ImportGuard__ChangedCardsPercent`.
 
 Чого запобіжник не вміє. Якщо після перезапуску бази немає або вона не відповіла, порівнювати нема з чим, і перший випуск приймається з попередженням у журналі. Якщо ж випуск відкинуто одразу після перезапуску, попереднього в пам'яті немає, і сторінки відповідають 503, поки на Pages не з'явиться добрий файл: краще не показати нічого, ніж показати підмінене.
+
+#### Походження файлів
+
+`site.yml` підписує атестацію походження (SLSA provenance, через `actions/attest`) для `data.json` і `report.md` саме в тому вигляді, в якому вони йдуть на Pages, а `digest.yml` для кожного PDF і xlsx зрізу. В атестації записано репозиторій, workflow, коміт і запуск, і підписує її короткоживучий сертифікат Sigstore, виданий на OIDC-токен цього запуску. Права на токен і запис атестацій має лише окремий job `attest`, у якому немає ні збірки, ні пакетів NuGet.
+
+Перевірити може будь-хто з GitHub CLI (потрібен вхід у `gh`):
+
+```bash
+curl -fsSO https://maksym-garkusha.github.io/dream-povnota/data.json
+gh attestation verify data.json -R maksym-garkusha/dream-povnota \
+  --signer-workflow maksym-garkusha/dream-povnota/.github/workflows/site.yml --source-ref refs/heads/main
+
+gh attestation verify zriz-37641918-2026-11-23.pdf -R maksym-garkusha/dream-povnota \
+  --signer-workflow maksym-garkusha/dream-povnota/.github/workflows/digest.yml
+```
+
+Файл, який змінили після збірки, перевірку не пройде: атестація прив'язана до SHA-256 вмісту. Атестація підтверджує, звідки файл, але не те, що код, з якого його зібрано, правильний: від шкідливого коміту в `main` вона не захищає.
 
 ### Розгортання і обмеження безкоштовного тарифу
 

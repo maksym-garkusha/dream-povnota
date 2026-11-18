@@ -381,9 +381,26 @@ Where the limits come from. The `data.json` of 18 November 2026 has 14,610 open 
 
 `/api/v1/meta` returns the SHA-256 of the accepted edition in `edition.sha256`, in the same form as `sha256sum data.json` prints it. The service builds the digest right after the import and only from the accepted edition, and the first 16 characters of the hash, with the edition date, appear in the PDF footer and on the "Зріз" sheet of the xlsx. A recipient can check which file a digest was built from.
 
-A genuine jump is accepted like this: check that `site.yml` built the file from this repository's code, and put its SHA-256 into the `ImportGuard__AcceptSha256` variable on Render. It applies only to the file with that hash. The limits are set with `ImportGuard__OpenCardsPercent`, `ImportGuard__OrganisationsPercent` and `ImportGuard__ChangedCardsPercent`.
+A genuine jump is accepted like this: verify the file's attestation (below) and put its SHA-256 into the `ImportGuard__AcceptSha256` variable on Render. It applies only to the file with that hash. The limits are set with `ImportGuard__OpenCardsPercent`, `ImportGuard__OrganisationsPercent` and `ImportGuard__ChangedCardsPercent`.
 
 What the guard cannot do. If after a restart the database is missing or does not answer, there is nothing to compare with, and the first edition is accepted with a warning in the log. If an edition is rejected right after a restart, there is no previous one in memory, and the pages answer 503 until a good file appears on Pages: showing nothing is better than showing tampered data.
+
+#### Provenance of the files
+
+`site.yml` signs a provenance attestation (SLSA provenance, via `actions/attest`) for `data.json` and `report.md` exactly as they go to Pages, and `digest.yml` does the same for every digest PDF and xlsx. The attestation records the repository, workflow, commit and run, and is signed by a short-lived Sigstore certificate issued for that run's OIDC token. Only a separate `attest` job holds the token and attestation write permissions; it builds nothing and pulls no NuGet packages.
+
+Anyone can check it with the GitHub CLI (signed in to `gh`):
+
+```bash
+curl -fsSO https://maksym-garkusha.github.io/dream-povnota/data.json
+gh attestation verify data.json -R maksym-garkusha/dream-povnota \
+  --signer-workflow maksym-garkusha/dream-povnota/.github/workflows/site.yml --source-ref refs/heads/main
+
+gh attestation verify zriz-37641918-2026-11-23.pdf -R maksym-garkusha/dream-povnota \
+  --signer-workflow maksym-garkusha/dream-povnota/.github/workflows/digest.yml
+```
+
+A file changed after the build fails the check, since the attestation is bound to the SHA-256 of its content. The attestation shows where a file came from, not that the code it was built from is right: it does not protect against a malicious commit on `main`.
 
 ### Deployment and free plan limits
 
