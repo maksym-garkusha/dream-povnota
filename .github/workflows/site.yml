@@ -11,8 +11,6 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages
@@ -21,7 +19,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # перший запуск без кешу качає всі картки, тому запас часу великий
+    # перший запуск без кешу качає всі картки: у 2 потоки з паузою це близько години
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v7
@@ -31,14 +29,22 @@ jobs:
       # кожен запуск бере кеш попереднього і зберігає свій: тоді качаються тільки змінені картки.
       # У кеші розібрані картки, тому ключ залежить від коду розбору: після його зміни
       # старий кеш не підходить і всі картки завантажуються заново
-      - uses: actions/cache@v6
+      - uses: actions/cache/restore@v6
         with:
           path: data
           key: dream-cards-${{ hashFiles('src/DreamPovnota/Cards/**') }}-${{ github.run_number }}-${{ github.run_attempt }}
           restore-keys: dream-cards-${{ hashFiles('src/DreamPovnota/Cards/**') }}-
+      # 2 потоки з паузою між запитами (див. DreamClient.Pause): API державний і публічний
       - name: Sync cards with the API
         working-directory: src/DreamPovnota
-        run: dotnet run -c Release -- sync --cache ../../data
+        run: dotnet run -c Release -- sync --cache ../../data --parallel 2
+      # кеш зберігаємо і тоді, коли sync відмовився публікувати неповні дані:
+      # завантажене не пропаде, і наступний запуск докачає решту
+      - uses: actions/cache/save@v6
+        if: always() && hashFiles('data/projects.jsonl') != ''
+        with:
+          path: data
+          key: dream-cards-${{ hashFiles('src/DreamPovnota/Cards/**') }}-${{ github.run_number }}-${{ github.run_attempt }}
       - name: Export data for the page
         working-directory: src/DreamPovnota
         run: dotnet run -c Release --no-build -- export --cache ../../data ../../site
@@ -52,6 +58,9 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
