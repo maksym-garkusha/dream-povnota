@@ -281,7 +281,7 @@ The base address stays fixed and the filter goes into `Query`, so scheduled refr
 
 ### Deployment and free plan limits
 
-`render.yaml` is a Render Blueprint: a free web service built from the Docker image and a free PostgreSQL 18 database in Frankfurt. Render injects `DATABASE_URL` from the managed database itself, so there is no secret in the repository, in CI or in the Actions settings. Apart from it, the service reads only `DATA_URL`, the address of `data.json`. New versions are currently deployed by hand from the Render dashboard or through its API. The Docker image is built in CI on every push, so a broken Dockerfile shows up before a deploy.
+`render.yaml` is a Render Blueprint: a free web service built from the Docker image and a free PostgreSQL 18 database in Frankfurt. Render injects `DATABASE_URL` from the managed database itself, so there is no secret in the repository, in CI or in the Actions settings. Apart from it, the service reads only `DATA_URL`, the address of `data.json`. New versions are currently deployed by hand from the Render dashboard or through its API: the Render app is not yet connected to the repository, so `autoDeployTrigger: commit` in the Blueprint takes effect only once it is. The Docker image is built in CI on every push, so a broken Dockerfile shows up before a deploy.
 
 Free plan limits according to the Render documentation as of November 2026:
 
