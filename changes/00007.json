@@ -1,0 +1,64 @@
+{
+  "snapshot": {
+    "id": 7,
+    "generated": "2026-11-18T14:10:05.382052+00:00",
+    "synced": "2026-11-18T14:10:03.495954+00:00",
+    "open": 14609,
+    "added": 0,
+    "removed": 0,
+    "changed": 4,
+    "rulesChanged": false
+  },
+  "items": [
+    {
+      "snapshot": 7,
+      "code": "050424-04B6DEFC",
+      "title": "Аварійно-відновлювальні роботи (капітальний ремонт) багатоквартирного житлового будинку по вул. Дружби Народів, 236-А в м. Харків",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [
+        "fresh"
+      ],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 7,
+      "code": "290324-A1DEABF6",
+      "title": "Капітальний ремонт харчоблоку Таращанського академічного ліцею \"Успіх\" Таращанської міської ради Київської області по вул. Володимира Великого, 32-А в м. Таращ…",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [
+        "fresh"
+      ],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 7,
+      "code": "080324-236F5221",
+      "title": "Капітальний ремонт Центру культури і дозвілля в Макарові із впровадженням відновлювальних джерел енергії",
+      "kind": 2,
+      "stageFrom": "appraised",
+      "stageTo": "appraised",
+      "nowFilled": [],
+      "noLongerFilled": [],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 7,
+      "code": "190824-37705B9C",
+      "title": "Нове будівництво захисної споруди цивільного захисту (протирадіаційне укриття) по вул. Чорновола м.Нетішин Нетішинської міської територіальної громади Шепетівс…",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [
+        "fresh"
+      ],
+      "newlyApplicable": []
+    }
+  ]
+}

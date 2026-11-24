@@ -26,5 +26,68 @@
     "open": 419,
     "complete": 206,
     "avgScore": 0.920498
+  },
+  {
+    "snapshot": 5,
+    "date": "2026-11-18T10:16:48.174643+00:00",
+    "open": 419,
+    "complete": 206,
+    "avgScore": 0.920498
+  },
+  {
+    "snapshot": 6,
+    "date": "2026-11-18T12:18:31.024584+00:00",
+    "open": 419,
+    "complete": 206,
+    "avgScore": 0.920498
+  },
+  {
+    "snapshot": 7,
+    "date": "2026-11-18T14:10:05.382052+00:00",
+    "open": 419,
+    "complete": 206,
+    "avgScore": 0.920498
+  },
+  {
+    "snapshot": 8,
+    "date": "2026-11-19T11:44:20.932488+00:00",
+    "open": 419,
+    "complete": 206,
+    "avgScore": 0.920498
+  },
+  {
+    "snapshot": 9,
+    "date": "2026-11-20T11:45:06.309714+00:00",
+    "open": 419,
+    "complete": 206,
+    "avgScore": 0.920498
+  },
+  {
+    "snapshot": 10,
+    "date": "2026-11-21T11:08:54.690727+00:00",
+    "open": 419,
+    "complete": 206,
+    "avgScore": 0.920498
+  },
+  {
+    "snapshot": 11,
+    "date": "2026-11-22T11:29:50.603017+00:00",
+    "open": 419,
+    "complete": 205,
+    "avgScore": 0.920259
+  },
+  {
+    "snapshot": 12,
+    "date": "2026-11-23T12:51:56.549565+00:00",
+    "open": 419,
+    "complete": 205,
+    "avgScore": 0.920259
+  },
+  {
+    "snapshot": 13,
+    "date": "2026-11-24T13:47:34.5319+00:00",
+    "open": 419,
+    "complete": 205,
+    "avgScore": 0.920259
   }
 ]

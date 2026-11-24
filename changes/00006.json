@@ -1,0 +1,53 @@
+{
+  "snapshot": {
+    "id": 6,
+    "generated": "2026-11-18T12:18:31.024584+00:00",
+    "synced": "2026-11-18T12:18:28.607576+00:00",
+    "open": 14609,
+    "added": 0,
+    "removed": 1,
+    "changed": 2,
+    "rulesChanged": false
+  },
+  "items": [
+    {
+      "snapshot": 6,
+      "code": "010524-A3B1468D",
+      "title": "Капітальний ремонт даху Олександрівського ліцею Попельнастівської сільської ради",
+      "kind": 2,
+      "stageFrom": "appraised",
+      "stageTo": "impl",
+      "nowFilled": [
+        "fresh"
+      ],
+      "noLongerFilled": [],
+      "newlyApplicable": [
+        "fresh"
+      ]
+    },
+    {
+      "snapshot": 6,
+      "code": "110225-5B3C1E90",
+      "title": "Капітальний ремонт дороги С041007 від с-ща Вишневе до м. Перещепине (М18)",
+      "kind": 1,
+      "stageFrom": "idea",
+      "stageTo": null,
+      "nowFilled": [],
+      "noLongerFilled": [],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 6,
+      "code": "180424-1B85EC54",
+      "title": "Капітальний ремонт харчоблоку Надвірнянського ліцею № 3 Надвірнянської міської ради",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [
+        "fresh"
+      ],
+      "newlyApplicable": []
+    }
+  ]
+}

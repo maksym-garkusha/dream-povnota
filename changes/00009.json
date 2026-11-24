@@ -1,0 +1,62 @@
+{
+  "snapshot": {
+    "id": 9,
+    "generated": "2026-11-20T11:45:06.309714+00:00",
+    "synced": "2026-11-20T11:45:03.390029+00:00",
+    "open": 14609,
+    "added": 0,
+    "removed": 0,
+    "changed": 4,
+    "rulesChanged": false
+  },
+  "items": [
+    {
+      "snapshot": 9,
+      "code": "061125-609758A2",
+      "title": "Капітальний ремонт покриття з влаштуванням тротуару по вулиці Князя Володимира м.Полонне Шепетівського району Хмельницької області",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 9,
+      "code": "190424-A10FC799",
+      "title": "Капітальний ремонт та модернізація харчоблоку Авдіївського ліцею в с. Авдіївка Чернігівської області.",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 9,
+      "code": "200125-7C3BE28B",
+      "title": "Когенерація для стійкості: Забезпечення стабільного теплопостачання Нововолинської міської територіальної громади в кризових умовах воєнного часу шляхом встано…",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [
+        "fresh"
+      ],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 9,
+      "code": "290725-1F7B8650",
+      "title": "Реставрація будівлі літери «Е» для відділення гнійної хірургії КШІ «Міська клінічна лікарня Ле 1» Одеської міської ради за адресою: м. Одеса вул. М'ясоєдовська…",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [
+        "fresh"
+      ],
+      "newlyApplicable": []
+    }
+  ]
+}

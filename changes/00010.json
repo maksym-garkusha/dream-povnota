@@ -1,0 +1,131 @@
+{
+  "snapshot": {
+    "id": 10,
+    "generated": "2026-11-21T11:08:54.690727+00:00",
+    "synced": "2026-11-21T11:08:52.437042+00:00",
+    "open": 14609,
+    "added": 0,
+    "removed": 0,
+    "changed": 9,
+    "rulesChanged": false
+  },
+  "items": [
+    {
+      "snapshot": 10,
+      "code": "210125-5A47F99D",
+      "title": "Будівництво захисної споруди цивільного захисту в Шосткинському навчально-виховному комплексі: спеціалізована школа І-ІІ ступенів - ліцей (Андеграунд школа) по…",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [
+        "fresh"
+      ],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 10,
+      "code": "040425-C0EA6AAC",
+      "title": "«Капітальний ремонт підвальних приміщень будівлі літ. «А-2» Комунального закладу «Писарівська гімназія» Золочівської селищної ради за адресою: Харківська облас…",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [
+        "fresh"
+      ],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 10,
+      "code": "060225-A010D625",
+      "title": "«Капітальний ремонт частини підвальних приміщень будівлі літ. «А-2» Феськівського закладу дошкільної освіти (ясла-садок) Золочівської селищної ради за адресою:…",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [
+        "fresh"
+      ],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 10,
+      "code": "231024-E909E331",
+      "title": "Нове будівництво захисної споруди (сховище) цивільного захисту на території Миролюбівської гімназії Гречаноподівської сільської ради Криворізького району Дніпр…",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [
+        "fresh"
+      ],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 10,
+      "code": "300524-26A50516",
+      "title": "Нове будівництво ПРУ Опорного закладу освіти Клішковецької сільської ради Дністровського району Чернівецької області \"Клішковецький заклад загальної середньої…",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [
+        "fresh"
+      ],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 10,
+      "code": "200825-AFC3E552",
+      "title": "Нове будівництво споруди подвійного призначення із захисними властивостями ПРУ по вул. Володимира Момота, 16-а у м. Бориспіл Київської області",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [
+        "fresh"
+      ],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 10,
+      "code": "080925-DB956B09",
+      "title": "Нове будівництво центру безпеки за адресою: вул. Шкільна, 103Б смт. Калинівське Бериславського району Херсонської області",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [
+        "fresh"
+      ],
+      "noLongerFilled": [],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 10,
+      "code": "170524-B1D3FFD3",
+      "title": "Реконструкція каналізаційних міських очисних споруд Комунального підприємства \"Міськводоканал\" Сумської міської ради потужністю 60 000 м3/добу з виділенням пер…",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [
+        "fresh"
+      ],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 10,
+      "code": "090424-B5D86FF1",
+      "title": "Реконструкція системи водозабезпечення смт Нововоронцовка, Бериславського району, Херсонської області",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [
+        "fresh"
+      ],
+      "newlyApplicable": []
+    }
+  ]
+}

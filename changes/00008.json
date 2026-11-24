@@ -1,0 +1,62 @@
+{
+  "snapshot": {
+    "id": 8,
+    "generated": "2026-11-19T11:44:20.932488+00:00",
+    "synced": "2026-11-19T11:44:19.000291+00:00",
+    "open": 14609,
+    "added": 0,
+    "removed": 0,
+    "changed": 4,
+    "rulesChanged": false
+  },
+  "items": [
+    {
+      "snapshot": 8,
+      "code": "200923-44C81A3B",
+      "title": "Капітальний ремонт (санація) Уланівського закладу дошкільної освіти",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 8,
+      "code": "161224-4B395BA6",
+      "title": "Капітального ремонту комунальної установи «Криничненський територіальний центр соціального обслуговування (надання соціальних послуг)» по вул. Болградська, 8а…",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [
+        "fresh"
+      ],
+      "noLongerFilled": [],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 8,
+      "code": "020724-157A17BA",
+      "title": "Реконструкція будівлі Олександрівського фельдшерського пункту за адресою: Дніпропетровська область, Павлоградський район, с. Олександрівка, вул. Центральна, 1",
+      "kind": 2,
+      "stageFrom": "appraised",
+      "stageTo": "appraised",
+      "nowFilled": [],
+      "noLongerFilled": [],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 8,
+      "code": "170325-76DA2C42",
+      "title": "Реконструкція водозабірного вузла по вул.Цукрова,1, с-ще Гребінки",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [
+        "fresh"
+      ],
+      "newlyApplicable": []
+    }
+  ]
+}

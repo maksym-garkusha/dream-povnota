@@ -1,0 +1,60 @@
+{
+  "snapshot": {
+    "id": 13,
+    "generated": "2026-11-24T13:47:34.5319+00:00",
+    "synced": "2026-11-24T13:47:32.011072+00:00",
+    "open": 14609,
+    "added": 0,
+    "removed": 0,
+    "changed": 4,
+    "rulesChanged": false
+  },
+  "items": [
+    {
+      "snapshot": 13,
+      "code": "260625-55E4E4FF",
+      "title": "Будівництво центру оздоровлення та відпочинку дітей «Харків» розміщеного за адресою: Закарпатська обл, Хустський район, с. Нижній Студений, урочище «Ялина»",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 13,
+      "code": "170125-2B8A5E3D",
+      "title": "Капітальне будівництво водопостачання населених пунктів Пришибської сільської ради Кременчуцького району Полтавської області. (Коригування. 2 черга)",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 13,
+      "code": "200824-07DEFD94",
+      "title": "Капітальний ремонт з термомодернізації адмінбудівлі по вул. Князя Святослава, 13 с. Старі Петрівці, Вишгородського р-ну, Київської обл.",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [
+        "fresh"
+      ],
+      "noLongerFilled": [],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 13,
+      "code": "010324-97632C0C",
+      "title": "Реконструкція водопровідної мережі по вулиці Цетральна від будинку №48 до вулиці Кобизький шлях міста Носівка Чернігівської області",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [],
+      "newlyApplicable": []
+    }
+  ]
+}

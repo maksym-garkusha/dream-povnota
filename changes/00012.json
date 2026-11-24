@@ -1,0 +1,99 @@
+{
+  "snapshot": {
+    "id": 12,
+    "generated": "2026-11-23T12:51:56.549565+00:00",
+    "synced": "2026-11-23T12:51:53.546487+00:00",
+    "open": 14609,
+    "added": 0,
+    "removed": 0,
+    "changed": 7,
+    "rulesChanged": false
+  },
+  "items": [
+    {
+      "snapshot": 12,
+      "code": "250324-C028469A",
+      "title": "Капітальний ремонт вулиці Шевченка у м.Свалява",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [
+        "fresh"
+      ],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 12,
+      "code": "050224-FCFBD5D7",
+      "title": "Капітальний ремонт з використанням енергозберігаючих технологій, здійснення протипожежних заходів будівлі комунального некомерційного підприємства \"Бобринецька…",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [
+        "fresh"
+      ],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 12,
+      "code": "230424-F71942A8",
+      "title": "Нове будівництво захисної споруди цивільного захисту (протирадіаційного укриття) на території загальноосвітньої школи І-ІІІ ступенів № 55 Херсонської міської р…",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [
+        "fresh"
+      ],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 12,
+      "code": "131124-58CE3B7B",
+      "title": "Нове будівництво захисної споруди цивільного захисту (ПРУ) на 200 осіб на території Міжлиманської гімназії за адресою: вул. Єлисеєва, 20, с-ще Набережне, Одесь…",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 12,
+      "code": "200125-A7E46122",
+      "title": "Нове будівництво споруди подвійного призначення з властивостями протирадіаційного укриття (ПРУ) Лишнянської гімназії Бишівської сільської ради Фастівського рай…",
+      "kind": 2,
+      "stageFrom": "appraised",
+      "stageTo": "appraised",
+      "nowFilled": [],
+      "noLongerFilled": [],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 12,
+      "code": "200923-B44CED79",
+      "title": "Нове будівництво укриття для закладу освіти Куяльницької сільської ради Подільського району Одеської областіі за адресою: вул. Спортивна,75А, с.Куяльник.Коригу…",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [
+        "fresh"
+      ],
+      "noLongerFilled": [],
+      "newlyApplicable": []
+    },
+    {
+      "snapshot": 12,
+      "code": "260925-701E5C8D",
+      "title": "Ремонт (реставрація) ліфтового обладнання в КНП \"Міська клінічна лікарня №1 Івано-Франківської міської ради\" за адресою: м.Івано-Франківськ, вул. Матейки,34",
+      "kind": 2,
+      "stageFrom": "impl",
+      "stageTo": "impl",
+      "nowFilled": [],
+      "noLongerFilled": [],
+      "newlyApplicable": []
+    }
+  ]
+}
