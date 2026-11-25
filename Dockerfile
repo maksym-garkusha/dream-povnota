@@ -1,7 +1,7 @@
 # Збірка на повному SDK, запуск на мінімальному образі без shell і пакетного менеджера.
 # Образи закріплено за digest списку платформ: тег можна переписати, digest ні.
 # Dependabot (docker) оновлює тег і digest разом
-FROM mcr.microsoft.com/dotnet/sdk:11.0-resolute@sha256:65f3c7c6a25a239ab3e6719f2896147e7b68242ff2d8818dd70498bde6ef8bea AS build
+FROM mcr.microsoft.com/dotnet/sdk:11.0-resolute@sha256:2794448a07118a6eaf00f29ab5d2bf44928517ce5ff86505a63a69230374f599 AS build
 WORKDIR /src
 COPY global.json DreamPovnota.slnx ./
 COPY src/DreamPovnota.Core/DreamPovnota.Core.csproj src/DreamPovnota.Core/
