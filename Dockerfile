@@ -14,7 +14,7 @@ RUN dotnet publish src/DreamPovnota.Web/DreamPovnota.Web.csproj -c Release -r li
 
 # composite: фреймворк уже скомпільований наперед, швидший старт на 0,1 CPU;
 # extra: ICU і часові пояси для українського впорядкування і часу за Києвом
-FROM mcr.microsoft.com/dotnet/aspnet:11.0-resolute-chiseled-composite-extra@sha256:d7ce3896765dd02661041a8ca8db6ed8f0c59e1a65f64862dfc691ae2d295708
+FROM mcr.microsoft.com/dotnet/aspnet:11.0-resolute-chiseled-composite-extra@sha256:be1e76777da91adb1d2709308f34e3beb7237cc4705dfdbbb0cb30f1fa41f484
 WORKDIR /app
 COPY --from=build /app .
 # gen0 до 32 МБ: без цього після збірки xlsx процес тримав понад сотню мегабайтів ще не зібраного сміття
